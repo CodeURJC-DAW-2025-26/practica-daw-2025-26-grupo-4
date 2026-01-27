@@ -3,16 +3,17 @@
 ## 👥 Miembros del Equipo
 | Nombre y Apellidos | Correo URJC | Usuario GitHub |
 |:--- |:--- |:--- |
-| [Nombre 1] | [email1]@alumnos.urjc.es | [User1] |
-| [Nombre 2] | [email2]@alumnos.urjc.es | [User2] |
-| [Nombre 3] | [email3]@alumnos.urjc.es | [User3] |
-| [Nombre 4] | [email4]@alumnos.urjc.es | [User4] |
+| Álvaro Fuente González | a.fuente.2023@alumnos.urjc.es | alvaroSource |
+| Darío García Gómez | [email2]@alumnos.urjc.es | [User2] |
+| Arturo Vinuesa Domínguez | [email3]@alumnos.urjc.es | [User3] |
+| Eduardo Fernández Sanz | e.fernandezs.2023@alumnos.urjc.es | edufdezz |
 
 ---
 
 ## 🎭 **Preparación 1: Definición del Proyecto**
 
 ### **Descripción del Tema**
+La aplicación creada se trata de un e-commerce destinado a la jardinería, la aplicación muestra distintos productos 
 [Escribe aquí una descripción breve y concisa de qué trata tu aplicación, el sector al que pertenece y qué valor aporta al usuario].
 
 ### **Entidades**
