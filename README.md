@@ -4,8 +4,8 @@
 | Nombre y Apellidos | Correo URJC | Usuario GitHub |
 |:--- |:--- |:--- |
 | Álvaro Fuente González | a.fuente.2023@alumnos.urjc.es | alvaroSource |
-| Darío García Gómez | [email2]@alumnos.urjc.es | [User2] |
-| Arturo Vinuesa Domínguez | [email3]@alumnos.urjc.es | [User3] |
+| Darío García Gómez | d.garciago.2023@alumnos.urjc.es | dariogarciagomez |
+| Arturo Vinuesa Domínguez | a.vinuesad.2023@alumnos.urjc.es | arturovinuesaa |
 | Eduardo Fernández Sanz | e.fernandezs.2023@alumnos.urjc.es | edufdezz |
 
 ---
@@ -13,67 +13,72 @@
 ## 🎭 **Preparación 1: Definición del Proyecto**
 
 ### **Descripción del Tema**
-La aplicación creada se trata de un e-commerce destinado a la jardinería, la aplicación muestra distintos productos 
+La aplicación creada se trata de un e-commerce destinado a la jardinería, la aplicación muestra distintos productos de diferentes categorías a elegir de temática de jardinería y botánica.
 [Escribe aquí una descripción breve y concisa de qué trata tu aplicación, el sector al que pertenece y qué valor aporta al usuario].
 
 ### **Entidades**
 Indicar las entidades principales que gestionará la aplicación y las relaciones entre ellas:
 
-1. **[Entidad 1]**: [Ej: Usuario]
-2. **[Entidad 2]**: [Ej: Producto]
-3. **[Entidad 3]**: [Ej: Pedido]
-4. **[Entidad 4]**: [Ej: Categoría]
+1. **Usuario**
+2. **Producto**
+3. **Carrito**
+4. **Categoría**
+5. **Etiqueta**
+6. **Pedido**
+7. **Reseña**
 
 **Relaciones entre entidades:**
-- [Ej: Usuario - Pedido: Un usuario puede tener múltiples pedidos (1:N)]
-- [Ej: Pedido - Producto: Un pedido puede contener múltiples productos y un producto puede estar en múltiples pedidos (N:M)]
-- [Ej: Producto - Categoría: Un producto pertenece a una categoría (N:1)]
-- [Descripción de otras relaciones relevantes]
-
+- Usuario - Carrito: Un usuario puede tener un carrito (1:1).
+- Usuario - Pedido: Un usuario puede tener varios pedidos (1:N).
+- Carrito - Producto: Un carrito puede tener varios productos (1:N).
+- Producto - Etiqueta: Un producto puede tener varias etiquetas y una etiqueta puede pertenecer a varios productos (N:M).
+- Pedido - Producto: Un pedido puede tener varios productos (1:N).
+- Categoria - Producto: Una categoría puede tener varios productos (1:N).
+- Producto - Reseña: Un producto puede tener varias reseñas (1:N).
 ### **Permisos de los Usuarios**
-Describir los permisos de cada tipo de usuario e indicar de qué entidades es dueño:
 
 * **Usuario Anónimo**: 
-  - Permisos: [Ej: Visualización de catálogo, búsqueda de productos, registro]
-  - No es dueño de ninguna entidad
+  - Permisos: Visualización de catálogo, búsqueda de productos, registro, gestion de productos del carrito.
+  - Es dueño de su Carrito.
 
 * **Usuario Registrado**: 
-  - Permisos: [Ej: Gestión de perfil, realizar pedidos, crear valoraciones]
-  - Es dueño de: [Ej: Sus propios Pedidos, su Perfil de Usuario, sus Valoraciones]
+  - Permisos: Gestión de perfil, realización y gestión de pedidos, crear reseñas. 
+  - Es dueño de: Sus propios Pedidos, su Perfil de Usuario, sus Reseñas.
 
 * **Administrador**: 
-  - Permisos: [Ej: Gestión completa de productos (CRUD), visualización de estadísticas, moderación de contenido]
-  - Es dueño de: [Ej: Productos, Categorías, puede gestionar todos los Pedidos y Usuarios]
+  - Permisos: Gestión completa de productos (CRUD), visualización de estadísticas, moderación de contenido, gestión de usuarios.
+  - Es dueño de: Productos, Categorías, puede gestionar todos los Pedidos y Usuarios
 
 ### **Imágenes**
 Indicar qué entidades tendrán asociadas una o varias imágenes:
 
-- **[Entidad con imágenes 1]**: [Ej: Usuario - Una imagen de avatar por usuario]
-- **[Entidad con imágenes 2]**: [Ej: Producto - Múltiples imágenes por producto (galería)]
-- **[Entidad con imágenes 3]**: [Ej: Categoría - Una imagen representativa por categoría]
+- **Usuario**: Una imagen de avatar por usuario
+- **Producto**: Múltiples imágenes por producto (carrusel)
+- **Reseña**: Puede tener una imagen cada reseña.
 
 ### **Gráficos**
 Indicar qué información se mostrará usando gráficos y de qué tipo serán:
 
-- **Gráfico 1**: [Ej: Ventas mensuales - Gráfico de barras]
-- **Gráfico 2**: [Ej: Productos más vendidos - Gráfico de tarta/circular]
-- **Gráfico 3**: [Ej: Evolución de usuarios registrados - Gráfico de líneas]
-- **Gráfico 4**: [Ej: Distribución de pedidos por categoría - Gráfico de barras horizontales]
+- **Productos más comprados**: Ventas mensuales dividas por categoría - Gráfico de tarta.
+- **Productos por etiqueta**: Etiquetas más vendidas - Gráfico de tarta.
+- **Ventas mensuales**: Evolución de ventas por mes - Gráfico de barras.
+- **Relación visitas-compra**: Número de compras en comparación a usuarios que han visitado la página - Gráfico de líneas.
+- **Gráfico de reseñas**: Reseñas de un producto a lo largo del tiempo - Gráfico de líneas.
 
 ### **Tecnología Complementaria**
 Indicar qué tecnología complementaria se empleará:
 
-- [Ej: Envío de correos electrónicos automáticos mediante JavaMailSender]
-- [Ej: Generación de PDFs de facturas usando iText o similar]
-- [Ej: Sistema de autenticación OAuth2 o JWT]
-- [Otras tecnologías externas que se integrarán]
+- Envío de correos electrónicos automáticos mediante JavaMailSender.
+- Generación de PDFs de facturas usando iText o similar.
+- Sistema de autenticación OAuth2.
+- Generar gráficas con JFreeChart.
 
 ### **Algoritmo o Consulta Avanzada**
 Indicar cuál será el algoritmo o consulta avanzada que se implementará:
 
-- **Algoritmo/Consulta**: [Ej: Sistema de recomendaciones basado en el historial de compras del usuario]
-- **Descripción**: [Ej: Analiza los productos comprados previamente y sugiere productos similares o complementarios utilizando filtrado colaborativo]
-- **Alternativa**: [Ej: Consulta compleja que agrupe ventas por categoría, mes y región, con cálculo de tendencias]
+- **Algoritmo**: Sistema de recomendaciones basado en el historial de compras del usuario.
+- **Descripción**: Analiza los productos comprados previamente y sugiere productos similares o complementarios basandose en las etiquetas del producto.
+- **Alternativa**: Consulta compleja que agrupe ventas por reseñas.
 
 ---
 
