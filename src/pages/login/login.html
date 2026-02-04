@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantaZon</title>
+    <link rel="stylesheet" href="login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="main-container">
+
+        <!-- Inputs ocultos para controlar las pestañas -->
+        <input type="radio" name="auth-type" id="login-opt" checked hidden>
+        <input type="radio" name="auth-type" id="register-opt" hidden>
+
+        <div class="login-card">
+            <div class="header">
+                <div style="font-size: 3rem;">🌱</div>
+                <h1>PlantaZon</h1>
+            </div>
+
+            <!-- Botones de arriba -->
+            <div class="tabs">
+                <label for="login-opt" class="tab-btn">Iniciar sesión</label>
+                <label for="register-opt" class="tab-btn">Registrarse</label>
+                <!-- Barra negra que se mueve -->
+                <div class="tab-indicator"></div>
+            </div>
+
+            <!-- Contenedor del slider -->
+            <div class="forms-wrapper">
+                <div class="forms-slider">
+
+                    <!-- Login -->
+                    <form class="auth-form" action="/login" method="POST">
+                        <div class="input-group">
+                            <label>Correo electrónico</label>
+                            <input type="email" name="email" value="tugmail@gmail.com" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Contraseña</label>
+                            <input type="password" name="password" placeholder="Tu contraseña..." required>
+                        </div>
+
+                        <div class="options">
+                            <input type="checkbox" id="news-login">
+                            <label for="news-login">Suscribirme a novedades</label>
+                        </div>
+
+                        <!-- Botón convertido a enlace para ir a home -->
+                        <a href="../home/index.html" class="btn-link">Entrar</a>
+                    </form>
+
+                    <!-- Registro -->
+                    <form class="auth-form" action="/register" method="POST">
+                        <div class="input-group">
+                            <label>Nombre:</label>
+                            <input type="text" name="name" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Email:</label>
+                            <input type="email" name="email" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Contraseña:</label>
+                            <input type="password" name="password" required>
+                        </div>
+
+                        <button type="submit">Crear cuenta</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
