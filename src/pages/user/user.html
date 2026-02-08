@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - PlantaZon</title>
+    <link rel="stylesheet" href="user.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-bar">
+                <div class="header-left">
+                    <a href="../home/home.html" class="back-link">
+                        <i class="fa-solid fa-arrow-left"></i> Volver a la tienda
+                    </a>
+                </div>
+                
+                <div class="logo-center">
+                    <div style="font-size: 2rem;">🌱</div>
+                    <span style="font-weight: bold; font-size: 1.2rem; margin-left: 10px;">PlantaZon</span>
+                </div>
+
+                <div class="user-actions">
+                    <a href="../cart/cart.html" class="cart-icon-container">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span class="badge">2</span>
+                    </a>
+                    <a href="#" class="active-profile">
+                        <i class="fa-solid fa-circle-user profile-icon"></i>
+                    </a>
+                </div>
+            </header>
+
+            <!-- User Content -->
+            <div class="content-body">
+                <h1 class="greeting-title">¡Hola Usuario!</h1>
+
+                <!-- Account Data Section -->
+                <section class="settings-card">
+                    <h2>Datos de mi cuenta</h2>
+                    <form class="settings-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nombre de usuario:</label>
+                                <input type="text" value="Usuario" placeholder="Nombre de usuario">
+                            </div>
+                            <div class="form-group">
+                                <label>Fecha de nacimiento:</label>
+                                <input type="date">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Nombre completo:</label>
+                                <div class="double-input">
+                                    <input type="text" value="Nombre" placeholder="Nombre">
+                                    <input type="text" value="Apellido/s" placeholder="Apellidos">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="save-btn hidden">Guardar</button>
+                    </form>
+                    <div class="action-row">
+                        <button class="save-btn">Guardar</button>
+                    </div>
+                </section>
+
+                <!-- Password Section -->
+                <section class="settings-card">
+                    <h2>Contraseña</h2>
+                    <form class="settings-form">
+                        <div class="form-grid three-columns">
+                            <div class="form-group">
+                                <label>Antigua contraseña:</label>
+                                <div class="input-with-icon">
+                                    <input type="password" placeholder="Introduce tu antigua contraseña">
+                                    <i class="fa-regular fa-eye-slash toggle-pass"></i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Nueva contraseña:</label>
+                                <div class="input-with-icon">
+                                    <input type="password" placeholder="Nueva contraseña">
+                                    <i class="fa-regular fa-eye-slash toggle-pass"></i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Repetir contraseña:</label>
+                                <div class="input-with-icon">
+                                    <input type="password" placeholder="Repite la nueva contraseña">
+                                    <i class="fa-regular fa-eye-slash toggle-pass"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="action-row">
+                         <button class="save-btn">Guardar</button>
+                    </div>
+                </section>
+
+                <!-- Address Section -->
+                <section class="settings-card">
+                    <h2>Mis direcciones</h2>
+                    
+                    <div class="addresses-container">
+                        <!-- Shipping -->
+                        <div class="address-column">
+                            <h3>Direcciones de envío</h3>
+                            <div class="address-list">
+                                <div class="address-card">
+                                    <div class="card-actions">
+                                        <button class="icon-btn edit-btn"><i class="fa-solid fa-pencil"></i></button>
+                                        <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
+                                    </div>
+                                    <strong>Javier Garzás Parra</strong>
+                                    <p>Calle estilo SCRUM Nº22 Piso 3A</p>
+                                    <p>Móstoles, Madrid 28938</p>
+                                    <p>España</p>
+                                    <p>Número de teléfono: 628417634</p>
+                                </div>
+                                <button class="add-address-btn">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Billing -->
+                        <div class="address-column">
+                            <h3>Direcciones de facturación</h3>
+                            <div class="address-list">
+                                <div class="address-card">
+                                    <div class="card-actions">
+                                        <button class="icon-btn edit-btn"><i class="fa-solid fa-pencil"></i></button>
+                                        <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
+                                    </div>
+                                    <strong>Javier Garzás Parra</strong>
+                                    <p>Avenida metodología Ágil</p>
+                                    <p>Nº2 Piso 1B</p>
+                                    <p>Móstoles, Madrid 28938</p>
+                                    <p>España</p>
+                                    <p>Número de teléfono: 628417634</p>
+                                </div>
+                                <button class="add-address-btn">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+</body>
+</html>
