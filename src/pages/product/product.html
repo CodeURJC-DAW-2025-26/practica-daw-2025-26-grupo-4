@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planta genérica - PlantaZon</title>
+
+    <link rel="stylesheet" href="product.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+<div class="app-container">
+
+
+    <!-- Main -->
+    <main class="main-content">
+
+        <!-- Top bar -->
+         
+        <header class="top-bar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Buscar productos">
+                </div>
+                <div class="user-actions">
+                    <div class="cart-icon-container">
+                        <a href="../cart/cart.html">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span class="badge">1</span>
+                        </a>
+                    </div>
+                    <a href="../user/user.html">
+                        <i class="fa-regular fa-circle-user profile-icon"></i>
+                    </a>
+                </div>
+            </header>
+
+        <!-- Product detail -->
+        <div class="product-layout">
+
+            <!-- Gallery -->
+            <section class="gallery">
+                <div class="main-image">
+                    <img src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=600&auto=format&fit=crop">
+                </div>
+                <div class="dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </section>
+
+            <!-- Info -->
+            <section class="product-info">
+                <h1>Planta genérica 1</h1>
+                <p class="short-desc">Descripción corta</p>
+
+                <div class="tags">
+                    <span class="tag">Etiqueta 1</span>
+                    <span class="tag">Etiqueta 1</span>
+                    <span class="tag">Etiqueta 1</span>
+                </div>
+
+                <div class="price-row">
+                    <span class="price">75€</span>
+                    <span class="old-price">85€</span>
+                </div>
+
+                <div class="quantity">
+                    <button>-</button>
+                    <span>2</span>
+                    <button>+</button>
+                </div>
+
+                <button class="btn-buy">Comprar ahora</button>
+                <button class="btn-cart">Añadir al carrito</button>
+
+                <div class="recommend">
+                    <h3>Completa tu pedido con</h3>
+                    <a href="../product/product.html" class="recommend-card">
+    <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?q=80&w=400&auto=format&fit=crop">
+    <div>
+        <strong>Petunia</strong>
+        <div class="tags small">
+            <span class="tag">Etiqueta 1</span>
+            <span class="tag">Etiqueta 1</span>
+        </div>
+        <span class="rec-price">35€/u</span>
+    </div>
+    <div class="rec-actions">
+        <i class="fa-solid fa-cart-plus"></i>
+        <i class="fa-regular fa-heart"></i>
+    </div>
+</a>
+
+                </div>
+            </section>
+        </div>
+
+        <!-- Reviews -->
+        <section class="reviews">
+
+            <div class="rating-summary">
+                <span class="score">4.3/5</span>
+                <div class="stars">★★★★☆</div>
+                <small>78 valoraciones</small>
+            </div>
+
+            <div class="rating-bars">
+                <div><span>5 ★</span><div class="bar fill-5"></div></div>
+                <div><span>4 ★</span><div class="bar fill-4"></div></div>
+                <div><span>3 ★</span><div class="bar fill-3"></div></div>
+                <div><span>2 ★</span><div class="bar fill-2"></div></div>
+                <div><span>1 ★</span><div class="bar fill-1"></div></div>
+            </div>
+
+            <div class="comments">
+                <div class="comment">
+                    <strong>Javier Garzás Parra</strong>
+                    <span class="comment-stars">★★★★★</span>
+                    <p>Genera mucha serenidad en el ambiente a la hora de realizar un stand-up meeting.</p>
+                </div>
+                <div class="comment">
+                    <strong>Javier Garzás Parra</strong>
+                    <span class="comment-stars">★★★★★</span>
+                    <p>Genera mucha serenidad en el ambiente a la hora de realizar un stand-up meeting.</p>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+</div>
+</body>
+</html>
