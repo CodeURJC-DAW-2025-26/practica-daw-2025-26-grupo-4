@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito - PlantaZon</title>
+    <link rel="stylesheet" href="cart.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- Main Content (Full Width) -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-bar">
+                <div class="header-left">
+                    <a href="../home/home.html" class="back-link">
+                        <i class="fa-solid fa-arrow-left"></i> Volver a la tienda
+                    </a>
+                </div>
+                
+                <div class="logo-center">
+                    <div style="font-size: 2rem;">🌱</div>
+                    <span style="font-weight: bold; font-size: 1.2rem; margin-left: 10px;">PlantaZon</span>
+                </div>
+
+                <div class="user-actions">
+                    <div class="cart-icon-container">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span class="badge">2</span>
+                    </div>
+                    <a href="../user/user.html">
+                        <i class="fa-regular fa-circle-user profile-icon"></i>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Cart Section -->
+            <div class="content-body">
+                <h1 class="page-title">Tu Carrito</h1>
+                <p class="page-subtitle">Revisa tus plantas antes de llevarlas a casa</p>
+
+                <div class="cart-layout">
+                    <!-- Cart Items List -->
+                    <div class="cart-items">
+                        
+                        <!-- Item 1 -->
+                        <div class="cart-item">
+                            <div class="item-image">
+                                <img src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=200&auto=format&fit=crop" alt="Monstera">
+                            </div>
+                            <div class="item-details">
+                                <h3>Monstera Deliciosa</h3>
+                                <p class="item-subtitle">Tamaño: Grande</p>
+                                <div class="item-price">€35.00</div>
+                            </div>
+                            <div class="item-actions">
+                                <div class="quantity-control">
+                                    <button class="qty-btn"><i class="fa-solid fa-minus"></i></button>
+                                    <span class="qty-val">1</span>
+                                    <button class="qty-btn"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <button class="delete-btn">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="cart-item">
+                            <div class="item-image">
+                                <img src="https://images.unsplash.com/photo-1565011523534-747a8601f10a?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?q=80&w=200&auto=format&fit=crop" alt="Lavanda">
+                            </div>
+                            <div class="item-details">
+                                <h3>Lavanda</h3>
+                                <p class="item-subtitle">Tamaño: Mediano</p>
+                                <div class="item-price">€20.00</div>
+                            </div>
+                            <div class="item-actions">
+                                <div class="quantity-control">
+                                    <button class="qty-btn"><i class="fa-solid fa-minus"></i></button>
+                                    <span class="qty-val">2</span>
+                                    <button class="qty-btn"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <button class="delete-btn">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Checkout Summary -->
+                    <div class="cart-summary">
+                        <h2>Resumen del pedido</h2>
+                        
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span>€75.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Envío</span>
+                            <span>€5.00</span>
+                        </div>
+                        <div class="summary-divider"></div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span>€80.00</span>
+                        </div>
+
+                        <button class="checkout-btn">
+                            Tramitar pedido <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

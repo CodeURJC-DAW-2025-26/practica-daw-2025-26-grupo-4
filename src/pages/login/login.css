@@ -75,17 +75,17 @@ body {
 }
 
 /* Logica para mover la barra al cambiar el radio button */
-#login-opt:checked~.login-card .tabs .tab-indicator {
+.login-card.mode-login .tabs .tab-indicator {
     transform: translateX(0);
 }
 
-#register-opt:checked~.login-card .tabs .tab-indicator {
+.login-card.mode-register .tabs .tab-indicator {
     transform: translateX(100%);
 }
 
 /* Cambiar color del texto activo */
-#login-opt:checked~.login-card .tabs label[for="login-opt"],
-#register-opt:checked~.login-card .tabs label[for="register-opt"] {
+.login-card.mode-login .tabs #tab-login,
+.login-card.mode-register .tabs #tab-register {
     color: black;
     font-weight: bold;
 }
@@ -109,11 +109,11 @@ body {
 }
 
 /* Mover el slider segun el radio button */
-#login-opt:checked~.login-card .forms-wrapper .forms-slider {
+.login-card.mode-login .forms-wrapper .forms-slider {
     transform: translateX(0);
 }
 
-#register-opt:checked~.login-card .forms-wrapper .forms-slider {
+.login-card.mode-register .forms-wrapper .forms-slider {
     transform: translateX(-50%);
 }
 
