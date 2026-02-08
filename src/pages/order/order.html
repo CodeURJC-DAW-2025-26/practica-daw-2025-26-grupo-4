@@ -1,1 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Pedidos - PlantaZon</title>
+    <link rel="stylesheet" href="order.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Main Content (Full Width) -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-bar">
+                <div class="header-left">
+                    <a href="../home/home.html" class="back-link">
+                        <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+                    </a>
+                </div>
+                
+                <div class="logo-center">
+                    <div style="font-size: 2rem;">🌱</div>
+                    <span style="font-weight: bold; font-size: 1.2rem; margin-left: 10px;">PlantaZon</span>
+                </div>
 
+                <div class="user-actions">
+                    <div class="cart-icon-container">
+                        <a href="../cart/cart.html">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span class="badge">1</span>
+                        </a>
+                    </div>
+                    <a href="../user/user.html">
+                        <i class="fa-regular fa-circle-user profile-icon"></i>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Orders Section -->
+            <div class="content-body">
+                <h1 class="page-title">MIS PEDIDOS</h1>
+
+                <!-- Order 1 -->
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-info">
+                            <h3>Pedido #ORD-2026-001</h3>
+                            <p class="order-date">Realizado el 1 de febrero de 2026</p>
+                        </div>
+                        <div class="order-status-right">
+                            <span class="status-badge entregado">Entregado</span>
+                            <span class="order-total">€58.97</span>
+                            <span class="product-count">3 productos</span>
+                        </div>
+                    </div>
+
+                    <!-- Order Details Expanded -->
+                    <div class="order-details">
+                        <!-- Product 1 -->
+                        <div class="order-item">
+                            <div class="item-image">
+                                <img src="https://images.unsplash.com/photo-1612618156345-81a8e1b4b3f1?q=80&w=150&auto=format&fit=crop" alt="Pothos Dorado">
+                            </div>
+                            <div class="item-info">
+                                <h4>Pothos Dorado</h4>
+                                <p class="item-subtitle">Cantidad: 2</p>
+                                <p class="item-price">€49.98 c/u</p>
+                            </div>
+                        </div>
+
+                        <!-- Product 2 -->
+                        <div class="order-item">
+                            <div class="item-image">
+                                <img src="https://images.unsplash.com/photo-1585503442097-bd88f0bcc97f?q=80&w=150&auto=format&fit=crop" alt="Compost Orgánico">
+                            </div>
+                            <div class="item-info">
+                                <h4>Compost Orgánico</h4>
+                                <p class="item-subtitle">Cantidad: 1</p>
+                                <p class="item-price">€8.99 c/u</p>
+                            </div>
+                        </div>
+
+                        <!-- Order Summary -->
+                        <div class="order-summary">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span>€58.97</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Envío</span>
+                                <span class="free-shipping">Gratis</span>
+                            </div>
+                            <div class="summary-total">
+                                <span>Total</span>
+                                <span>€58.97</span>
+                            </div>
+                        </div>
+
+                        <!-- Order Actions -->
+                        <div class="order-actions">
+                            <button class="btn btn-secondary">Volver a comprar</button>
+                            <button class="btn btn-secondary">Dejar opinión</button>
+                        </div>
+                    </div>
+
+                    <!-- Collapse Button -->
+                    <button class="expand-btn">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                </div>
+
+                <!-- Order 2 -->
+                <div class="order-card collapsed">
+                    <div class="order-header">
+                        <div class="order-info">
+                            <h3>Pedido #ORD-2026-001</h3>
+                            <p class="order-date">Realizado el 1 de febrero de 2026</p>
+                        </div>
+                        <div class="order-status-right">
+                            <span class="status-badge entregado">Entregado</span>
+                            <span class="order-total">€58.97</span>
+                            <span class="product-count">3 productos</span>
+                        </div>
+                    </div>
+
+                    <button class="expand-btn">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="order.js"></script>
+</body>
+</html>
