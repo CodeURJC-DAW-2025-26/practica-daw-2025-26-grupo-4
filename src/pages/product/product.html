@@ -18,24 +18,30 @@
     <main class="main-content">
 
         <!-- Top bar -->
-         
         <header class="top-bar">
-                <div class="search-bar">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Buscar productos">
-                </div>
-                <div class="user-actions">
-                    <div class="cart-icon-container">
-                        <a href="../cart/cart.html">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                            <span class="badge">1</span>
-                        </a>
-                    </div>
-                    <a href="../user/user.html">
-                        <i class="fa-regular fa-circle-user profile-icon"></i>
+            <div class="header-left">
+                <a href="../home/home.html" class="back-link">
+                    <i class="fa-solid fa-arrow-left"></i> Volver a la tienda
+                </a>
+            </div>
+            
+            <div class="logo-center">
+                <div style="font-size: 2rem;">🌱</div>
+                <span style="font-weight: bold; font-size: 1.2rem; margin-left: 10px;">PlantaZon</span>
+            </div>
+
+            <div class="user-actions">
+                <div class="cart-icon-container">
+                    <a href="../cart/cart.html">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span class="badge">1</span>
                     </a>
                 </div>
-            </header>
+                <a href="../user/user.html">
+                    <i class="fa-regular fa-circle-user profile-icon"></i>
+                </a>
+            </div>
+        </header>
 
         <!-- Product detail -->
         <div class="product-layout">
@@ -43,12 +49,18 @@
             <!-- Gallery -->
             <section class="gallery">
                 <div class="main-image">
-                    <img src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=600&auto=format&fit=crop">
+                    <img id="mainProductImage" src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=600&auto=format&fit=crop" alt="Imagen principal del producto">
                 </div>
-                <div class="dots">
-                    <span class="dot active"></span>
-                    <span class="dot"></span>
-                    <span class="dot"></span>
+                <div class="thumbnails">
+                    <div class="thumbnail active" onclick="changeImage(this, 'https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=600&auto=format&fit=crop')">
+                        <img src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=600&auto=format&fit=crop" alt="Imagen 1">
+                    </div>
+                    <div class="thumbnail" onclick="changeImage(this, 'https://images.unsplash.com/photo-1545239705-1564e58b9e4a?q=80&w=600&auto=format&fit=crop')">
+                        <img src="https://images.unsplash.com/photo-1545239705-1564e58b9e4a?q=80&w=600&auto=format&fit=crop" alt="Imagen 2">
+                    </div>
+                    <div class="thumbnail" onclick="changeImage(this, 'https://images.unsplash.com/photo-1459156212016-c812468e2115?q=80&w=600&auto=format&fit=crop')">
+                        <img src="https://images.unsplash.com/photo-1459156212016-c812468e2115?q=80&w=600&auto=format&fit=crop" alt="Imagen 3">
+                    </div>
                 </div>
             </section>
 
@@ -133,5 +145,19 @@
 
     </main>
 </div>
+
+<script>
+function changeImage(thumbnail, imageUrl) {
+    // Cambiar la imagen principal
+    document.getElementById('mainProductImage').src = imageUrl;
+    
+    // Actualizar el estado activo de los thumbnails
+    document.querySelectorAll('.thumbnail').forEach(thumb => {
+        thumb.classList.remove('active');
+    });
+    thumbnail.classList.add('active');
+}
+</script>
+
 </body>
 </html>
