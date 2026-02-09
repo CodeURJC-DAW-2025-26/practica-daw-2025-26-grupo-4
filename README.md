@@ -100,9 +100,37 @@ Diagrama que muestra cómo se navega entre las diferentes páginas de la aplicac
 #### **1. Página Principal / Home**
 ![Página Principal](images/home-page.png)
 
-> [Descripción breve: Ej: "Página de inicio que muestra los productos destacados, categorías principales y un banner promocional. Incluye barra de navegación y acceso a registro/login para usuarios no autenticados."]
+> Página de inicio que muestra el catálogo de productos con filtrado por categorías (Cuidado, Plantas, Suelo, Herramientas, Inspiración, Guardados). Incluye barra lateral de navegación, barra de búsqueda superior y acceso al carrito y perfil de usuario. Los productos se muestran en tarjetas con imagen, nombre, precio y opción de añadir al carrito.
 
-#### **AQUÍ AÑADIR EL RESTO DE PÁGINAS**
+#### **2. Página de Inicio de Sesión / Login**
+![Página de Login](images/login-page.png)
+
+> Página de autenticación que permite a los usuarios iniciar sesión o registrarse en la aplicación. Incluye formularios con validación para email y contraseña, opción de suscripción a novedades, y una interfaz con pestañas deslizantes para alternar entre inicio de sesión y registro.
+
+#### **3. Página de Detalle de Producto**
+![Página de Producto](images/product-page.png)
+
+> Página que muestra información detallada de un producto específico: galería de imágenes con navegación por puntos, información del producto (nombre, descripción, etiquetas, precio con descuento), selector de cantidad, botones de compra y añadir al carrito. Incluye sección de productos recomendados y valoraciones de usuarios con gráficos de barras y comentarios.
+
+#### **4. Página del Carrito**
+![Página de Carrito](images/cart-page.png)
+
+> Página que muestra el carrito de compra con los productos seleccionados. Cada producto incluye imagen, nombre, tamaño, precio, controles de cantidad y opción de eliminar. Panel lateral con resumen del pedido (subtotal, envío, total) y botón para tramitar el pedido.
+
+#### **5. Página de Pedidos**
+![Página de Pedidos](images/order-page.png)
+
+> Página que muestra el historial de pedidos del usuario. Cada pedido incluye número de orden, fecha, estado (entregado, en proceso, etc.), precio total, cantidad de productos y botón expandible para ver detalles. Los detalles incluyen imágenes de productos, cantidades, precios individuales, resumen con subtotal y envío, y opciones para volver a comprar o dejar opinión.
+
+#### **6. Página de Perfil de Usuario**
+![Página de Usuario](images/user-page.png)
+
+> Página de gestión del perfil del usuario que permite editar datos personales (nombre de usuario, correo, contraseña, dirección de envío) y configurar preferencias de cuenta (notificaciones por email, modo oscuro, recibir ofertas). Incluye botones para guardar cambios o eliminar cuenta.
+
+#### **7. Página de Administrador**
+![Página de Administrador](images/admin-page.png)
+
+> Panel de administración que permite gestionar productos (añadir, modificar, eliminar), visualizar estadísticas de ventas mediante gráficos, gestionar usuarios y moderar contenido. Incluye barra de búsqueda para productos y acceso rápido a todas las funcionalidades administrativas.
 
 ---
 
