@@ -71,6 +71,22 @@ body::before {
     align-items: center;
 }
 
+.brand-logo {
+    display: block;
+    object-fit: contain;
+}
+
+.brand-logo--sm {
+    width: 34px;
+    height: 34px;
+}
+
+.brand-name {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-left: 10px;
+}
+
 .back-link {
     text-decoration: none;
     color: white;

@@ -105,6 +105,22 @@ a {
     justify-content: center;
 }
 
+.brand-logo {
+    display: block;
+    object-fit: contain;
+}
+
+.brand-logo--sm {
+    width: 34px;
+    height: 34px;
+}
+
+.brand-name {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-left: 10px;
+}
+
 .user-actions {
     justify-content: flex-end;
     gap: 25px;

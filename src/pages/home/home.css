@@ -35,13 +35,20 @@ a{
 .logo {
     height: 40px;
     width: 40px;
-    background-color: #a80000; /* Red placeholder */
+    background-color: #fff;
     border-radius: 10px;
     margin-bottom: 20px;
     padding: 5px;
     display: flex; /* Center inner img */
     justify-content: center;
     align-items: center;
+}
+
+.logo .brand-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
 }
 
 .menu-title {
