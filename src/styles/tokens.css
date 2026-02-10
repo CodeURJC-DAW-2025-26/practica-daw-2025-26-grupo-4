@@ -1,0 +1,89 @@
+:root {
+    /* Colors */
+    --color-primary-50: #e8f5e9;
+    --color-primary-100: #c8e6c9;
+    --color-primary-200: #a5d6a7;
+    --color-primary-300: #81c784;
+    --color-primary-400: #66bb6a;
+    --color-primary-500: #4caf50;
+    --color-primary-600: #43a047;
+    --color-primary-700: #388e3c;
+    --color-primary-800: #2e7d32;
+    --color-primary-900: #1b5e20;
+
+    --color-secondary-50: #fff4e6;
+    --color-secondary-100: #ffe8cc;
+    --color-secondary-200: #ffd19a;
+    --color-secondary-300: #ffba66;
+    --color-secondary-400: #ffa333;
+    --color-secondary-500: #ff8c00;
+    --color-secondary-600: #cc7000;
+    --color-secondary-700: #995400;
+    --color-secondary-800: #663800;
+    --color-secondary-900: #331c00;
+
+    --color-success: #1f9d55;
+    --color-warning: #f5a623;
+    --color-danger: #e53935;
+    --color-info: #2b90d9;
+
+    --color-bg: #f7f7fb;
+    --color-surface: #ffffff;
+    --color-text: #1e1e2f;
+    --color-muted: #5e6472;
+    --color-border: #e6e8ee;
+
+    /* Typography */
+    --font-family-base: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --font-family-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+
+    --line-height-tight: 1.2;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.7;
+
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Spacing */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --space-7: 3rem;
+    --space-8: 4rem;
+
+    /* Radius */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-pill: 999px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.08);
+    --shadow-md: 0 4px 12px rgba(16, 24, 40, 0.12);
+    --shadow-lg: 0 10px 24px rgba(16, 24, 40, 0.16);
+
+    /* Motion */
+    --transition-fast: 120ms ease;
+    --transition-normal: 200ms ease;
+}
+
+:root[data-theme="dark"] {
+    --color-bg: #0f1117;
+    --color-surface: #151926;
+    --color-text: #f1f5ff;
+    --color-muted: #9aa3b2;
+    --color-border: #262b3a;
+}
