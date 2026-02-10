@@ -17,15 +17,15 @@
 }
 
 .logo {
-    height: 40px;
-    width: 40px;
-    background-color: var(--color-surface);
+    height: 100px;
+    width: 100px;
     border-radius: var(--radius-sm);
-    margin-bottom: var(--space-5);
+    margin-bottom: var(--space-1);
     padding: var(--space-2);
     display: flex; /* Center inner img */
     justify-content: center;
     align-items: center;
+    margin: 0 auto var(--space-1);
 }
 
 .logo .brand-logo {
