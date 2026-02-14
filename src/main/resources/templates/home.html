@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda - PlantaZon</title>
-    <link rel="stylesheet" href="../static/styles/tokens.css">
-    <link rel="stylesheet" href="../static/styles/components.css">
-    <link rel="stylesheet" href="../static/styles/home.css">
+    <link rel="stylesheet" href="/styles/tokens.css">
+    <link rel="stylesheet" href="/styles/components.css">
+    <link rel="stylesheet" href="/styles/home.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -28,12 +28,12 @@
                 </div>
                 <div class="user-actions">
                     <div class="cart-icon-container">
-                        <a href="cart.html">
+                        <a href="/cart">
                             <i class="fa-solid fa-cart-shopping"></i>
                             <span class="cart-badge">1</span>
                         </a>
                     </div>
-                    <a href="user.html">
+                    <a href="/user">
                         <i class="fa-regular fa-circle-user profile-icon"></i>
                     </a>
                 </div>
@@ -87,22 +87,22 @@
                     <p class="page-subtitle">Nuestra colección de plantas</p>
 
                     <div class="product-grid">
-                    <!-- Product 1 -->
+                    {{#products}}
                     <div class="product-card">
-                        <a href="product.html">
+                        <a href="product/{{id}}">
                             <div class="image-container">
-                                <img src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=600&auto=format&fit=crop"
-                                    alt="Monstera">
+                                <img src="{{mainImage}}"
+                                    alt="{{name}}">
                             </div>
                             <div class="card-details">
-                                <h3>Monstera Deliciosa</h3>
-                                <p class="description">Planta de jardín perfecta para climas cálidos</p>
+                                <h3>{{name}}</h3>
+                                <p class="description">{{description}}</p>
                                 <div class="tags">
-                                    <span class="tag">Cálido</span>
-                                    <span class="tag">Verde</span>
-                                    <span class="tag">Decorativa</span>
+                                    {{#tags}}
+                                    <span class="tag">{{.}}</span>
+                                    {{/tags}}
                                 </div>
-                                <div class="price">€35.00</div>
+                                <div class="price">€{{price}}</div>
                                 <div class="card-actions">
                                     <button class="btn btn--primary btn--sm btn--grow">
                                         <i class="fa-solid fa-cart-plus"></i> Añadir al carrito
@@ -114,62 +114,11 @@
                             </div>
                         </a>
                     </div>
+                    {{/products}}
 
-                    <!-- Product 2 -->
-                    <div class="product-card">
-                        <a href="product.html">
-                            <div class="image-container">
-                                <img src="https://images.unsplash.com/photo-1533038590840-1cde6e668a91?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?q=80&w=600&auto=format&fit=crop"
-                                    alt="Snake Plant">
-                            </div>
-                            <div class="card-details">
-                                <h3>Planta aletarious</h3>
-                                <p class="description">Una planta 100% real</p>
-                                <div class="tags">
-                                    <span class="tag">Cálido</span>
-                                    <span class="tag">Verde</span>
-                                    <span class="tag">Decorativa</span>
-                                </div>
-                                <div class="price">€45.00</div>
-                                <div class="card-actions">
-                                    <button class="btn btn--primary btn--sm btn--grow">
-                                        <i class="fa-solid fa-cart-plus"></i> Añadir al carrito
-                                    </button>
-                                    <button class="btn btn--ghost btn--sm btn--icon btn--fav">
-                                        <i class="fa-regular fa-heart"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-
-                    <!-- Product 3 -->
-                    <div class="product-card">
-                        <a href="product.html">
-                            <div class="image-container">
-                                <img src="https://images.unsplash.com/photo-1565011523534-747a8601f10a?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?q=80&w=600&auto=format&fit=crop"
-                                    alt="Lavender">
-                            </div>
-                            <div class="card-details">
-                                <h3>Lavanda</h3>
-                                <p class="description">Planta de jardín perfecta para climas cálidos</p>
-                                <div class="tags">
-                                    <span class="tag">Morado</span>
-                                    <span class="tag">Naturaleza</span>
-                                    <span class="tag">Decorativa</span>
-                                </div>
-                                <div class="price">€20.00</div>
-                                <div class="card-actions">
-                                    <button class="btn btn--primary btn--sm btn--grow">
-                                        <i class="fa-solid fa-cart-plus"></i> Añadir al carrito
-                                    </button>
-                                    <button class="btn btn--ghost btn--sm btn--icon btn--fav">
-                                        <i class="fa-regular fa-heart"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                    {{^products}}
+                        <p>No hay productos disponibles.</p>
+                    {{/products}}
                     </div>
                 </div>
             </main>

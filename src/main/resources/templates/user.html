@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Perfil - PlantaZon</title>
-    <link rel="stylesheet" href="../static/styles/user.css">
+    <link rel="stylesheet" href="/styles/user.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -16,7 +16,7 @@
             <!-- Header -->
             <header class="top-bar">
                 <div class="header-left">
-                    <a href="home.html" class="back-link">
+                    <a href="/" class="back-link">
                         <i class="fa-solid fa-arrow-left"></i> Volver a la tienda
                     </a>
                 </div>
@@ -27,7 +27,7 @@
                 </div>
 
                 <div class="user-actions">
-                    <a href="cart.html" class="cart-icon-container">
+                    <a href="cart" class="cart-icon-container">
                         <i class="fa-solid fa-cart-shopping"></i>
                         <span class="badge">2</span>
                     </a>
@@ -39,7 +39,7 @@
 
             <!-- User Content -->
             <div class="content-body">
-                <h1 class="greeting-title">¡Hola Usuario!</h1>
+                <h1 class="greeting-title">¡Hola {{userName}}!</h1>
 
                 <!-- Account Data Section -->
                 <section class="settings-card">
