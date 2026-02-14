@@ -1,31 +1,58 @@
 .app-container {
     display: flex;
+    flex-direction: column;
     min-height: 100vh;
-    padding: var(--space-5);
+    padding: var(--space-3) var(--space-5) var(--space-5);
+    gap: var(--space-2);
+}
+
+.content-row {
+    display: flex;
     gap: var(--space-6);
+}
+
+.sidebar-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
 }
 
 /* Sidebar */
 .sidebar {
     width: 250px;
-    background-color: var(--color-primary-100);
-    padding: var(--space-6) var(--space-5);
+    background-color: var(--color-primary-50);
+    padding: var(--space-1) var(--space-5) var(--space-6);
     border-radius: var(--radius-lg);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
+    align-self: flex-start;
+    height: fit-content;
 }
 
 .logo {
     height: 100px;
     width: 100px;
     border-radius: var(--radius-sm);
-    margin-bottom: var(--space-1);
+    margin-bottom: var(--space-5);
     padding: var(--space-2);
     display: flex; /* Center inner img */
     justify-content: center;
     align-items: center;
-    margin: 0 auto var(--space-1);
+    margin: 0 auto var(--space-5);
+}
+
+.logo--sidebar {
+    margin: 0;
+}
+
+.logo--header {
+    height: 96px;
+    width: 96px;
+    margin: 0;
+    padding: var(--space-1);
+    flex-shrink: 0;
 }
 
 .logo .brand-logo {
@@ -39,7 +66,7 @@
     font-size: var(--font-size-lg);
     margin-bottom: var(--space-4);
     padding-left: var(--space-3);
-    color: var(--color-text);
+    color: var(--color-primary-800);
 }
 
 .menu {
@@ -54,10 +81,10 @@
     gap: var(--space-4);
     padding: var(--space-4) var(--space-5);
     text-decoration: none;
-    color: var(--color-text);
+    color: var(--color-primary-900);
     font-weight: var(--font-weight-medium);
     border-radius: var(--radius-md);
-    background-color: var(--color-surface);
+    background-color: var(--color-primary-100);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     font-size: var(--font-size-sm);
@@ -70,14 +97,14 @@
 }
 
 .menu-item:hover {
-    background-color: color-mix(in srgb, var(--color-primary-500) 8%, transparent);
+    background-color: var(--color-primary-200);
     transform: translateX(5px);
 }
 
 /* Radio button Checked state corresponding sibling style logic */
 /* Since input is BEFORE label, we can check adjacent sibling */
 input[type="radio"]:checked + .menu-item {
-    background-color: var(--color-primary-800);
+    background-color: var(--color-primary-700);
     color: #fff;
     transform: translateX(10px);
     box-shadow: var(--shadow-md);
@@ -98,22 +125,38 @@ input[type="radio"]:checked + .menu-item i {
 
 /* Header */
 .top-bar {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 250px 1fr;
     align-items: center;
-    margin-bottom: 20px;
-    padding-top: 5px;
+    margin-bottom: var(--space-1);
+    padding-top: 0;
+    border-radius: var(--radius-lg);
+    padding: var(--space-3) var(--space-5);
+    gap: var(--space-4);
+}
+
+.top-bar__left {
+    display: flex;
+    justify-content: flex-start;
+    padding-left: calc(var(--space-5) + var(--space-3));
+}
+
+.top-bar__right {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
 }
 
 .search-bar {
     display: flex;
     align-items: center;
-    background-color: var(--color-primary-100); 
+    background-color: var(--color-primary-100);
     padding: var(--space-3) var(--space-6);
     border-radius: var(--radius-md);
-    width: 65%;
+    flex: 1;
     gap: var(--space-4);
-    color: var(--color-muted);
+    color: var(--color-primary-800);
 }
 
 .search-bar input {
@@ -126,7 +169,7 @@ input[type="radio"]:checked + .menu-item i {
 }
 
 .search-bar input::placeholder {
-    color: var(--color-muted);
+    color: var(--color-primary-700);
 }
 
 .user-actions {
@@ -145,7 +188,7 @@ input[type="radio"]:checked + .menu-item i {
     position: absolute;
     top: -5px;
     right: -8px;
-    background-color: var(--color-danger);
+    background-color: var(--color-primary-600);
     color: #fff;
     font-size: 0.75rem;
     font-weight: bold;
@@ -160,6 +203,7 @@ input[type="radio"]:checked + .menu-item i {
 .profile-icon {
     cursor: pointer;
     font-size: 1.8rem;
+    color: var(--color-primary-700);
 }
 
 /* Content */
@@ -167,6 +211,7 @@ input[type="radio"]:checked + .menu-item i {
     font-size: var(--font-size-3xl);
     margin-bottom: 5px;
     font-weight: var(--font-weight-medium);
+    color: var(--color-primary-900);
 }
 
 .page-subtitle {
@@ -197,7 +242,7 @@ input[type="radio"]:checked + .menu-item i {
 
 /* Product Card */
 .product-card {
-    border: 2px solid var(--color-primary-100); /* Fixed width to prevent jumping */
+    border: 2px solid var(--color-border); /* Fixed width to prevent jumping */
     border-radius: var(--radius-lg);
     overflow: hidden;
     background: var(--color-surface);
@@ -216,7 +261,7 @@ input[type="radio"]:checked + .menu-item i {
 .product-card:nth-child(4) { animation-delay: 0.4s; }
 
 .product-card:hover {
-    border-color: var(--color-primary-600); /* Only change color, not width */
+    border-color: var(--color-primary-400); /* Only change color, not width */
     box-shadow: var(--shadow-lg);
     transform: translateY(-10px);
 }
@@ -244,7 +289,7 @@ input[type="radio"]:checked + .menu-item i {
 
 .card-details {
     padding: var(--space-5);
-    background-color: var(--color-primary-50); /* Very light green bg */
+    background-color: var(--color-primary-50);
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -271,8 +316,8 @@ input[type="radio"]:checked + .menu-item i {
 }
 
 .tag {
-    background-color: var(--color-primary-200); /* darker grey-green from image */
-    color: var(--color-text);
+    background-color: var(--color-secondary-200);
+    color: var(--color-secondary-800);
     font-size: 0.75rem;
     padding: var(--space-1) var(--space-4);
     border-radius: var(--radius-pill);
@@ -283,7 +328,7 @@ input[type="radio"]:checked + .menu-item i {
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
     margin-bottom: var(--space-4);
-    color: var(--color-text);
+    color: var(--color-primary-800);
 }
 
 .card-actions {
@@ -297,14 +342,24 @@ input[type="radio"]:checked + .menu-item i {
 }
 
 .btn--fav {
-    color: var(--color-primary-600);
+    color: var(--color-primary-700);
     border-color: var(--color-primary-600);
 }
 
 .btn--fav:hover {
-    background-color: var(--color-primary-500);
+    background-color: var(--color-primary-800);
     color: #fff;
-    border-color: var(--color-primary-500);
+    border-color: var(--color-primary-800);
+}
+
+.btn--primary {
+    background-color: var(--color-primary-700);
+    color: #fff;
+    border: none;
+}
+
+.btn--primary:hover {
+    background-color: var(--color-primary-800);
 }
 
 @keyframes fadeInUp {

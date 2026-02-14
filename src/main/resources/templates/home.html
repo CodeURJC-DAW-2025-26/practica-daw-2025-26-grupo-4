@@ -5,23 +5,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda - PlantaZon</title>
-    <link rel="stylesheet" href="../../styles/tokens.css">
-    <link rel="stylesheet" href="../../styles/components.css">
-    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="../static/styles/tokens.css">
+    <link rel="stylesheet" href="../static/styles/components.css">
+    <link rel="stylesheet" href="../static/styles/home.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
     <div class="app-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="logo">
-                <img class="brand-logo" src="../../assets/logoDAW.png" alt="Logo PlantaZon">
+        <!-- Header -->
+        <header class="top-bar">
+            <div class="top-bar__left">
+                <div class="logo logo--header">
+                    <img class="brand-logo" src="../static/images/logoDAW.png" alt="Logo PlantaZon">
+                </div>
             </div>
+            <div class="top-bar__right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Buscar productos">
+                </div>
+                <div class="user-actions">
+                    <div class="cart-icon-container">
+                        <a href="cart.html">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span class="cart-badge">1</span>
+                        </a>
+                    </div>
+                    <a href="user.html">
+                        <i class="fa-regular fa-circle-user profile-icon"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
 
-            <h3 class="menu-title">Categorías</h3>
-            <nav class="menu">
+        <div class="content-row">
+            <!-- Sidebar -->
+            <div class="sidebar-column">
+                <aside class="sidebar">
+                    <h3 class="menu-title">Categorías</h3>
+                    <nav class="menu">
                 <input type="radio" name="category" id="cat-care" hidden>
                 <label for="cat-care" class="menu-item">
                     <i class="fa-solid fa-droplet"></i> Cuidado
@@ -51,39 +75,21 @@
                 <label for="cat-saved" class="menu-item">
                     <i class="fa-regular fa-bookmark"></i> Guardados
                 </label>
-            </nav>
-        </aside>
+                    </nav>
+                </aside>
+            </div>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Header -->
-            <header class="top-bar">
-                <div class="search-bar">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Buscar productos">
-                </div>
-                <div class="user-actions">
-                    <div class="cart-icon-container">
-                        <a href="../cart/cart.html">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                            <span class="cart-badge">1</span>
-                        </a>
-                    </div>
-                    <a href="../user/user.html">
-                        <i class="fa-regular fa-circle-user profile-icon"></i>
-                    </a>
-                </div>
-            </header>
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Product Section -->
+                <div class="content-body">
+                    <h1 class="page-title">Plantas</h1>
+                    <p class="page-subtitle">Nuestra colección de plantas</p>
 
-            <!-- Product Section -->
-            <div class="content-body">
-                <h1 class="page-title">Plantas</h1>
-                <p class="page-subtitle">Nuestra colección de plantas</p>
-
-                <div class="product-grid">
+                    <div class="product-grid">
                     <!-- Product 1 -->
                     <div class="product-card">
-                        <a href="../product/product.html">
+                        <a href="product.html">
                             <div class="image-container">
                                 <img src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=600&auto=format&fit=crop"
                                     alt="Monstera">
@@ -111,7 +117,7 @@
 
                     <!-- Product 2 -->
                     <div class="product-card">
-                        <a href="../product/product.html">
+                        <a href="product.html">
                             <div class="image-container">
                                 <img src="https://images.unsplash.com/photo-1533038590840-1cde6e668a91?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?q=80&w=600&auto=format&fit=crop"
                                     alt="Snake Plant">
@@ -139,7 +145,7 @@
 
                     <!-- Product 3 -->
                     <div class="product-card">
-                        <a href="../product/product.html">
+                        <a href="product.html">
                             <div class="image-container">
                                 <img src="https://images.unsplash.com/photo-1565011523534-747a8601f10a?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?q=80&w=600&auto=format&fit=crop"
                                     alt="Lavender">
@@ -164,9 +170,10 @@
                             </div>
                         </a>
                     </div>
+                    </div>
                 </div>
-            </div>
-        </main>
+            </main>
+        </div>
     </div>
 </body>
 

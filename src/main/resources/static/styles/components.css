@@ -75,13 +75,13 @@ img {
 }
 
 .btn--primary {
-  background: var(--color-primary-500);
+  background: var(--color-primary-700);
   color: #fff;
   box-shadow: var(--shadow-sm);
 }
 
 .btn--primary:hover {
-  background: var(--color-primary-600);
+  background: var(--color-primary-900);
   box-shadow: var(--shadow-md);
 }
 
