@@ -1,4 +1,4 @@
-package es.urjc.daw04.services;
+package es.urjc.daw04.service;
 
 import java.util.List;
 
