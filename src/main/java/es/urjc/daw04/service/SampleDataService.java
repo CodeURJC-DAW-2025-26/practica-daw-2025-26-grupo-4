@@ -2,6 +2,7 @@ package es.urjc.daw04.service;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import es.urjc.daw04.model.Review;
 import org.springframework.stereotype.Service;
 
 import es.urjc.daw04.model.CartItem;
@@ -20,6 +21,9 @@ public class SampleDataService {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private ReviewService reviewService;
+
     @PostConstruct
     public void init() {
         Product p1 = new Product("Arizónica del viento", 35.55, "Planta de interior", 
@@ -30,7 +34,14 @@ public class SampleDataService {
         if (productService.findAll().isEmpty()) {
             productService.save(p1);
             productService.save(p2);
-            
+
+            reviewService.save(new Review(p1, "Agustin51", "Todo perfecto. 10 de 10.", 5));
+            reviewService.save(new Review(p1, "Eduardo", "La planta ha llegado un poco seca...", 2.5));
+
+            reviewService.save(new Review(p2, "Ampeterby7", "Ningún problema, queda perfecta para el baño.", 5));
+            reviewService.save(
+                    new Review(p2, "XxConchaxX", "Huele bastante bien, pero más fuerte de lo que esperábamos", 3.5));
+
             System.out.println("Base de datos inicializada con éxito.");
         }
         if (orderService.findAll().isEmpty()) {

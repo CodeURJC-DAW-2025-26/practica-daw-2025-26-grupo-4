@@ -464,7 +464,8 @@ a {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+    width: 100%;
 }
 
 .rating-bars span {
@@ -474,17 +475,25 @@ a {
 }
 
 .bar {
-    height: 8px;
-    background: #e0e0e0;
+    height: 12px;
+    background-color: #e0e0e0;
     border-radius: 6px;
     flex: 1;
+    overflow: hidden;
+    position: relative;
+    margin: 0;
+    padding: 0;
 }
 
-.fill-5 { background: linear-gradient(90deg, #ffc107, #ffb300); width: 90%; }
-.fill-4 { background: linear-gradient(90deg, #ffc107, #ffb300); width: 70%; }
-.fill-3 { background: linear-gradient(90deg, #ffc107, #ffb300); width: 40%; }
-.fill-2 { background: linear-gradient(90deg, #ffc107, #ffb300); width: 20%; }
-.fill-1 { background: linear-gradient(90deg, #ffc107, #ffb300); width: 10%; }
+.fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #ffc107, #ffb300);
+    border-radius: 6px; 
+    transition: width 0.6s ease;
+}
 
 .comments {
     display: grid;
