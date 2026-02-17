@@ -12,11 +12,14 @@ public class HomeController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/")
-    public String home(Model model) {
+        @GetMapping("/")
+        public String root() {
+            return "redirect:/login";
+        }
 
-        model.addAttribute("products", productService.findAll());
-
-        return "home";
+        @GetMapping("/home")
+        public String home(Model model) {
+            model.addAttribute("products", productService.findAll());
+            return "home";
+        }
     }
-}
