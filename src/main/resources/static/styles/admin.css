@@ -210,7 +210,7 @@ a {
 
 /* Admin Cards */
 .admin-card {
-    background-color: #dcebc4; /* Stronger green/beige like user profile */
+    background-color: #dcebc4; /* Unified block background */
     padding: 30px;
     border-radius: 20px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Slightly stronger shadow */
@@ -227,7 +227,7 @@ a {
 
 /* Product Management */
 .product-management {
-    background-color: #dcebc4; 
+    background-color: #dcebc4;
 }
 
 .action-buttons-container {
@@ -236,23 +236,24 @@ a {
     flex-wrap: wrap;
 }
 
-.action-btn {
-    padding: 15px 35px;
+.action-btn,
+.accept-btn,
+.search-btn,
+.manage-btn,
+.block-btn {
+    padding: 12px 22px;
     border-radius: 12px;
-    border: 1px solid #999;
-    font-size: 1rem;
+    border: none;
+    font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
-    background: #e0e0e0; /* Distinct grey background */
-    color: #333;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.action-btn:hover {
-    background-color: #d5d5d5;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+.action-btn {
+    background: #9aa888;
+    color: #fff;
 }
 
 .primary-action {
@@ -261,7 +262,7 @@ a {
 
 /* Statistics Section */
 .statistics-section {
-    background-color: #e8f5e9;
+    background-color: #dcebc4;
 }
 
 .stats-subsection {
@@ -412,23 +413,13 @@ a {
 }
 
 .accept-btn {
-    padding: 10px 25px;
     background-color: #9aa888;
     color: white;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background 0.2s;
-}
-
-.accept-btn:hover {
-    background-color: #7e8d6f;
 }
 
 /* User Management */
 .user-management {
-    background-color: #dcedc8;
+    background-color: #dcebc4;
 }
 
 .user-search-container {
@@ -454,12 +445,8 @@ a {
 }
 
 .search-btn {
-    padding: 10px 20px;
-    background-color: #90a4ae;
+    background-color: #9aa888;
     color: white;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
 }
 
 /* User Result Card */
@@ -506,25 +493,21 @@ a {
 .manage-btn {
     background-color: #ffab91; /* Light Orange */
     color: #bf360c;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
 }
 
 .block-btn {
     background-color: #ef5350; /* Red */
     color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
 }
 
-.manage-btn:hover, .block-btn:hover {
-    filter: brightness(0.9);
+.action-btn:hover,
+.accept-btn:hover,
+.search-btn:hover,
+.manage-btn:hover,
+.block-btn:hover {
+    filter: brightness(0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 /* Responsive */
