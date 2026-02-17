@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,152 +8,187 @@
 
     <link rel="stylesheet" href="/styles/product.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
-<div class="app-container">
+    <div class="app-container">
 
 
-    <!-- Main -->
-    <main class="main-content">
+        <!-- Main -->
+        <main class="main-content">
 
-        <!-- Top bar -->
-        <header class="top-bar">
-            <div class="header-left">
-                <a href="/" class="back-link">
-                    <i class="fa-solid fa-arrow-left"></i> Volver a la tienda
-                </a>
-            </div>
-            
-            <div class="logo-center">
-                <img class="brand-logo brand-logo--sm" src="/images/logoDAW.png" alt="Logo PlantaZon">
-                <span class="brand-name">PlantaZon</span>
-            </div>
-
-            <div class="user-actions">
-                <div class="cart-icon-container">
-                    <a href="cart">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                        <span class="badge">1</span>
+            <!-- Top bar -->
+            <header class="top-bar">
+                <div class="header-left">
+                    <a href="/" class="back-link">
+                        <i class="fa-solid fa-arrow-left"></i> Volver a la tienda
                     </a>
                 </div>
-                <a href="user">
-                    <i class="fa-regular fa-circle-user profile-icon"></i>
-                </a>
-            </div>
-        </header>
 
-        <!-- Product detail -->
-        <div class="product-layout">
-
-            <!-- Gallery -->
-            <section class="gallery">
-                <div class="main-image">
-                    <img id="mainProductImage" src="{{product.mainImage}}" alt="Imagen principal del producto">
+                <div class="logo-center">
+                    <img class="brand-logo brand-logo--sm" src="/images/logoDAW.png" alt="Logo PlantaZon">
+                    <span class="brand-name">PlantaZon</span>
                 </div>
-                <div class="thumbnails">
-                    {{#product.images}}
-                    <div class="thumbnail" onclick="changeImage(this, '{{.}}')">
-                        <img src="{{.}}" alt="Miniatura">
+
+                <div class="user-actions">
+                    <div class="cart-icon-container">
+                        <a href="/cart">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span class="badge">1</span>
+                        </a>
                     </div>
-                    {{/product.images}}
+                    <a href="/user">
+                        <i class="fa-regular fa-circle-user profile-icon"></i>
+                    </a>
                 </div>
-            </section>
+            </header>
 
-            <!-- Info -->
-            <section class="product-info">
-                <h1>{{product.name}}</h1>
-                <p class="short-desc">{{product.description}}</p>
+            <!-- Product detail -->
+            <div class="product-layout">
 
-                <div class="tags">
-                    {{#product.tags}}
+                <!-- Gallery -->
+                <section class="gallery">
+                    <div class="main-image">
+                        <img id="mainProductImage" src="{{product.mainImage}}" alt="Imagen principal del producto">
+                    </div>
+                    <div class="thumbnails">
+                        {{#product.images}}
+                        <div class="thumbnail" onclick="changeImage(this, '{{.}}')">
+                            <img src="{{.}}" alt="Miniatura">
+                        </div>
+                        {{/product.images}}
+                    </div>
+                </section>
+
+                <!-- Info -->
+                <section class="product-info">
+                    <h1>{{product.name}}</h1>
+                    <p class="short-desc">{{product.description}}</p>
+
+                    <div class="tags">
+                        {{#product.tags}}
                         <span class="tag">{{.}}</span>
-                    {{/product.tags}}
+                        {{/product.tags}}
+                    </div>
+
+                    <div class="price-row">
+                        <span class="price">{{product.price}}</span>
+                    </div>
+
+                    <div class="quantity">
+                        <button>-</button>
+                        <span>2</span>
+                        <button>+</button>
+                    </div>
+
+                    <button class="btn-buy">Comprar ahora</button>
+                    <button class="btn-cart">Añadir al carrito</button>
+
+                    <div class="recommend">
+                        <h3>Completa tu pedido con</h3>
+                        <a href="/product" class="recommend-card">
+                            <img
+                                src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?q=80&w=400&auto=format&fit=crop">
+                            <div>
+                                <strong>Petunia</strong>
+                                <div class="tags small">
+                                    <span class="tag">Etiqueta 1</span>
+                                    <span class="tag">Etiqueta 1</span>
+                                </div>
+                                <span class="rec-price">35€/u</span>
+                            </div>
+                            <div class="rec-actions">
+                                <i class="fa-solid fa-cart-plus"></i>
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                        </a>
+
+                    </div>
+                </section>
+            </div>
+
+            <!-- Reviews -->
+            <section class="reviews">
+
+                <div class="rating-summary">
+                    <span class="score">{{product.getAverageRating}} / 5</span>
+                    <div>
+                        <div class="stars">
+                            {{#product.averageStars}}
+                            <i class="{{.}}"></i>
+                            {{/product.averageStars}}
+                        </div>
+                    </div>
+                    <small>{{product.reviews.size}} valoraciones</small>
                 </div>
 
-                <div class="price-row">
-                    <span class="price">{{product.price}}</span>
+                <div class="rating-bars">
+                    <div>
+                        <span>5 ★</span>
+                        <div class="bar">
+                            <div class="fill" style="width: {{product.percent5}}%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <span>4 ★</span>
+                        <div class="bar">
+                            <div class="fill" style="width: {{product.percent4}}%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <span>3 ★</span>
+                        <div class="bar">
+                            <div class="fill" style="width: {{product.percent3}}%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <span>2 ★</span>
+                        <div class="bar">
+                            <div class="fill" style="width: {{product.percent2}}%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <span>1 ★</span>
+                        <div class="bar">
+                            <div class="fill" style="width: {{product.percent1}}%"></div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="quantity">
-                    <button>-</button>
-                    <span>2</span>
-                    <button>+</button>
+                <div class="comments">
+                    {{#product.reviews}}
+                    <div class="comment">
+                        <strong>{{author}}</strong>
+                        <div class="comment-stars">
+                            {{#stars}}
+                            <i class="{{.}}"></i>
+                            {{/stars}}
+                        </div>
+                        <p>{{content}}</p>
+                    </div>
+                    {{/product.reviews}}
                 </div>
 
-                <button class="btn-buy">Comprar ahora</button>
-                <button class="btn-cart">Añadir al carrito</button>
-
-                <div class="recommend">
-                    <h3>Completa tu pedido con</h3>
-                    <a href="product" class="recommend-card">
-    <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?q=80&w=400&auto=format&fit=crop">
-    <div>
-        <strong>Petunia</strong>
-        <div class="tags small">
-            <span class="tag">Etiqueta 1</span>
-            <span class="tag">Etiqueta 1</span>
-        </div>
-        <span class="rec-price">35€/u</span>
-    </div>
-    <div class="rec-actions">
-        <i class="fa-solid fa-cart-plus"></i>
-        <i class="fa-regular fa-heart"></i>
-    </div>
-</a>
-
-                </div>
             </section>
-        </div>
 
-        <!-- Reviews -->
-        <section class="reviews">
+        </main>
+    </div>
 
-            <div class="rating-summary">
-                <span class="score">4.3/5</span>
-                <div class="stars">★★★★☆</div>
-                <small>78 valoraciones</small>
-            </div>
+    <script>
+        function changeImage(thumbnail, imageUrl) {
+            // Cambiar la imagen principal
+            document.getElementById('mainProductImage').src = imageUrl;
 
-            <div class="rating-bars">
-                <div><span>5 ★</span><div class="bar fill-5"></div></div>
-                <div><span>4 ★</span><div class="bar fill-4"></div></div>
-                <div><span>3 ★</span><div class="bar fill-3"></div></div>
-                <div><span>2 ★</span><div class="bar fill-2"></div></div>
-                <div><span>1 ★</span><div class="bar fill-1"></div></div>
-            </div>
-
-            <div class="comments">
-                <div class="comment">
-                    <strong>Javier Garzás Parra</strong>
-                    <span class="comment-stars">★★★★★</span>
-                    <p>Genera mucha serenidad en el ambiente a la hora de realizar un stand-up meeting.</p>
-                </div>
-                <div class="comment">
-                    <strong>Javier Garzás Parra</strong>
-                    <span class="comment-stars">★★★★★</span>
-                    <p>Genera mucha serenidad en el ambiente a la hora de realizar un stand-up meeting.</p>
-                </div>
-            </div>
-
-        </section>
-
-    </main>
-</div>
-
-<script>
-function changeImage(thumbnail, imageUrl) {
-    // Cambiar la imagen principal
-    document.getElementById('mainProductImage').src = imageUrl;
-    
-    // Actualizar el estado activo de los thumbnails
-    document.querySelectorAll('.thumbnail').forEach(thumb => {
-        thumb.classList.remove('active');
-    });
-    thumbnail.classList.add('active');
-}
-</script>
+            // Actualizar el estado activo de los thumbnails
+            document.querySelectorAll('.thumbnail').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            thumbnail.classList.add('active');
+        }
+    </script>
 
 </body>
+
 </html>
