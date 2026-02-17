@@ -88,16 +88,17 @@
 
                     <div class="recommend">
                         <h3>Completa tu pedido con</h3>
-                        <a href="/product" class="recommend-card">
+                        <a href="/product/{{recommendedProduct.id}}" class="recommend-card">
                             <img
-                                src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?q=80&w=400&auto=format&fit=crop">
+                                src="{{recommendedProduct.mainImage}}">
                             <div>
-                                <strong>Petunia</strong>
+                                <strong>{{recommendedProduct.name}}</strong>
                                 <div class="tags small">
-                                    <span class="tag">Etiqueta 1</span>
-                                    <span class="tag">Etiqueta 1</span>
+                                    {{#recommendedProduct.tags}}
+                                    <span class="tag">{{.}}</span>
+                                    {{/recommendedProduct.tags}}
                                 </div>
-                                <span class="rec-price">35€/u</span>
+                                <span class="rec-price">{{recommendedProduct.price}}€/u</span>
                             </div>
                             <div class="rec-actions">
                                 <i class="fa-solid fa-cart-plus"></i>
