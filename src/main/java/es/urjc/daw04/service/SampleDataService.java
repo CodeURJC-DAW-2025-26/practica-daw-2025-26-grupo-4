@@ -45,7 +45,13 @@ public class SampleDataService {
             System.out.println("Base de datos inicializada con éxito.");
         }
         if (orderService.findAll().isEmpty()) {
-            orderService.save(new Order(new ArrayList<CartItem>(List.of(new CartItem(p1, 2), new CartItem(p2, 1)))));
+            List<Product> products = productService.findAll();
+            if (products.size() >= 2) {
+                Product first = products.get(0);
+                Product second = products.get(1);
+                orderService.save(new Order(
+                        new ArrayList<CartItem>(List.of(new CartItem(first, 2), new CartItem(second, 1)))));
+            }
         }
     }
 }
