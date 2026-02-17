@@ -24,6 +24,9 @@ public class Product {
     @ElementCollection
     private List<String> images;
 
+    @ManyToOne
+    private Category category;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
 
@@ -159,5 +162,13 @@ public class Product {
             return images.get(0);
         }
         return "default-plant.jpg";
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

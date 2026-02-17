@@ -6,6 +6,7 @@ import es.urjc.daw04.model.Review;
 import org.springframework.stereotype.Service;
 
 import es.urjc.daw04.model.CartItem;
+import es.urjc.daw04.model.Category;
 import es.urjc.daw04.model.Order;
 import es.urjc.daw04.model.Product;
 
@@ -24,12 +25,28 @@ public class SampleDataService {
     @Autowired
     private ReviewService reviewService;
 
+    @Autowired
+    private CategoryService categoryService;
+
     @PostConstruct
     public void init() {
+        Category c1 = new Category("Interior", "interior", "fa-solid fa-leaf");
+        Category c2 = new Category("Aromatica", "aromatica", "fa-solid fa-seedling");
+        if (categoryService.findAll().isEmpty()) {
+            categoryService.save(c1);
+            categoryService.save(c2);
+        }
+
+        List<Category> categories = categoryService.findAll();
+        Category category1 = categories.isEmpty() ? null : categories.get(0);
+        Category category2 = categories.size() > 1 ? categories.get(1) : category1;
+
         Product p1 = new Product("Arizónica del viento", 35.55, "Planta de interior", 
-                List.of("Verde"), List.of("https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=600&auto=format&fit=crop", "https://images.unsplash.com/photo-1545239705-1564e58b9e4a?q=80&w=600&auto=format&fit=crop"));
+            List.of("Verde"), List.of("https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=600&auto=format&fit=crop", "https://images.unsplash.com/photo-1545239705-1564e58b9e4a?q=80&w=600&auto=format&fit=crop"));
+        p1.setCategory(category1);
         Product p2 = new Product("Lavanda oscura", 25.00, "Aromática", 
-                List.of("Morado"), List.of("https://images.unsplash.com/photo-1459156212016-c812468e2115?q=80&w=600&auto=format&fit=crop"));
+            List.of("Morado"), List.of("https://images.unsplash.com/photo-1459156212016-c812468e2115?q=80&w=600&auto=format&fit=crop"));
+        p2.setCategory(category2);
         // Solo cargamos datos si la base de datos está vacía 
         if (productService.findAll().isEmpty()) {
             productService.save(p1);
