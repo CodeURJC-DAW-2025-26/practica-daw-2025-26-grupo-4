@@ -49,7 +49,7 @@
                     </div>
 
                     <div class="price-row">
-                        <span class="price">{{product.price}}</span>
+                        <span class="price">€{{product.formattedPrice}}</span>
                     </div>
 
                     <div class="quantity">
@@ -73,7 +73,7 @@
                                     <span class="tag">{{.}}</span>
                                     {{/recommendedProduct.tags}}
                                 </div>
-                                <span class="rec-price">{{recommendedProduct.price}}€/u</span>
+                                <span class="rec-price">€{{recommendedProduct.formattedPrice}}/u</span>
                             </div>
                             <div class="rec-actions">
                                 <i class="fa-solid fa-cart-plus"></i>

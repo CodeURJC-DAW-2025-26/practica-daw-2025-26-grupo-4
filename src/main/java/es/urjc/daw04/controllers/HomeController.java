@@ -26,18 +26,24 @@ public class HomeController {
     @GetMapping("/")
     public String home(@RequestParam(required = false) Long categoryId, Model model) {
 
-        if (categoryId == null) {
-            model.addAttribute("products", productService.findAll());
-        } else {
-            model.addAttribute("products", productService.findByCategoryId(categoryId));
+        var categories = categoryService.findAll();
+        Long selectedCategoryId = categoryId;
+
+        if (selectedCategoryId == null && !categories.isEmpty()) {
+            selectedCategoryId = categories.get(0).getId();
         }
 
-        var categories = categoryService.findAll();
+        if (selectedCategoryId == null) {
+            model.addAttribute("products", List.of());
+        } else {
+            model.addAttribute("products", productService.findByCategoryId(selectedCategoryId));
+        }
+
         List<Map<String, Object>> categoryViews = new ArrayList<>();
         String selectedCategoryName = "Plantas";
 
         for (var category : categories) {
-            boolean selected = categoryId != null && categoryId.equals(category.getId());
+            boolean selected = selectedCategoryId != null && selectedCategoryId.equals(category.getId());
             if (selected) {
                 selectedCategoryName = category.getName();
             }
