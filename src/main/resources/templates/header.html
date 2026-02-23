@@ -1,0 +1,40 @@
+<header class="top-bar">
+    <div class="top-bar__left">
+        <a href="/" class="logo-link">
+            <div class="logo logo--header">
+                <img class="brand-logo" src="/images/logoDAW.png" alt="Logo PlantaZon">
+            </div>
+        </a>
+    </div>
+    <div class="top-bar__right">
+        <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Buscar productos">
+        </div>
+        <div class="user-actions">
+            <div class="cart-icon-container">
+                <a href="/cart">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge">{{cart.count}}</span>
+                </a>
+            </div>
+            <div class="user-menu-container">
+                <button class="user-menu-btn" id="userMenuBtn">
+                    <i class="fa-regular fa-circle-user profile-icon"></i>
+                </button>
+                <div class="user-menu-dropdown" id="userMenuDropdown">
+                    <a href="/user" class="dropdown-item">
+                        <i class="fa-solid fa-user"></i> Ver perfil
+                    </a>
+                    <a href="/order" class="dropdown-item">
+                        <i class="fa-solid fa-bag-shopping"></i> Ver mis pedidos
+                    </a>
+                    <button class="dropdown-item logout-btn" id="logoutBtn">
+                        <i class="fa-solid fa-sign-out-alt"></i> Cerrar sesión
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/js/header.js"></script>
+</header>

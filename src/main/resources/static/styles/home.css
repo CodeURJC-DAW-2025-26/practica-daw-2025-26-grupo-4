@@ -98,23 +98,18 @@
 
 .menu-item:hover {
     background-color: var(--color-primary-200);
-    transform: translateX(5px);
 }
 
-/* Radio button Checked state corresponding sibling style logic */
-/* Since input is BEFORE label, we can check adjacent sibling */
-input[type="radio"]:checked + .menu-item {
+.menu-item--active {
     background-color: var(--color-primary-700);
     color: #fff;
     transform: translateX(10px);
     box-shadow: var(--shadow-md);
 }
 
-input[type="radio"]:checked + .menu-item i {
+.menu-item--active i {
     transform: scale(1.2);
 }
-
-/* Removing the old .active logic since we use :checked pattern now */
 
 /* Main Content */
 .main-content {
@@ -203,7 +198,7 @@ input[type="radio"]:checked + .menu-item i {
 .profile-icon {
     cursor: pointer;
     font-size: 1.8rem;
-    color: var(--color-primary-700);
+    color: #000;
 }
 
 /* Content */

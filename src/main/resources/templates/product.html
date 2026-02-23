@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{product.name}} - PlantaZon</title>
 
+    <link rel="stylesheet" href="/styles/tokens.css">
+    <link rel="stylesheet" href="/styles/components.css">
     <link rel="stylesheet" href="/styles/product.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Font Awesome para iconos -->
@@ -14,37 +16,10 @@
 
 <body>
     <div class="app-container">
-
+        {{>header}}
 
         <!-- Main -->
         <main class="main-content">
-
-            <!-- Top bar -->
-            <header class="top-bar">
-                <div class="header-left">
-                    <a href="/" class="back-link">
-                        <i class="fa-solid fa-arrow-left"></i> Volver a la tienda
-                    </a>
-                </div>
-
-                <div class="logo-center">
-                    <img class="brand-logo brand-logo--sm" src="/images/logoDAW.png" alt="Logo PlantaZon">
-                    <span class="brand-name">PlantaZon</span>
-                </div>
-
-                <div class="user-actions">
-                    <div class="cart-icon-container">
-                        <a href="/cart">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                            <span class="badge">{{cart.count}}</span>
-                        </a>
-                    </div>
-                    <a href="/user">
-                        <i class="fa-regular fa-circle-user profile-icon"></i>
-                    </a>
-                </div>
-            </header>
-
             <!-- Product detail -->
             <div class="product-layout">
 
@@ -74,7 +49,7 @@
                     </div>
 
                     <div class="price-row">
-                        <span class="price">{{product.price}}</span>
+                        <span class="price">€{{product.formattedPrice}}</span>
                     </div>
 
                     <div class="quantity">
@@ -101,7 +76,7 @@
                                     <span class="tag">{{.}}</span>
                                     {{/recommendedProduct.tags}}
                                 </div>
-                                <span class="rec-price">{{recommendedProduct.price}}€/u</span>
+                                <span class="rec-price">€{{recommendedProduct.formattedPrice}}/u</span>
                             </div>
                             <div class="rec-actions">
                                 <i class="fa-solid fa-cart-plus"></i>
@@ -192,6 +167,38 @@
             thumbnail.classList.add('active');
         }
     </script>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>Acerca de nosotros</h4>
+                <ul>
+                    <li><span>Quiénes somos</span></li>
+                    <li><span>Nuestra misión</span></li>
+                    <li><span>Equipo</span></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Redes sociales</h4>
+                <ul>
+                    <li><span>Instagram</span></li>
+                    <li><span>Facebook</span></li>
+                    <li><span>Twitter</span></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Información legal</h4>
+                <ul>
+                    <li><span>Aviso legal</span></li>
+                    <li><span>Política de privacidad</span></li>
+                    <li><span>Cookies</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 PlantaZon. Todos los derechos reservados.</span>
+        </div>
+    </footer>
 
 </body>
 

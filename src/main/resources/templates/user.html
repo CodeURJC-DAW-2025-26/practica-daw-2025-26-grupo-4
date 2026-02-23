@@ -4,41 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Perfil - PlantaZon</title>
+    <link rel="stylesheet" href="/styles/tokens.css">
+    <link rel="stylesheet" href="/styles/components.css">
     <link rel="stylesheet" href="/styles/user.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="app-container">
-        
+        {{>header}}
+
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Header -->
-            <header class="top-bar">
-                <div class="header-left">
-                    <a href="/" class="back-link">
-                        <i class="fa-solid fa-arrow-left"></i> Volver a la tienda
-                    </a>
-                </div>
-                
-                <div class="logo-center">
-                    <img class="brand-logo brand-logo--sm" src="../static/images/logoDAW.png" alt="Logo PlantaZon">
-                    <span class="brand-name">PlantaZon</span>
-                </div>
-
-                <div class="user-actions">
-                    <a href="cart" class="cart-icon-container">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                        {{#cart}}
-                        <span class="badge">{{count}}</span>
-                        {{/cart}}
-                    </a>
-                    <a href="#" class="active-profile">
-                        <i class="fa-solid fa-circle-user profile-icon"></i>
-                    </a>
-                </div>
-            </header>
-
             <!-- User Content -->
             <div class="content-body">
                 <h1 class="greeting-title">¡Hola {{userName}}!</h1>
@@ -157,5 +134,37 @@
             </div>
         </main>
     </div>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>Acerca de nosotros</h4>
+                <ul>
+                    <li><span>Quiénes somos</span></li>
+                    <li><span>Nuestra misión</span></li>
+                    <li><span>Equipo</span></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Redes sociales</h4>
+                <ul>
+                    <li><span>Instagram</span></li>
+                    <li><span>Facebook</span></li>
+                    <li><span>Twitter</span></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Información legal</h4>
+                <ul>
+                    <li><span>Aviso legal</span></li>
+                    <li><span>Política de privacidad</span></li>
+                    <li><span>Cookies</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 PlantaZon. Todos los derechos reservados.</span>
+        </div>
+    </footer>
 </body>
 </html>

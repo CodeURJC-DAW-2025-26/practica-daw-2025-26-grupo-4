@@ -34,110 +34,115 @@ a {
 
 .app-container {
     display: flex;
-    min-height: 100vh;
-    padding: 20px;
-    gap: 30px;
-    position: relative;
-    z-index: 1;
-}
-
-/* Main Content */
-.main-content {
-    flex: 1;
-    display: flex;
     flex-direction: column;
+    min-height: 100vh;
+    padding: var(--space-3) var(--space-5) var(--space-5);
+    gap: var(--space-2);
 }
 
-/* Header */
+/* Top bar */
 .top-bar {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    align-items: center;
+    margin-bottom: var(--space-1);
+    padding-top: 0;
+    border-radius: var(--radius-lg);
+    padding: var(--space-3) var(--space-5);
+    gap: var(--space-4);
+}
+
+.top-bar__left {
     display: flex;
+    justify-content: flex-start;
+    padding-left: calc(var(--space-5) + var(--space-3));
+}
+
+.top-bar__right {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #eee;
+    gap: var(--space-5);
 }
 
-.header-left {
-    flex: 1;
+.logo--header {
+    height: 96px;
+    width: 96px;
+    margin: 0;
+    padding: var(--space-1);
+    flex-shrink: 0;
 }
 
-.back-link {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 20px;
-    background-color: #333;
-    border-radius: 12px;
-    color: white;
-    font-weight: 500;
-    transition: all 0.2s;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    width: fit-content;
-}
-
-.back-link:hover {
-    background-color: #000;
-    transform: translateX(-3px);
-}
-
-.logo-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    font-size: 1.2rem;
-}
-
-.brand-logo {
-    display: block;
+.logo .brand-logo {
+    width: 100%;
+    height: 100%;
     object-fit: contain;
+    display: block;
 }
 
-.brand-logo--sm {
-    width: 34px;
-    height: 34px;
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-primary-100);
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-md);
+    flex: 1;
+    gap: var(--space-4);
+    color: var(--color-primary-800);
 }
 
-.brand-name {
-    font-weight: 700;
-    font-size: 1.2rem;
-    margin-left: 10px;
+.search-bar input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+}
+
+.search-bar input::placeholder {
+    color: var(--color-primary-700);
 }
 
 .user-actions {
     display: flex;
-    gap: 20px;
     align-items: center;
-    flex: 1;
-    justify-content: flex-end;
+    gap: var(--space-5);
+    font-size: 1.6rem;
 }
 
 .cart-icon-container {
     position: relative;
-    font-size: 1.6rem;
     cursor: pointer;
 }
 
-.badge {
+.cart-badge {
     position: absolute;
     top: -5px;
     right: -8px;
-    background-color: red;
-    color: white;
+    background-color: var(--color-primary-600);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: bold;
     width: 18px;
     height: 18px;
     border-radius: 50%;
     display: flex;
-    align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
-    font-weight: bold;
+    align-items: center;
 }
 
 .profile-icon {
-    font-size: 1.8rem;
     cursor: pointer;
+    font-size: 1.8rem;
+    color: #000;
+}
+
+/* Main content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Content Body */
@@ -167,6 +172,8 @@ a {
     padding: 30px;
     margin-bottom: 25px;
     position: relative;
+    display: flex;
+    flex-direction: column;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     border: 2px solid #e0e0e0;
     transition: all 0.3s ease;
@@ -362,9 +369,9 @@ a {
 
 /* Expand Button */
 .expand-btn {
-    position: absolute;
-    right: 30px;
-    bottom: 30px;
+    position: static;
+    align-self: flex-end;
+    margin-top: 12px;
     background: #f5f5f5;
     border: 2px solid #e0e0e0;
     border-radius: 50%;
@@ -385,9 +392,6 @@ a {
     border-color: #333;
 }
 
-.order-card.collapsed .expand-btn {
-    transform: rotate(-90deg);
-}
 
 /* Responsive */
 @media (max-width: 768px) {
