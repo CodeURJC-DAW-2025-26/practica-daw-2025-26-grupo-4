@@ -2,8 +2,10 @@ package es.urjc.daw04.service;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import es.urjc.daw04.model.Product;
 import es.urjc.daw04.repositories.ProductRepository;
 
@@ -19,6 +21,10 @@ public class ProductService {
 
     public Optional<Product> findById(long id) {
         return repository.findById(id);
+    }
+
+    public List<Product> findByCategoryId(long categoryId) {
+        return repository.findByCategoryId(categoryId);
     }
 
     public void save(Product product) {

@@ -14,33 +14,7 @@
 
 <body>
     <div class="app-container">
-        <!-- Header -->
-        <header class="top-bar">
-            <div class="top-bar__left">
-                <div class="logo logo--header">
-                    <img class="brand-logo" src="../static/images/logoDAW.png" alt="Logo PlantaZon">
-                </div>
-            </div>
-            <div class="top-bar__right">
-                <div class="search-bar">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Buscar productos">
-                </div>
-                <div class="user-actions">
-                    <div class="cart-icon-container">
-                        <a href="/cart">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                            {{#cart}}
-                            <span class="cart-badge">{{count}}</span>
-                            {{/cart}}
-                        </a>
-                    </div>
-                    <a href="/user">
-                        <i class="fa-regular fa-circle-user profile-icon"></i>
-                    </a>
-                </div>
-            </div>
-        </header>
+        {{>header}}
 
         <div class="content-row">
             <!-- Sidebar -->
@@ -48,35 +22,11 @@
                 <aside class="sidebar">
                     <h3 class="menu-title">Categorías</h3>
                     <nav class="menu">
-                <input type="radio" name="category" id="cat-care" hidden>
-                <label for="cat-care" class="menu-item">
-                    <i class="fa-solid fa-droplet"></i> Cuidado
-                </label>
-
-                <input type="radio" name="category" id="cat-plants" checked hidden>
-                <label for="cat-plants" class="menu-item">
-                    <i class="fa-solid fa-leaf"></i> Plantas
-                </label>
-
-                <input type="radio" name="category" id="cat-soil" hidden>
-                <label for="cat-soil" class="menu-item">
-                    <i class="fa-solid fa-mountain"></i> Suelo
-                </label>
-
-                <input type="radio" name="category" id="cat-tools" hidden>
-                <label for="cat-tools" class="menu-item">
-                    <i class="fa-solid fa-screwdriver-wrench"></i> Herramientas
-                </label>
-
-                <input type="radio" name="category" id="cat-inspo" hidden>
-                <label for="cat-inspo" class="menu-item">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Inspiración
-                </label>
-
-                <input type="radio" name="category" id="cat-saved" hidden>
-                <label for="cat-saved" class="menu-item">
-                    <i class="fa-regular fa-bookmark"></i> Guardados
-                </label>
+                {{#categories}}
+                <a href="/?categoryId={{id}}" class="menu-item{{#selected}} menu-item--active{{/selected}}" {{#selected}}aria-current="true"{{/selected}}>
+                    <i class="{{icon}}"></i> {{name}}
+                </a>
+                {{/categories}}
                     </nav>
                 </aside>
             </div>
@@ -85,7 +35,7 @@
             <main class="main-content">
                 <!-- Product Section -->
                 <div class="content-body">
-                    <h1 class="page-title">Plantas</h1>
+                    <h1 class="page-title">{{selectedCategoryName}}</h1>
                     <p class="page-subtitle">Nuestra colección de plantas</p>
 
                     <div class="product-grid">
@@ -104,7 +54,7 @@
                                     <span class="tag">{{.}}</span>
                                     {{/tags}}
                                 </div>
-                                <div class="price">€{{price}}</div>
+                                <div class="price">€{{formattedPrice}}</div>
                                 <div class="card-actions">
                                     <button class="btn btn--primary btn--sm btn--grow">
                                         <i class="fa-solid fa-cart-plus"></i> Añadir al carrito
@@ -126,6 +76,38 @@
             </main>
         </div>
     </div>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>Acerca de nosotros</h4>
+                <ul>
+                    <li><span>Quiénes somos</span></li>
+                    <li><span>Nuestra misión</span></li>
+                    <li><span>Equipo</span></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Redes sociales</h4>
+                <ul>
+                    <li><span>Instagram</span></li>
+                    <li><span>Facebook</span></li>
+                    <li><span>Twitter</span></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Información legal</h4>
+                <ul>
+                    <li><span>Aviso legal</span></li>
+                    <li><span>Política de privacidad</span></li>
+                    <li><span>Cookies</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 PlantaZon. Todos los derechos reservados.</span>
+        </div>
+    </footer>
 </body>
 
 </html>
