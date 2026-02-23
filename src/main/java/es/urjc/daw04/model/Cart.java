@@ -20,15 +20,42 @@ public class Cart {
         return items;
     }
 
+    public boolean isHasItems() {
+        return !items.isEmpty();
+    }
+
+    public int getCount() {
+        return items.stream().mapToInt(CartItem::getQuantity).sum();
+    }
+
     public double getShippingCost() {
+        if (items.isEmpty()) {
+            return 0.0;
+        }
         return shippingCost;
     }
 
-    public double getTotalPrice() {
-        double total = shippingCost;
+    public String getFormattedShippingCost() {
+        return String.format("%.2f", getShippingCost());
+    }
+
+    public double getSubTotal() {
+        double subtotal = 0;
         for (CartItem item : items) {
-            total += item.getAmount();
+            subtotal += item.getAmount();
         }
-        return total;
+        return subtotal;
+    }
+
+    public String getFormattedSubTotal() {
+        return String.format("%.2f", getSubTotal());
+    }
+
+    public double getTotalPrice() {
+        return getSubTotal() + getShippingCost();
+    }
+    
+    public String getFormattedTotalPrice() {
+        return String.format("%.2f", getTotalPrice());
     }
 }

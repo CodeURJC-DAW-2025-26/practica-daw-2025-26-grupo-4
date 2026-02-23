@@ -26,71 +26,55 @@
                 <div class="cart-layout">
                     <!-- Cart Items List -->
                     <div class="cart-items">
-
-                        <!-- Item 1 -->
+                        {{#cart.items}}
                         <div class="cart-item">
                             <div class="item-image">
-                                <img src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=200&auto=format&fit=crop"
-                                    alt="Monstera">
+                                <img src="{{product.mainImage}}" alt="{{product.name}}">
                             </div>
                             <div class="item-details">
-                                <h3>Monstera Deliciosa</h3>
-                                <p class="item-subtitle">Tamaño: Grande</p>
-                                <div class="item-price">€35.00</div>
+                                <h3>{{product.name}}</h3>
+                                <div class="item-price">€{{formattedPrice}}</div>
                             </div>
                             <div class="item-actions">
                                 <div class="quantity-control">
-                                    <button class="qty-btn"><i class="fa-solid fa-minus"></i></button>
-                                    <span class="qty-val">1</span>
-                                    <button class="qty-btn"><i class="fa-solid fa-plus"></i></button>
+                                    <form action="/cart/remove/{{product.id}}" method="post" style="display:inline;">
+                                        <button class="qty-btn" type="submit"><i class="fa-solid fa-minus"></i></button>
+                                    </form>
+                                    <span class="qty-val">{{quantity}}</span>
+                                    <form action="/cart/add" method="post" style="display:inline;">
+                                        <input type="hidden" name="productId" value="{{product.id}}"> 
+                                        <button class="qty-btn" type="submit"><i class="fa-solid fa-plus"></i></button>
+                                    </form>
                                 </div>
-                                <button class="delete-btn">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                </button>
                             </div>
                         </div>
-
-                        <!-- Item 2 -->
-                        <div class="cart-item">
-                            <div class="item-image">
-                                <img src="https://images.unsplash.com/photo-1565011523534-747a8601f10a?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?q=80&w=200&auto=format&fit=crop"
-                                    alt="Lavanda">
-                            </div>
-                            <div class="item-details">
-                                <h3>Lavanda</h3>
-                                <p class="item-subtitle">Tamaño: Mediano</p>
-                                <div class="item-price">€20.00</div>
-                            </div>
-                            <div class="item-actions">
-                                <div class="quantity-control">
-                                    <button class="qty-btn"><i class="fa-solid fa-minus"></i></button>
-                                    <span class="qty-val">2</span>
-                                    <button class="qty-btn"><i class="fa-solid fa-plus"></i></button>
-                                </div>
-                                <button class="delete-btn">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                </button>
-                            </div>
+                        {{/cart.items}}
+                        {{^cart.hasItems}}
+                        <div class="empty-cart-message">
+                            <i class="fa-solid fa-basket-shopping" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                            <p>No hay productos en el carrito.</p>
+                            <a href="/" class="btn-buy" style="margin-top: 1rem; display: inline-block;">Ir a comprar</a>
                         </div>
-
+                        {{/cart.hasItems}}
                     </div>
 
                     <!-- Checkout Summary -->
+                    {{#cart.hasItems}}
                     <div class="cart-summary">
                         <h2>Resumen del pedido</h2>
 
                         <div class="summary-row">
                             <span>Subtotal</span>
-                            <span>€75.00</span>
+                            <span>€{{cart.formattedSubTotal}}</span>
                         </div>
                         <div class="summary-row">
                             <span>Envío</span>
-                            <span>€5.00</span>
+                            <span>€{{cart.formattedShippingCost}}</span>
                         </div>
                         <div class="summary-divider"></div>
                         <div class="summary-row total">
                             <span>Total</span>
-                            <span>€80.00</span>
+                            <span>€{{cart.formattedTotalPrice}}</span>
                         </div>
                         <a href="/order">
                             <button class="checkout-btn">
@@ -98,6 +82,7 @@
                             </button>
                         </a>
                     </div>
+                    {{/cart.hasItems}}
                 </div>
             </div>
         </main>
