@@ -36,7 +36,7 @@
                     <div class="cart-icon-container">
                         <a href="/cart">
                             <i class="fa-solid fa-cart-shopping"></i>
-                            <span class="badge">1</span>
+                            <span class="badge">{{cart.count}}</span>
                         </a>
                     </div>
                     <a href="/user">
@@ -79,12 +79,15 @@
 
                     <div class="quantity">
                         <button>-</button>
-                        <span>2</span>
+                        <span>1</span>
                         <button>+</button>
                     </div>
 
                     <button class="btn-buy">Comprar ahora</button>
-                    <button class="btn-cart">Añadir al carrito</button>
+                    <form action="/cart/add" method="post" style="display:inline;">
+                        <input type="hidden" name="productId" value="{{product.id}}">
+                        <button type="submit" class="btn-cart">Añadir al carrito</button>
+                    </form>
 
                     <div class="recommend">
                         <h3>Completa tu pedido con</h3>

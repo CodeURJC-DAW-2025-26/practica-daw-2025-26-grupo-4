@@ -29,7 +29,9 @@
                 <div class="user-actions">
                     <a href="cart" class="cart-icon-container">
                         <i class="fa-solid fa-cart-shopping"></i>
-                        <span class="badge">2</span>
+                        {{#cart}}
+                        <span class="badge">{{count}}</span>
+                        {{/cart}}
                     </a>
                     <a href="#" class="active-profile">
                         <i class="fa-solid fa-circle-user profile-icon"></i>

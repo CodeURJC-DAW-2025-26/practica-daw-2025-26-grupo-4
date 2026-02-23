@@ -29,7 +29,9 @@
                     <div class="cart-icon-container">
                         <a href="cart">
                             <i class="fa-solid fa-cart-shopping"></i>
-                            <span class="badge">1</span>
+                            {{#cart}}
+                            <span class="badge">{{count}}</span>
+                            {{/cart}}
                         </a>
                     </div>
                     <a href="user">

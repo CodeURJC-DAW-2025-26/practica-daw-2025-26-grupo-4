@@ -59,4 +59,12 @@ public class CartItem {
     public double getAmount() {
         return product.getPrice() * quantity;
     }
+
+    public String getFormattedAmount() {
+        return String.format("%.2f", getAmount());
+    }
+
+    public String getFormattedPrice() {
+        return String.format("%.2f", product.getPrice());
+    }
 }
