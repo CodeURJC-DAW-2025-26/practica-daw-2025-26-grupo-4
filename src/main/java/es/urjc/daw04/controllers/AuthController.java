@@ -28,7 +28,7 @@ public class AuthController {
     @PostMapping("/login")
     public String loginPost(@RequestParam String username, @RequestParam String password, Model model) {
         if (userService.validateUser(username, password)) {
-            return "redirect:/home";
+            return "redirect:/";
         } else {
             model.addAttribute("loginError", true);
             return "login";
