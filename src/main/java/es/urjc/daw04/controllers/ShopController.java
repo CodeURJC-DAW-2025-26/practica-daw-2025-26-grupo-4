@@ -10,6 +10,7 @@ import es.urjc.daw04.service.ProductService;
 import es.urjc.daw04.service.CartService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.CookieValue;
 
 @Controller
 public class ShopController {
@@ -23,11 +24,21 @@ public class ShopController {
 
         if (p != null) {
             model.addAttribute("product", p);
+
+            Product recommended = productService.findAll().stream()
+                .filter(anyProduct -> !anyProduct.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+
+                model.addAttribute("recommendedProduct", recommended);
+                
             return "product";
         } else {
         }
         return "redirect:/";
     }
+
+
 
     @Autowired
     private CartService cartService;
@@ -38,7 +49,7 @@ public class ShopController {
     }
 
     @PostMapping("/cart/add")
-    public String addToCart(@RequestParam long productId) {
+    public String addToCart(@RequestParam long productId, @CookieValue(value = "cart", defaultValue = "") String cartContent) {
         Product p = productService.findById(productId).orElse(null);
         if (p != null) {
             cartService.addProductToCart(p);
