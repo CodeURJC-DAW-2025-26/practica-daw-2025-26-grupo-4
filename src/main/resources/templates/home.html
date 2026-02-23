@@ -14,31 +14,7 @@
 
 <body>
     <div class="app-container">
-        <!-- Header -->
-        <header class="top-bar">
-            <div class="top-bar__left">
-                <div class="logo logo--header">
-                    <img class="brand-logo" src="../static/images/logoDAW.png" alt="Logo PlantaZon">
-                </div>
-            </div>
-            <div class="top-bar__right">
-                <div class="search-bar">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Buscar productos">
-                </div>
-                <div class="user-actions">
-                    <div class="cart-icon-container">
-                        <a href="/cart">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                            <span class="cart-badge">1</span>
-                        </a>
-                    </div>
-                    <a href="/user">
-                        <i class="fa-regular fa-circle-user profile-icon"></i>
-                    </a>
-                </div>
-            </div>
-        </header>
+        {{>header}}
 
         <div class="content-row">
             <!-- Sidebar -->
@@ -46,35 +22,12 @@
                 <aside class="sidebar">
                     <h3 class="menu-title">Categorías</h3>
                     <nav class="menu">
-                <input type="radio" name="category" id="cat-care" hidden>
-                <label for="cat-care" class="menu-item">
-                    <i class="fa-solid fa-droplet"></i> Cuidado
+                {{#categories}}
+                <input type="radio" name="category" id="cat-{{id}}" hidden>
+                <label for="cat-{{id}}" class="menu-item">
+                    <i class="{{icon}}"></i> {{name}}
                 </label>
-
-                <input type="radio" name="category" id="cat-plants" checked hidden>
-                <label for="cat-plants" class="menu-item">
-                    <i class="fa-solid fa-leaf"></i> Plantas
-                </label>
-
-                <input type="radio" name="category" id="cat-soil" hidden>
-                <label for="cat-soil" class="menu-item">
-                    <i class="fa-solid fa-mountain"></i> Suelo
-                </label>
-
-                <input type="radio" name="category" id="cat-tools" hidden>
-                <label for="cat-tools" class="menu-item">
-                    <i class="fa-solid fa-screwdriver-wrench"></i> Herramientas
-                </label>
-
-                <input type="radio" name="category" id="cat-inspo" hidden>
-                <label for="cat-inspo" class="menu-item">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Inspiración
-                </label>
-
-                <input type="radio" name="category" id="cat-saved" hidden>
-                <label for="cat-saved" class="menu-item">
-                    <i class="fa-regular fa-bookmark"></i> Guardados
-                </label>
+                {{/categories}}
                     </nav>
                 </aside>
             </div>

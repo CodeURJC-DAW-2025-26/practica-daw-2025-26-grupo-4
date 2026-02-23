@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{product.name}} - PlantaZon</title>
 
+    <link rel="stylesheet" href="/styles/tokens.css">
+    <link rel="stylesheet" href="/styles/components.css">
     <link rel="stylesheet" href="/styles/product.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Font Awesome para iconos -->
@@ -14,37 +16,10 @@
 
 <body>
     <div class="app-container">
-
+        {{>header}}
 
         <!-- Main -->
         <main class="main-content">
-
-            <!-- Top bar -->
-            <header class="top-bar">
-                <div class="header-left">
-                    <a href="/" class="back-link">
-                        <i class="fa-solid fa-arrow-left"></i> Volver a la tienda
-                    </a>
-                </div>
-
-                <div class="logo-center">
-                    <img class="brand-logo brand-logo--sm" src="/images/logoDAW.png" alt="Logo PlantaZon">
-                    <span class="brand-name">PlantaZon</span>
-                </div>
-
-                <div class="user-actions">
-                    <div class="cart-icon-container">
-                        <a href="/cart">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                            <span class="badge">1</span>
-                        </a>
-                    </div>
-                    <a href="/user">
-                        <i class="fa-regular fa-circle-user profile-icon"></i>
-                    </a>
-                </div>
-            </header>
-
             <!-- Product detail -->
             <div class="product-layout">
 
