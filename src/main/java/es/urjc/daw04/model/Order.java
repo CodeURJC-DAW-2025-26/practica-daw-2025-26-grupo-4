@@ -1,5 +1,6 @@
 package es.urjc.daw04.model;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,8 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
-import java.sql.Date;
 
 
 @Entity
@@ -71,5 +70,9 @@ public class Order {
     }
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public long getId() {
+        return id;
     }
 }

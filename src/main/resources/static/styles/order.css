@@ -142,11 +142,13 @@ a {
 
 /* Order Details */
 .order-details {
-    display: block;
+    max-height: 2000px;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
 }
 
 .order-card.collapsed .order-details {
-    display: none;
+    max-height: 0;
 }
 
 .order-item {
@@ -200,6 +202,12 @@ a {
     font-size: 1rem;
     font-weight: 600;
     color: #1a1a1a;
+}
+
+.item-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 /* Order Summary */
