@@ -29,9 +29,11 @@
                     <a href="/order" class="dropdown-item">
                         <i class="fa-solid fa-bag-shopping"></i> Ver mis pedidos
                     </a>
-                    <button class="dropdown-item logout-btn" id="logoutBtn">
-                        <i class="fa-solid fa-sign-out-alt"></i> Cerrar sesión
-                    </button>
+                    <form action="/logout" method="post" class="logout-form">
+                        <button type="submit" class="dropdown-item logout-btn">
+                            <i class="fa-solid fa-sign-out-alt"></i> Cerrar sesión
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

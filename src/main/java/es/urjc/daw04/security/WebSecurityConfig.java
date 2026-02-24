@@ -43,9 +43,12 @@ public class WebSecurityConfig {
                         .requestMatchers("/images/**").permitAll()
                         // PUBLIC PAGES
                         .requestMatchers("/").permitAll()
-                        .requestMatchers("/books/*").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/register").permitAll()
+                        .requestMatchers("/home").permitAll()
+                        .requestMatchers("/error").permitAll()
                         // PRIVATE PAGES
-                        .requestMatchers("/newbook").hasAnyRole("USER")
+                        .requestMatchers("/user").hasAnyRole("USER")
                         .requestMatchers("/editbook/*").hasAnyRole("USER")
                         .requestMatchers("/editbook").hasAnyRole("USER")
                         .requestMatchers("/removebook/*").hasAnyRole("ADMIN"))
