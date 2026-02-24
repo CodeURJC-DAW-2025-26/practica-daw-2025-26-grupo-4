@@ -8,13 +8,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import es.urjc.daw04.service.CartService;
 import es.urjc.daw04.service.CategoryService;
 import es.urjc.daw04.service.ProductService;
-import es.urjc.daw04.service.CartService;
-import org.springframework.web.bind.annotation.CookieValue;
 
 @Controller
 public class HomeController {
@@ -29,7 +29,9 @@ public class HomeController {
     private CategoryService categoryService;
 
     @GetMapping("/")
-    public String home(@RequestParam(required = false) Long categoryId, Model model,
+        public String home(@RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String q,
+            Model model,
             @CookieValue(value = "cart", defaultValue = "") String cartContent) {
 
         var categories = categoryService.findAll();
@@ -39,8 +41,12 @@ public class HomeController {
             selectedCategoryId = categories.get(0).getId();
         }
 
+        String searchQuery = q == null ? "" : q.trim();
+
         if (selectedCategoryId == null) {
             model.addAttribute("products", List.of());
+        } else if (!searchQuery.isEmpty()) {
+            model.addAttribute("products", productService.searchByCategoryId(selectedCategoryId, searchQuery));
         } else {
             model.addAttribute("products", productService.findByCategoryId(selectedCategoryId));
         }
@@ -63,6 +69,8 @@ public class HomeController {
 
         model.addAttribute("categories", categoryViews);
         model.addAttribute("selectedCategoryName", selectedCategoryName);
+        model.addAttribute("selectedCategoryId", selectedCategoryId);
+        model.addAttribute("searchQuery", searchQuery);
         model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
 
         return "home";

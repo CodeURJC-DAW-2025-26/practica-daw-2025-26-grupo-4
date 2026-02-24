@@ -35,7 +35,14 @@
             <main class="main-content">
                 <!-- Product Section -->
                 <div class="content-body">
-                    <h1 class="page-title">{{selectedCategoryName}}</h1>
+                    <div class="page-title-row">
+                        <h1 class="page-title">{{selectedCategoryName}}</h1>
+                        <form class="search-bar search-bar--home" action="/" method="get">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" name="q" placeholder="Buscar productos" value="{{searchQuery}}">
+                            <input type="hidden" name="categoryId" value="{{selectedCategoryId}}">
+                        </form>
+                    </div>
                     <p class="page-subtitle">Nuestra colección de plantas</p>
 
                     <div class="product-grid">
