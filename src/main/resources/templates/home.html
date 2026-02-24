@@ -63,9 +63,12 @@
                                 </div>
                                 <div class="price">€{{formattedPrice}}</div>
                                 <div class="card-actions">
-                                    <button class="btn btn--primary btn--sm btn--grow">
-                                        <i class="fa-solid fa-cart-plus"></i> Añadir al carrito
-                                    </button>
+                                    <form action="/cart/add" method="post" style="display:contents;">
+                                        <input type="hidden" name="productId" value="{{id}}">
+                                        <button type="submit" class="btn btn--primary btn--sm btn--grow">
+                                            <i class="fa-solid fa-cart-plus"></i> Añadir al carrito
+                                        </button>
+                                    </form>
                                     <button class="btn btn--ghost btn--sm btn--icon btn--fav">
                                         <i class="fa-regular fa-heart"></i>
                                     </button>

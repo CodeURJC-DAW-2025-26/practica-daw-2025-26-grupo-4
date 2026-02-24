@@ -53,14 +53,21 @@
                     </div>
 
                     <div class="quantity">
-                        <button>-</button>
-                        <span>1</span>
-                        <button>+</button>
+                        <form action="/product/{{product.id}}/decrease-qty" method="get" style="display:inline;">
+                            <input type="hidden" name="current" value="{{quantity}}">
+                            <button type="submit">-</button>
+                        </form>
+                        <span>{{quantity}}</span>
+                        <form action="/product/{{product.id}}/increase-qty" method="get" style="display:inline;">
+                            <input type="hidden" name="current" value="{{quantity}}">
+                            <button type="submit">+</button>
+                        </form>
                     </div>
 
                     <button class="btn-buy">Comprar ahora</button>
                     <form action="/cart/add" method="post" style="display:inline;">
                         <input type="hidden" name="productId" value="{{product.id}}">
+                        <input type="hidden" name="quantity" value="{{quantity}}">
                         <button type="submit" class="btn-cart">Añadir al carrito</button>
                     </form>
 

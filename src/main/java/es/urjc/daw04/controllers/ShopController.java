@@ -2,20 +2,20 @@ package es.urjc.daw04.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import es.urjc.daw04.model.Cart;
 import es.urjc.daw04.model.Product;
-import es.urjc.daw04.service.ProductService;
 import es.urjc.daw04.service.CartService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.CookieValue;
-import jakarta.servlet.http.HttpServletResponse;
+import es.urjc.daw04.service.ProductService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class ShopController {
@@ -24,12 +24,20 @@ public class ShopController {
     private ProductService productService;
 
     @GetMapping("/product/{id}")
-    public String viewProduct(Model model, @PathVariable Long id, @CookieValue(value = "cart", defaultValue = "") String cartContent) {
+    public String viewProduct(Model model, @PathVariable Long id, 
+                             @RequestParam(defaultValue = "1") int qty,
+                             @CookieValue(value = "cart", defaultValue = "") String cartContent) {
         Product p = productService.findById(id).orElse(null);
 
         if (p != null) {
             model.addAttribute("product", p);
-            model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
+            
+            Cart currentCart = cartService.getCartFromCookie(cartContent);
+            model.addAttribute("cart", currentCart);
+            
+            // Mantener la cantidad seleccionada, mínimo 1
+            int quantity = Math.max(1, qty);
+            model.addAttribute("quantity", quantity);
 
             Product recommended = productService.findAll().stream()
                     .filter(anyProduct -> !anyProduct.getId().equals(id))
@@ -42,6 +50,17 @@ public class ShopController {
         } else {
         }
         return "redirect:/";
+    }
+
+    @GetMapping("/product/{id}/increase-qty")
+    public String increaseQuantity(@PathVariable Long id, @RequestParam(defaultValue = "1") int current) {
+        return "redirect:/product/" + id + "?qty=" + (current + 1);
+    }
+
+    @GetMapping("/product/{id}/decrease-qty")
+    public String decreaseQuantity(@PathVariable Long id, @RequestParam(defaultValue = "1") int current) {
+        int newQty = Math.max(1, current - 1);
+        return "redirect:/product/" + id + "?qty=" + newQty;
     }
 
     @Autowired
@@ -57,9 +76,15 @@ public class ShopController {
 
     @PostMapping("/cart/add")
     public String addToCart(@RequestParam long productId,
+            @RequestParam(defaultValue = "1") int quantity,
             @CookieValue(value = "cart", defaultValue = "") String cartContent, HttpServletResponse response,
             HttpServletRequest request) {
-        String newContent = cartService.addProduct(cartContent, productId);
+        String newContent = cartContent;
+        
+        // Añadir el producto la cantidad de veces especificada
+        for (int i = 0; i < quantity; i++) {
+            newContent = cartService.addProduct(newContent, productId);
+        }
 
         Cookie cookie = new Cookie("cart", newContent);
 
