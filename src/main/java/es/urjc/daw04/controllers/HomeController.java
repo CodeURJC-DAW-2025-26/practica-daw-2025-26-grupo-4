@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import es.urjc.daw04.service.CategoryService;
 import es.urjc.daw04.service.ProductService;
+import es.urjc.daw04.service.CartService;
+import org.springframework.web.bind.annotation.CookieValue;
 
 @Controller
 public class HomeController {
@@ -21,10 +23,14 @@ public class HomeController {
     private ProductService productService;
 
     @Autowired
+    private CartService cartService;
+
+    @Autowired
     private CategoryService categoryService;
 
     @GetMapping("/")
-    public String home(@RequestParam(required = false) Long categoryId, Model model) {
+    public String home(@RequestParam(required = false) Long categoryId, Model model,
+            @CookieValue(value = "cart", defaultValue = "") String cartContent) {
 
         var categories = categoryService.findAll();
         Long selectedCategoryId = categoryId;
@@ -57,6 +63,7 @@ public class HomeController {
 
         model.addAttribute("categories", categoryViews);
         model.addAttribute("selectedCategoryName", selectedCategoryName);
+        model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
 
         return "home";
     }
