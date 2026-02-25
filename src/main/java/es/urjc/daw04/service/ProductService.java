@@ -27,6 +27,10 @@ public class ProductService {
         return repository.findByCategoryId(categoryId);
     }
 
+    public List<Product> searchByCategoryId(long categoryId, String query) {
+        return repository.searchByCategoryId(categoryId, query);
+    }
+
     public void save(Product product) {
         repository.save(product);
     }
