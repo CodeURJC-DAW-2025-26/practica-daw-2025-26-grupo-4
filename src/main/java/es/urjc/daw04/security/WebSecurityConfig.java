@@ -43,12 +43,13 @@ public class WebSecurityConfig {
                         .requestMatchers("/images/**").permitAll()
                         // PUBLIC PAGES
                         .requestMatchers("/login").permitAll()
-                        .requestMatchers("/register").permitAll() 
+                        .requestMatchers("/register").permitAll()
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/product/*").permitAll()
                         .requestMatchers("/cart").permitAll()
                         // PRIVATE PAGES
                         .requestMatchers("/user/*").hasAnyRole("USER")
+                        .requestMatchers("/user").hasAnyRole("USER")
                         .requestMatchers("/order/*").hasAnyRole("USER")
                         .requestMatchers("/admin").hasAnyRole("ADMIN"))
                 .formLogin(formLogin -> formLogin
