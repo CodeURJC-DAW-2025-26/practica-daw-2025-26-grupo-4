@@ -42,16 +42,15 @@ public class WebSecurityConfig {
                         .requestMatchers("/js/**").permitAll()
                         .requestMatchers("/images/**").permitAll()
                         // PUBLIC PAGES
-                        .requestMatchers("/").permitAll()
                         .requestMatchers("/login").permitAll()
-                        .requestMatchers("/register").permitAll()
-                        .requestMatchers("/home").permitAll()
-                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/register").permitAll() 
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/product/*").permitAll()
+                        .requestMatchers("/cart").permitAll()
                         // PRIVATE PAGES
-                        .requestMatchers("/user").hasAnyRole("USER")
-                        .requestMatchers("/editbook/*").hasAnyRole("USER")
-                        .requestMatchers("/editbook").hasAnyRole("USER")
-                        .requestMatchers("/removebook/*").hasAnyRole("ADMIN"))
+                        .requestMatchers("/user/*").hasAnyRole("USER")
+                        .requestMatchers("/order/*").hasAnyRole("USER")
+                        .requestMatchers("/admin").hasAnyRole("ADMIN"))
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .failureUrl("/loginerror")

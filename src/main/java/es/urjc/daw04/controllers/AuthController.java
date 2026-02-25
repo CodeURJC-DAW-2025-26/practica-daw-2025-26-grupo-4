@@ -9,9 +9,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 import java.security.Principal;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import es.urjc.daw04.service.CartService;
 import es.urjc.daw04.model.User;
 import es.urjc.daw04.repositories.UserRepository;
+import es.urjc.daw04.security.RepositoryUserDetailsService;
 
 @Controller
 public class AuthController {
@@ -24,6 +31,9 @@ public class AuthController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RepositoryUserDetailsService userDetailsService;
 
     @GetMapping("/login")
     public String login() {
@@ -38,11 +48,6 @@ public class AuthController {
     @GetMapping("/private")
     public String privatePage() {
         return "private";
-    }
-
-    @GetMapping("/logout")
-    public String logout() {
-        return "home";
     }
 
     @GetMapping("/user")
@@ -64,7 +69,7 @@ public class AuthController {
     @PostMapping("/register")
     public String register(@RequestParam String name, @RequestParam String username, @RequestParam String email,
             @RequestParam String password, @RequestParam(name = "confirm-password") String confirmPassword,
-            Model model) {
+            Model model, HttpServletRequest request) {
 
         // Validar que las contraseñas coincidan
         if (!password.equals(confirmPassword)) {
@@ -74,7 +79,13 @@ public class AuthController {
 
         // Validar que el usuario no exista
         if (userRepository.findByName(username).isPresent()) {
-            model.addAttribute("error", "El usuario ya existe");
+            model.addAttribute("error", "El nombre de usuario ya está en uso");
+            return "login";
+        }
+
+        // Validar que el email no exista
+        if (userRepository.findByEmail(email).isPresent()) {
+            model.addAttribute("error", "El email ya está registrado");
             return "login";
         }
 
@@ -88,6 +99,22 @@ public class AuthController {
 
         userRepository.save(newUser);
 
-        return "redirect:/login";
+        // Autologuear al usuario
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userDetails, 
+                userDetails.getPassword(), 
+                userDetails.getAuthorities()
+        );
+        
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        
+        // Guardar el contexto de seguridad en la sesión HTTP
+        request.getSession().setAttribute(
+            HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+            SecurityContextHolder.getContext()
+        );
+
+        return "redirect:/";
     }
 }

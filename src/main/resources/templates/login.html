@@ -30,6 +30,18 @@
                 <div class="tab-indicator"></div>
             </div>
 
+            <!-- Mensajes de error y éxito -->
+            {{#error}}
+            <div class="alert alert-error">
+                {{error}}
+            </div>
+            {{/error}}
+            {{#success}}
+            <div class="alert alert-success">
+                {{success}}
+            </div>
+            {{/success}}
+
             <!-- Contenedor del slider -->
             <div class="forms-wrapper">
                 <div class="forms-slider">

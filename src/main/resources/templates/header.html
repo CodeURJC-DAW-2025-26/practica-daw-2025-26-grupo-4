@@ -30,6 +30,7 @@
                         <i class="fa-solid fa-bag-shopping"></i> Ver mis pedidos
                     </a>
                     <form action="/logout" method="post" class="logout-form">
+                        <input type="hidden" name="_csrf" value="{{token}}">
                         <button type="submit" class="dropdown-item logout-btn">
                             <i class="fa-solid fa-sign-out-alt"></i> Cerrar sesión
                         </button>
