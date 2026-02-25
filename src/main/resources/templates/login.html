@@ -17,9 +17,9 @@
 
         <div class="login-card mode-login">
             <div class="header">
-                <a href="/" class="logo-wrap brand-logo-wrap">
+                <div class="logo-wrap brand-logo-wrap">
                     <img class="logo brand-logo" src="/images/logoDAW.png" alt="Logo PlantaZon">
-                </a>
+                </div>
             </div>
 
             <!-- Botones de arriba -->
@@ -30,12 +30,25 @@
                 <div class="tab-indicator"></div>
             </div>
 
+            <!-- Mensajes de error y éxito -->
+            {{#error}}
+            <div class="alert alert-error">
+                {{error}}
+            </div>
+            {{/error}}
+            {{#success}}
+            <div class="alert alert-success">
+                {{success}}
+            </div>
+            {{/success}}
+
             <!-- Contenedor del slider -->
             <div class="forms-wrapper">
                 <div class="forms-slider">
 
                     <!-- Login -->
                     <form class="auth-form" action="/login" method="POST">
+                        <input type="hidden" name="_csrf" value="{{token}}">
                         <div class="input-group">
                             <label>Usuario</label>
                             <input type="text" name="username" placeholder="Tu usuario..." required>
@@ -56,19 +69,35 @@
 
                     <!-- Registro -->
                     <form class="auth-form" action="/register" method="POST">
+                        <input type="hidden" name="_csrf" value="{{token}}">
                         <div class="input-group">
-                            <label>Nombre:</label>
-                            <input type="text" name="name" required>
+                            <label>Nombre completo:</label>
+                            <input type="text" name="name" placeholder="Tu nombre..." required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Usuario:</label>
+                            <input type="text" name="username" placeholder="Tu usuario..." required>
                         </div>
 
                         <div class="input-group">
                             <label>Email:</label>
-                            <input type="email" name="email" required>
+                            <input type="email" name="email" placeholder="Tu email..." required>
                         </div>
 
                         <div class="input-group">
                             <label>Contraseña:</label>
-                            <input type="password" name="password" required>
+                            <input type="password" name="password" placeholder="Tu contraseña..." required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Confirmar contraseña:</label>
+                            <input type="password" name="confirm-password" placeholder="Confirma tu contraseña..." required>
+                        </div>
+
+                        <div class="options">
+                            <input type="checkbox" id="news-register" name="newsletter">
+                            <label for="news-register">Suscribirme a novedades</label>
                         </div>
 
                         <button type="submit">Crear cuenta</button>
@@ -79,7 +108,7 @@
         </div>
     </div>
 
-    <script src="login.js"></script>
+    <script src="/js/login.js"></script>
 
 </body>
 

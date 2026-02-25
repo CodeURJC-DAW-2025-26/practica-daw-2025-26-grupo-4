@@ -4,11 +4,14 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import es.urjc.daw04.model.Review;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import es.urjc.daw04.model.CartItem;
 import es.urjc.daw04.model.Category;
 import es.urjc.daw04.model.Order;
 import es.urjc.daw04.model.Product;
+import es.urjc.daw04.model.User;
+import es.urjc.daw04.repositories.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +31,31 @@ public class SampleDataService {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostConstruct
     public void init() {
+        // Crear usuarios de prueba
+        if (userRepository.findByName("user").isEmpty()) {
+            User userNormal = new User();
+            userNormal.setName("user");
+            userNormal.setEncodedPassword(passwordEncoder.encode("user"));
+            userNormal.setRoles(List.of("USER"));
+            userRepository.save(userNormal);
+        }
+
+        if (userRepository.findByName("admin").isEmpty()) {
+            User userAdmin = new User();
+            userAdmin.setName("admin");
+            userAdmin.setEncodedPassword(passwordEncoder.encode("admin"));
+            userAdmin.setRoles(List.of("ADMIN"));
+            userRepository.save(userAdmin);
+        }
+
         // Crear categorías
         Category plantas = new Category("Plantas", "plantas", "fa-solid fa-leaf");
         Category suelo = new Category("Suelo", "suelo", "fa-solid fa-seedling");
