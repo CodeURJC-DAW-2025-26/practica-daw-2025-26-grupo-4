@@ -37,19 +37,19 @@
                     <div class="order-details">
                         {{#items}}
                         <div class="order-item">
-                            <div class="item-image">
+                            <a href="/product/{{productId}}" class="item-image">
                                 <img src="{{imageUrl}}" alt="{{name}}">
-                            </div>
+                            </a>
                             <div class="item-info">
-                                <h4>{{name}}</h4>
+                                <a href="/product/{{productId}}" style="text-decoration: none; color: inherit;">
+                                    <h4>{{name}}</h4>
+                                </a>
                                 <p class="item-subtitle">Cantidad: {{quantity}}</p>
                                 <p class="item-price">€{{price}} c/u</p>
                             </div>
-                            {{#canReview}}
                             <div class="item-actions">
                                 <button class="btn btn-secondary btn-sm">Dejar opinión</button>
                             </div>
-                            {{/canReview}}
                         </div>
                         {{/items}}
 
