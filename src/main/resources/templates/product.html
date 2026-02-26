@@ -49,26 +49,34 @@
                     </div>
 
                     <div class="price-row">
-                        <span class="price">€{{product.formattedPrice}}</span>
+                        <span class="price" id="total-price" data-unit-price="{{product.price}}">€{{product.formattedPrice}}</span>
                     </div>
 
                     <div class="quantity">
-                        <form action="/product/{{product.id}}/decrease-qty" method="get" style="display:inline;">
-                            <input type="hidden" name="current" value="{{quantity}}">
-                            <button type="submit">-</button>
-                        </form>
-                        <span>{{quantity}}</span>
-                        <form action="/product/{{product.id}}/increase-qty" method="get" style="display:inline;">
-                            <input type="hidden" name="current" value="{{quantity}}">
-                            <button type="submit">+</button>
-                        </form>
+                        <button type="button" onclick="changeQty(-1)">-</button>
+                        <span id="qty-value">{{quantity}}</span>
+                        <button type="button" onclick="changeQty(1)">+</button>
                     </div>
 
+                    {{#isAdmin}}
+                    <div class="admin-actions" style="margin-bottom: var(--space-4); display:flex; gap: var(--space-3);">
+                        <a href="/admin/products/{{product.id}}/edit" class="action-btn primary-action">
+                            <i class="fa-solid fa-pen-to-square"></i> Editar
+                        </a>
+                        <form action="/admin/products/{{product.id}}/delete" method="post" style="display:inline;">
+                            <input type="hidden" name="_csrf" value="{{token}}">
+                            <button type="submit" class="action-btn danger-action"
+                                    onclick="return confirm('¿Eliminar este producto?')">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </form>
+                    </div>
+                    {{/isAdmin}}
                     <button class="btn-buy">Comprar ahora</button>
                     <form action="/cart/add" method="post" style="display:inline;">
                         <input type="hidden" name="_csrf" value="{{token}}">
                         <input type="hidden" name="productId" value="{{product.id}}">
-                        <input type="hidden" name="quantity" value="{{quantity}}">
+                        <input type="hidden" name="quantity" id="qty-input" value="{{quantity}}">
                         <button type="submit" class="btn-cart">Añadir al carrito</button>
                     </form>
 
@@ -164,6 +172,17 @@
     </div>
 
     <script>
+        function changeQty(delta) {
+            const display = document.getElementById('qty-value');
+            const input = document.getElementById('qty-input');
+            const priceEl = document.getElementById('total-price');
+            const unitPrice = parseFloat(priceEl.dataset.unitPrice);
+            const newVal = Math.max(1, parseInt(display.textContent) + delta);
+            display.textContent = newVal;
+            input.value = newVal;
+            priceEl.textContent = '€' + (unitPrice * newVal).toFixed(2);
+        }
+
         function changeImage(thumbnail, imageUrl) {
             // Cambiar la imagen principal
             document.getElementById('mainProductImage').src = imageUrl;

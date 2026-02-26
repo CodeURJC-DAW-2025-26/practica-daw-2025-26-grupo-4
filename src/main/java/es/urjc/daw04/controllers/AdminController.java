@@ -1,5 +1,6 @@
 package es.urjc.daw04.controllers;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 import es.urjc.daw04.service.ProductService;
 import es.urjc.daw04.service.UserService;
@@ -54,15 +57,15 @@ public class AdminController {
     }
 
     @PostMapping("/admin/products/{id}/delete")
-    public String deleteProduct(@PathVariable Long id) {
+    public void deleteProduct(@PathVariable Long id, HttpServletResponse response) throws IOException {
         productService.deleteById(id);
-        return "redirect:/admin/products";
+        response.sendRedirect("/admin/products");
     }
 
     @PostMapping("/admin/users/{id}/delete")
-    public String deleteUser(@PathVariable Long id) {
+    public void deleteUser(@PathVariable Long id, HttpServletResponse response) throws IOException {
         userService.deleteById(id);
-        return "redirect:/admin";
+        response.sendRedirect("/admin");
     }
 
 }

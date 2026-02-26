@@ -1,5 +1,6 @@
 package es.urjc.daw04.controllers;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -61,51 +62,36 @@ public class ShopController {
         return "redirect:/";
     }
 
-    @GetMapping("/product/{id}/increase-qty")
-    public String increaseQuantity(@PathVariable Long id, @RequestParam(defaultValue = "1") int current) {
-        return "redirect:/product/" + id + "?qty=" + (current + 1);
-    }
-
-    @GetMapping("/product/{id}/decrease-qty")
-    public String decreaseQuantity(@PathVariable Long id, @RequestParam(defaultValue = "1") int current) {
-        int newQty = Math.max(1, current - 1);
-        return "redirect:/product/" + id + "?qty=" + newQty;
-    }
-
     @GetMapping("/cart")
     public String cart() {
         return "cart";
     }
 
     @PostMapping("/cart/add")
-    public String addToCart(@RequestParam long productId,
+    public void addToCart(@RequestParam long productId,
             @RequestParam(defaultValue = "1") int quantity,
             @CookieValue(value = "cart", defaultValue = "") String cartContent, HttpServletResponse response,
-            HttpServletRequest request) {
+            HttpServletRequest request) throws IOException {
         String newContent = cartContent;
         
-        // Añadir el producto la cantidad de veces especificada
         for (int i = 0; i < quantity; i++) {
             newContent = cartService.addProduct(newContent, productId);
         }
 
         Cookie cookie = new Cookie("cart", newContent);
-
         cookie.setPath("/");
-        cookie.setMaxAge(60 * 60 * 24 * 7); // 7 días (en segundos)
-
+        cookie.setMaxAge(60 * 60 * 24 * 7);
         response.addCookie(cookie);
 
         String referer = request.getHeader("Referer");
-
-        return "redirect:" + (referer != null ? referer : "/");
+        response.sendRedirect(referer != null ? referer : "/");
     }
 
     @PostMapping("/cart/remove/{id}")
-    public String removeFromCart(@PathVariable long id,
+    public void removeFromCart(@PathVariable long id,
             @CookieValue(value = "cart", defaultValue = "") String cartContent,
             HttpServletResponse response,
-            HttpServletRequest request) {
+            HttpServletRequest request) throws IOException {
 
         String newContent = cartService.removeProduct(cartContent, id);
 
@@ -115,7 +101,7 @@ public class ShopController {
         response.addCookie(cookie);
 
         String referer = request.getHeader("Referer");
-        return "redirect:" + (referer != null ? referer : "/cart");
+        response.sendRedirect(referer != null ? referer : "/cart");
     }
 
     @GetMapping("/order")
