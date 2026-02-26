@@ -40,10 +40,18 @@ public class ShopController {
     @GetMapping("/product/{id}")
     public String viewProduct(Model model, @PathVariable Long id, 
                              @RequestParam(defaultValue = "1") int qty,
-                             @CookieValue(value = "cart", defaultValue = "") String cartContent) {
+                             @CookieValue(value = "cart", defaultValue = "") String cartContent,
+                             HttpServletRequest request) {
         Product p = productService.findById(id).orElse(null);
 
         if (p != null) {
+            // Get CSRF token
+            org.springframework.security.web.csrf.CsrfToken csrf = 
+                (org.springframework.security.web.csrf.CsrfToken) request.getAttribute("_csrf");
+            if (csrf != null) {
+                model.addAttribute("token", csrf.getToken());
+            }
+
             model.addAttribute("product", p);
             
             Cart currentCart = cartService.getCartFromCookie(cartContent);
@@ -66,19 +74,27 @@ public class ShopController {
         return "redirect:/";
     }
 
-    @GetMapping("/product/{id}/increase-qty")
+    @PostMapping("/product/{id}/increase-qty")
     public String increaseQuantity(@PathVariable Long id, @RequestParam(defaultValue = "1") int current) {
         return "redirect:/product/" + id + "?qty=" + (current + 1);
     }
 
-    @GetMapping("/product/{id}/decrease-qty")
+    @PostMapping("/product/{id}/decrease-qty")
     public String decreaseQuantity(@PathVariable Long id, @RequestParam(defaultValue = "1") int current) {
         int newQty = Math.max(1, current - 1);
         return "redirect:/product/" + id + "?qty=" + newQty;
     }
 
     @GetMapping("/cart")
-    public String cart(Model model, @CookieValue(value = "cart", defaultValue = "") String cartContent) {
+    public String cart(Model model, @CookieValue(value = "cart", defaultValue = "") String cartContent,
+                      HttpServletRequest request) {
+        // Get CSRF token
+        org.springframework.security.web.csrf.CsrfToken csrf = 
+            (org.springframework.security.web.csrf.CsrfToken) request.getAttribute("_csrf");
+        if (csrf != null) {
+            model.addAttribute("token", csrf.getToken());
+        }
+
         Cart currentCart = cartService.getCartFromCookie(cartContent);
 
         model.addAttribute("cart", currentCart);

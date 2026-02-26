@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import es.urjc.daw04.service.CartService;
 import es.urjc.daw04.service.CategoryService;
 import es.urjc.daw04.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class HomeController {
@@ -32,7 +33,15 @@ public class HomeController {
         public String home(@RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String q,
             Model model,
-            @CookieValue(value = "cart", defaultValue = "") String cartContent) {
+            @CookieValue(value = "cart", defaultValue = "") String cartContent,
+            HttpServletRequest request) {
+
+        // Get CSRF token
+        org.springframework.security.web.csrf.CsrfToken csrf = 
+            (org.springframework.security.web.csrf.CsrfToken) request.getAttribute("_csrf");
+        if (csrf != null) {
+            model.addAttribute("token", csrf.getToken());
+        }
 
         var categories = categoryService.findAll();
         Long selectedCategoryId = categoryId;
