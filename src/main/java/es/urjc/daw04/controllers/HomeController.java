@@ -1,5 +1,6 @@
 package es.urjc.daw04.controllers;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,13 +9,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import es.urjc.daw04.service.CartService;
 import es.urjc.daw04.service.CategoryService;
 import es.urjc.daw04.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class HomeController {
@@ -23,16 +23,23 @@ public class HomeController {
     private ProductService productService;
 
     @Autowired
-    private CartService cartService;
-
-    @Autowired
     private CategoryService categoryService;
 
     @GetMapping("/")
         public String home(@RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String q,
             Model model,
-            @CookieValue(value = "cart", defaultValue = "") String cartContent) {
+            HttpServletRequest request) {
+
+        Principal principal = request.getUserPrincipal();
+        if (principal != null) {
+            model.addAttribute("logged", !principal.getName().isEmpty());
+            model.addAttribute("admin", request.isUserInRole("ADMIN"));
+        }
+        else{
+            model.addAttribute("logged", false);
+            model.addAttribute("admin", false);
+        }
 
         var categories = categoryService.findAll();
         Long selectedCategoryId = categoryId;
@@ -71,7 +78,6 @@ public class HomeController {
         model.addAttribute("selectedCategoryName", selectedCategoryName);
         model.addAttribute("selectedCategoryId", selectedCategoryId);
         model.addAttribute("searchQuery", searchQuery);
-        model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
 
         return "home";
     }

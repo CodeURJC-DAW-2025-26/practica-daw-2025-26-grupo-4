@@ -21,12 +21,22 @@
                     <i class="fa-regular fa-circle-user profile-icon"></i>
                 </button>
                 <div class="user-menu-dropdown" id="userMenuDropdown">
+                    {{#isAdmin}}
+                    <a href="/admin" class="dropdown-item">
+                        <i class="fa-solid fa-gauge"></i> Panel de administración
+                    </a>
+                    <a href="/admin/products" class="dropdown-item">
+                        <i class="fa-solid fa-boxes-stacked"></i> Gestor de productos
+                    </a>
+                    {{/isAdmin}}
+                    {{^isAdmin}}
                     <a href="/user" class="dropdown-item">
                         <i class="fa-solid fa-user"></i> Ver perfil
                     </a>
                     <a href="/order" class="dropdown-item">
                         <i class="fa-solid fa-bag-shopping"></i> Ver mis pedidos
                     </a>
+                    {{/isAdmin}}
                     <form action="/logout" method="post" class="logout-form">
                         <input type="hidden" name="_csrf" value="{{token}}">
                         <button type="submit" class="dropdown-item logout-btn">

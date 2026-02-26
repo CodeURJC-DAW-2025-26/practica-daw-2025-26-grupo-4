@@ -397,6 +397,54 @@ a {
     color: var(--color-surface);
 }
 
+/* Admin Table */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+}
+
+.admin-table thead tr {
+    background-color: var(--color-primary-300);
+}
+
+.admin-table th {
+    padding: var(--space-3) var(--space-5);
+    text-align: left;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    white-space: nowrap;
+}
+
+.admin-table td {
+    padding: var(--space-4) var(--space-5);
+    vertical-align: middle;
+    border-bottom: 1px solid var(--color-primary-200);
+}
+
+.admin-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-table tbody tr:hover {
+    background-color: var(--color-primary-50);
+}
+
+.danger-action {
+    background-color: var(--color-danger);
+    color: var(--color-surface);
+}
+
+.danger-action:hover {
+    background-color: var(--color-danger);
+    filter: brightness(0.9);
+}
+
+.user-result-card + .user-result-card {
+    margin-top: var(--space-4);
+}
+
+/* Actions */
 .action-btn:hover,
 .accept-btn:hover,
 .search-btn:hover,

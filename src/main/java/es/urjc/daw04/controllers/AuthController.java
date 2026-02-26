@@ -2,7 +2,6 @@ package es.urjc.daw04.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,16 +14,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import jakarta.servlet.http.HttpServletRequest;
-import es.urjc.daw04.service.CartService;
 import es.urjc.daw04.model.User;
 import es.urjc.daw04.repositories.UserRepository;
 import es.urjc.daw04.security.RepositoryUserDetailsService;
 
 @Controller
 public class AuthController {
-
-    @Autowired
-    private CartService cartService;
 
     @Autowired
     private UserRepository userRepository;
@@ -51,8 +46,7 @@ public class AuthController {
     }
 
     @GetMapping("/user")
-    public String user(Model model, @CookieValue(value = "cart", defaultValue = "") String cartContent,
-            Principal principal) {
+    public String user(Model model, Principal principal) {
 
         String userName = principal.getName();
         User user = userRepository.findByName(userName).orElse(null);
@@ -60,8 +54,6 @@ public class AuthController {
         if (user != null) {
             model.addAttribute("userName", user.getName());
         }
-
-        model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
 
         return "user";
     }

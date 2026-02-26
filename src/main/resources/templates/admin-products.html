@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Productos - PlantaZon</title>
+    <link rel="stylesheet" href="/styles/tokens.css">
+    <link rel="stylesheet" href="/styles/components.css">
+    <link rel="stylesheet" href="/styles/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        {{>header}}
+
+        <main class="main-content">
+            <div class="content-body">
+                <h1 class="page-title">Gestor de productos</h1>
+
+                <!-- Acciones principales -->
+                <section class="admin-card product-management">
+                    <h2>Acciones</h2>
+                    <div class="action-buttons-container">
+                        <button class="action-btn primary-action">
+                            <i class="fa-solid fa-plus"></i> Añadir producto
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Listado de productos -->
+                <section class="admin-card">
+                    <h2>Productos</h2>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#products}}
+                            <tr>
+                                <td>{{id}}</td>
+                                <td>{{name}}</td>
+                                <td>{{categoryName}}</td>
+                                <td>{{price}} €</td>
+                                <td>
+                                    <form action="/admin/products/{{id}}/delete" method="post" style="display:inline;">
+                                        <input type="hidden" name="_csrf" value="{{token}}">
+                                        <button type="submit" class="action-btn danger-action"
+                                                onclick="return confirm('¿Eliminar {{name}}?')">
+                                            <i class="fa-solid fa-trash"></i> Eliminar
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {{/products}}
+                            {{^products}}
+                            <tr>
+                                <td colspan="5" style="text-align:center;padding:var(--space-5);">No hay productos disponibles.</td>
+                            </tr>
+                            {{/products}}
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </main>
+
+        {{>footer}}
+    </div>
+</body>
+</html>

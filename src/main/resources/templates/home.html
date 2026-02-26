@@ -64,6 +64,7 @@
                                 <div class="price">€{{formattedPrice}}</div>
                                 <div class="card-actions">
                                     <form action="/cart/add" method="post" style="display:contents;">
+                                        <input type="hidden" name="_csrf" value="{{token}}">
                                         <input type="hidden" name="productId" value="{{id}}">
                                         <button type="submit" class="btn btn--primary btn--sm btn--grow">
                                             <i class="fa-solid fa-cart-plus"></i> Añadir al carrito

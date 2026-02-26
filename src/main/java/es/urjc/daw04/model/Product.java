@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 public class Product {
@@ -27,9 +28,11 @@ public class Product {
     private String description;
 
     @ElementCollection
+    @BatchSize(size = 50)
     private List<String> tags;
 
     @ElementCollection
+    @BatchSize(size = 50)
     private List<String> images;
 
     @ManyToOne

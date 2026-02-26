@@ -66,6 +66,7 @@
 
                     <button class="btn-buy">Comprar ahora</button>
                     <form action="/cart/add" method="post" style="display:inline;">
+                        <input type="hidden" name="_csrf" value="{{token}}">
                         <input type="hidden" name="productId" value="{{product.id}}">
                         <input type="hidden" name="quantity" value="{{quantity}}">
                         <button type="submit" class="btn-cart">Añadir al carrito</button>

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import es.urjc.daw04.model.Cart;
 import es.urjc.daw04.model.Order;
 import es.urjc.daw04.model.Product;
 import es.urjc.daw04.service.CartService;
@@ -39,15 +38,11 @@ public class ShopController {
 
     @GetMapping("/product/{id}")
     public String viewProduct(Model model, @PathVariable Long id, 
-                             @RequestParam(defaultValue = "1") int qty,
-                             @CookieValue(value = "cart", defaultValue = "") String cartContent) {
+                             @RequestParam(defaultValue = "1") int qty) {
         Product p = productService.findById(id).orElse(null);
 
         if (p != null) {
             model.addAttribute("product", p);
-            
-            Cart currentCart = cartService.getCartFromCookie(cartContent);
-            model.addAttribute("cart", currentCart);
             
             // Mantener la cantidad seleccionada, mínimo 1
             int quantity = Math.max(1, qty);
@@ -78,10 +73,7 @@ public class ShopController {
     }
 
     @GetMapping("/cart")
-    public String cart(Model model, @CookieValue(value = "cart", defaultValue = "") String cartContent) {
-        Cart currentCart = cartService.getCartFromCookie(cartContent);
-
-        model.addAttribute("cart", currentCart);
+    public String cart() {
         return "cart";
     }
 
@@ -127,9 +119,7 @@ public class ShopController {
     }
 
     @GetMapping("/order")
-    public String order(Model model, @CookieValue(value = "cart", defaultValue = "") String cartContent) {
-        model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
-        
+    public String order(Model model) {
         // Obtener todas las órdenes
         List<Order> allOrders = orderService.findAll();
         SimpleDateFormat dateFormat = new SimpleDateFormat("d 'de' MMMM 'de' yyyy");

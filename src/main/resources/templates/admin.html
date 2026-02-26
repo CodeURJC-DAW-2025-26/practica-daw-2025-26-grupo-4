@@ -21,15 +21,6 @@
             <div class="content-body">
                 <h1 class="page-title">Sección de administrador</h1>
 
-                <!-- Product Management Section -->
-                <section class="admin-card product-management">
-                    <h2>Gestión de productos</h2>
-                    <div class="action-buttons-container">
-                        <button class="action-btn primary-action">Añadir producto</button>
-                        <button class="action-btn secondary-action">Modificar producto/s</button>
-                    </div>
-                </section>
-
                 <!-- Statistics Section -->
                 <section class="admin-card statistics-section">
                     <h2>Estadísticas y gráficos</h2>
@@ -95,29 +86,29 @@
                 <!-- User Management Section -->
                 <section class="admin-card user-management">
                     <h2>Gestión de usuarios</h2>
-                    
-                    <div class="user-search-container">
-                        <h3>Buscar usuario</h3>
-                        <div class="search-row">
-                            <input type="text" placeholder="Nombre de usuario">
-                            <button class="search-btn">Buscar</button>
-                        </div>
-                    </div>
 
-                    <!-- User Result Card (Static for demo) -->
+                    {{#users}}
                     <div class="user-result-card">
                         <div class="user-info">
                             <i class="fa-solid fa-circle-user user-avatar"></i>
-                            <span class="user-name">Javier Garzás Parra</span>
+                            <div>
+                                <div class="user-name">{{name}}</div>
+                                <div style="font-size:var(--font-size-sm);color:var(--color-muted);">{{email}}</div>
+                                <div style="font-size:var(--font-size-xs);color:var(--color-muted);">Rol: {{roles}}</div>
+                            </div>
                         </div>
-                        <div class="user-status-msg">
-                            Reportado por delito al odio
-                        </div>
-                        <div class="user-card-actions">
-                            <button class="manage-btn">Gestionar</button>
-                            <button class="block-btn">Bloquear</button>
-                        </div>
+                        <form action="/admin/users/{{id}}/delete" method="post">
+                            <input type="hidden" name="_csrf" value="{{token}}">
+                            <button type="submit" class="block-btn"
+                                    onclick="return confirm('¿Eliminar al usuario {{name}}?')">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </form>
                     </div>
+                    {{/users}}
+                    {{^users}}
+                    <p style="color:var(--color-muted);">No hay usuarios registrados.</p>
+                    {{/users}}
                 </section>
 
             </div>

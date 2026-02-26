@@ -43,6 +43,7 @@ public class SampleDataService {
         if (userRepository.findByName("user").isEmpty()) {
             User userNormal = new User();
             userNormal.setName("user");
+            userNormal.setEmail("pruebas@gmail.com");
             userNormal.setEncodedPassword(passwordEncoder.encode("user"));
             userNormal.setRoles(List.of("USER"));
             userRepository.save(userNormal);
