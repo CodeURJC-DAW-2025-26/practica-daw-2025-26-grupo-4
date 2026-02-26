@@ -19,7 +19,8 @@ public class Review {
     @ManyToOne
     private Product product;
 
-    private String author;
+    @ManyToOne
+    private User user;
 
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -29,9 +30,9 @@ public class Review {
     protected Review() {
     }
 
-    public Review(Product product, String author, String content, double rating) {
+    public Review(Product product, User user, String content, double rating) {
         this.product = product;
-        this.author = author;
+        this.user = user;
         this.content = content;
         this.rating = rating;
     }
@@ -60,12 +61,16 @@ public class Review {
         this.id = id;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getAuthorName() {
+        return (user != null) ? user.getName() : "Anónimo";
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public User getUser() {
+        return user;
+    }
+
+    public Product getProduct() {
+        return product;
     }
 
     public String getContent() {

@@ -23,6 +23,14 @@ public class UserService {
         return repository.findById(id);
     }
 
+    public Optional<User> findByName(String name) {
+        return repository.findByName(name);
+    }
+
+    public void save(User user) {
+        repository.save(user);
+    }
+
     public void deleteById(Long id) {
         repository.deleteById(id);
     }

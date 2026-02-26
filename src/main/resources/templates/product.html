@@ -108,7 +108,7 @@
             <section class="reviews">
 
                 <div class="rating-summary">
-                    <span class="score">{{product.getAverageRating}} / 5</span>
+                    <span class="score">{{product.averageRating}} / 5</span>
                     <div>
                         <div class="stars">
                             {{#product.averageStars}}
@@ -155,7 +155,7 @@
                 <div class="comments">
                     {{#product.reviews}}
                     <div class="comment">
-                        <strong>{{author}}</strong>
+                        <strong>{{authorName}}</strong>
                         <div class="comment-stars">
                             {{#stars}}
                             <i class="{{.}}"></i>

@@ -322,12 +322,24 @@ public class SampleDataService {
             c12.setCategory(catCuidado);
             productService.save(c12);
 
+            // Crear usuarios para las reviews
+            User u1 = new User("Agustin51", "Agustin", "agustin51@gmail.com", passwordEncoder.encode("pass"), "USER");
+            userRepository.save(u1);
+            User u2 = new User("Eduardo", "Eduardo", "eduardo@gmail.com", passwordEncoder.encode("pass"), "USER");
+            userRepository.save(u2);
+            User u3 = new User("Ampeterby7", "Ampeter", "ampeterby7@gmail.com", passwordEncoder.encode("pass"), "USER");
+            userRepository.save(u3);
+            User u4 = new User("XxConchaxX", "Concha", "concha@gmail.com", passwordEncoder.encode("pass"), "USER");
+            userRepository.save(u4);
+            User u5 = new User("Maria", "Maria", "maria@gmail.com", passwordEncoder.encode("pass"), "USER");
+            userRepository.save(u5);
+
             // Agregar reviews a algunos productos
-            reviewService.save(new Review(p1, "Agustin51", "Monstera hermosa y robusta. Excelente calidad.", 5));
-            reviewService.save(new Review(p1, "Eduardo", "Llego bien empaquetada, muy contento.", 5));
-            reviewService.save(new Review(p2, "Ampeterby7", "Crece muy rápido, perfecta para trepar.", 5));
-            reviewService.save(new Review(p2, "XxConchaxX", "Tolera la sombra, ideal para interiores.", 4.5));
-            reviewService.save(new Review(p3, "Maria", "Suculenta hermosa y de fácil cuidado.", 5));
+            reviewService.save(new Review(p1, u1, "Monstera hermosa y robusta. Excelente calidad.", 4));
+            reviewService.save(new Review(p1, u2, "Llego bien empaquetada, muy contento.", 5));
+            reviewService.save(new Review(p2, u3, "Crece muy rápido, perfecta para trepar.", 3.5));
+            reviewService.save(new Review(p2, u4, "Tolera la sombra, ideal para interiores.", 4.5));
+            reviewService.save(new Review(p3, u5, "Suculenta hermosa y de fácil cuidado.", 3));
 
             System.out.println("Base de datos inicializada con éxito. 48 productos cargados en 4 categorías.");
         }
