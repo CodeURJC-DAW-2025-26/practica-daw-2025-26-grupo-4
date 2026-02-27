@@ -40,12 +40,10 @@
                             <div class="item-actions">
                                 <div class="quantity-control">
                                     <form action="/cart/remove/{{product.id}}" method="post" style="display:inline;">
-                                        <input type="hidden" name="_csrf" value="{{token}}"/>
                                         <button class="qty-btn" type="submit"><i class="fa-solid fa-minus"></i></button>
                                     </form>
                                     <span class="qty-val">{{quantity}}</span>
                                     <form action="/cart/add" method="post" style="display:inline;">
-                                        <input type="hidden" name="_csrf" value="{{token}}"/>
                                         <input type="hidden" name="productId" value="{{product.id}}"> 
                                         <button class="qty-btn" type="submit"><i class="fa-solid fa-plus"></i></button>
                                     </form>

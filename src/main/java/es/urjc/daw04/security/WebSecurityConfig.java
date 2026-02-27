@@ -45,8 +45,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/register").permitAll()
                         .requestMatchers("/").permitAll()
-                        .requestMatchers("/product/**").permitAll()
-                        .requestMatchers("/cart/**").permitAll()
+                        .requestMatchers("/product/*").permitAll()
+                        .requestMatchers("/cart").permitAll()
                         // PRIVATE PAGES
                         .requestMatchers("/user/address/**").hasAnyRole("USER")
                         .requestMatchers("/user/*").hasAnyRole("USER")
