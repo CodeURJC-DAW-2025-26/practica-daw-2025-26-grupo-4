@@ -68,7 +68,11 @@ public class AuthController {
         User user = userRepository.findByName(userName).orElse(null);
 
         if (user != null) {
-            model.addAttribute("userName", user.getName());
+            model.addAttribute("userName", user.getName() != null ? user.getName() : "Establecer nombre de usuario");
+            model.addAttribute("email", user.getEmail());
+            model.addAttribute("fullName",
+                    user.getFullName() != null ? user.getFullName() : "Establecer nombre completo");
+            model.addAttribute("birthDate", user.getBirthDate() != null ? user.getBirthDate() : "");
             model.addAttribute("shippingAddress", user.getShippingAddress());
         }
 
@@ -221,49 +225,20 @@ public class AuthController {
 
         // Validar que la contraseña antigua sea correcta
         if (!passwordEncoder.matches(oldPassword, user.getEncodedPassword())) {
-            model.addAttribute("userName", user.getName());
-            model.addAttribute("error", "La contraseña antigua es incorrecta");
-            model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
-            org.springframework.security.web.csrf.CsrfToken csrf = (org.springframework.security.web.csrf.CsrfToken) request
-                    .getAttribute("_csrf");
-            if (csrf != null) {
-                model.addAttribute("token", csrf.getToken());
-            }
-            if (user.getShippingAddress() != null) {
-                model.addAttribute("shippingAddress", user.getShippingAddress());
-            }
+            addUserAttributesToModel(model, user, cartContent, request, "La contraseña antigua es incorrecta");
             return "user";
         }
 
         // Validar que la nueva contraseña y su confirmación sean iguales
         if (!newPassword.equals(confirmPassword)) {
-            model.addAttribute("userName", user.getName());
-            model.addAttribute("error", "Las nuevas contraseñas no coinciden");
-            model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
-            org.springframework.security.web.csrf.CsrfToken csrf = (org.springframework.security.web.csrf.CsrfToken) request
-                    .getAttribute("_csrf");
-            if (csrf != null) {
-                model.addAttribute("token", csrf.getToken());
-            }
-            if (user.getShippingAddress() != null) {
-                model.addAttribute("shippingAddress", user.getShippingAddress());
-            }
+            addUserAttributesToModel(model, user, cartContent, request, "Las nuevas contraseñas no coinciden");
             return "user";
         }
 
         // Validar que la nueva contraseña no sea igual a la antigua
         if (oldPassword.equals(newPassword)) {
-            model.addAttribute("userName", user.getName());
-            model.addAttribute("error", "La nueva contraseña debe ser diferente a la antigua");
-            model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
-            org.springframework.security.web.csrf.CsrfToken csrf = (org.springframework.security.web.csrf.CsrfToken) request
-                    .getAttribute("_csrf");
-            if (csrf != null) {
-                model.addAttribute("token", csrf.getToken());
-            }
-            if (user.getShippingAddress() != null) {
-                model.addAttribute("shippingAddress", user.getShippingAddress());
-            }
+            addUserAttributesToModel(model, user, cartContent, request,
+                    "La nueva contraseña debe ser diferente a la antigua");
             return "user";
         }
 
@@ -274,4 +249,53 @@ public class AuthController {
         // Redirigir con éxito
         return "redirect:/user?passwordSuccess=true";
     }
+
+    // Método auxiliar para agregar atributos del usuario al modelo
+    private void addUserAttributesToModel(Model model, User user, String cartContent,
+            HttpServletRequest request, String errorMessage) {
+        model.addAttribute("userName", user.getName() != null ? user.getName() : "Establecer nombre de usuario");
+        model.addAttribute("email", user.getEmail());
+        model.addAttribute("fullName", user.getFullName() != null ? user.getFullName() : "Establecer nombre completo");
+        model.addAttribute("birthDate", user.getBirthDate() != null ? user.getBirthDate() : "");
+        model.addAttribute("shippingAddress", user.getShippingAddress());
+        model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
+        model.addAttribute("error", errorMessage);
+
+        org.springframework.security.web.csrf.CsrfToken csrf = (org.springframework.security.web.csrf.CsrfToken) request
+                .getAttribute("_csrf");
+        if (csrf != null) {
+            model.addAttribute("token", csrf.getToken());
+        }
+    }
+
+    @PostMapping("/user/account/save")
+    @Transactional
+    public String saveAccount(
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String fullName,
+            @RequestParam(required = false) String birthDate,
+            Principal principal) {
+
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        String userName = principal.getName();
+        User user = userRepository.findByName(userName).orElse(null);
+
+        // Actualizar nombre completo si no contiene "Establecer"
+        if (fullName != null && !fullName.isEmpty() && !fullName.startsWith("Establecer")) {
+            user.setFullName(fullName);
+        }
+
+        // Actualizar fecha de nacimiento si no está vacía
+        if (birthDate != null && !birthDate.isEmpty()) {
+            user.setBirthDate(java.time.LocalDate.parse(birthDate));
+        }
+
+        userRepository.save(user);
+
+        return "redirect:/user";
+    }
+
 }

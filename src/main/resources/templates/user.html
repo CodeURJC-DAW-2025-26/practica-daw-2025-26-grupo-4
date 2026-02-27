@@ -23,28 +23,26 @@
                 <!-- Account Data Section -->
                 <section class="settings-card">
                     <h2>Datos de mi cuenta</h2>
-                    <form class="settings-form">
+                    <form class="settings-form" id="account-form" action="/user/account/save" method="post">
+                        <input type="hidden" name="_csrf" value="{{token}}"/>
                         <div class="form-grid">
                             <div class="form-group">
                                 <label>Nombre de usuario:</label>
-                                <input type="text" value="Usuario" placeholder="Nombre de usuario">
+                                <input type="text" value="{{userName}}" placeholder="Nombre de usuario" readonly style="background-color: #f0f0f0; cursor: not-allowed;">
+                                <small style="color: #666; font-size: 12px;">El nombre de usuario no puede ser modificado</small>
                             </div>
                             <div class="form-group">
                                 <label>Fecha de nacimiento:</label>
-                                <input type="date">
+                                <input type="date" name="birthDate" value="{{birthDate}}">
                             </div>
                             <div class="form-group full-width">
                                 <label>Nombre completo:</label>
-                                <div class="double-input">
-                                    <input type="text" value="Nombre" placeholder="Nombre">
-                                    <input type="text" value="Apellido/s" placeholder="Apellidos">
-                                </div>
+                                <input type="text" name="fullName" value="{{fullName}}" placeholder="Nombre completo">
                             </div>
                         </div>
-                        <button type="submit" class="save-btn hidden">Guardar</button>
                     </form>
                     <div class="action-row">
-                        <button class="save-btn">Guardar</button>
+                        <button class="save-btn" type="submit" form="account-form">Guardar</button>
                     </div>
                 </section>
 
