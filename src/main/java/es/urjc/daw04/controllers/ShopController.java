@@ -1,5 +1,6 @@
 package es.urjc.daw04.controllers;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -15,12 +16,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import es.urjc.daw04.model.Cart;
 import es.urjc.daw04.model.Order;
 import es.urjc.daw04.model.Product;
+import es.urjc.daw04.model.Review;
+import es.urjc.daw04.model.User;
 import es.urjc.daw04.service.CartService;
 import es.urjc.daw04.service.OrderService;
 import es.urjc.daw04.service.ProductService;
+import es.urjc.daw04.service.ReviewService;
+import es.urjc.daw04.service.UserService;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,18 +42,20 @@ public class ShopController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private ReviewService reviewService;
+
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/product/{id}")
-    public String viewProduct(Model model, @PathVariable Long id, 
-                             @RequestParam(defaultValue = "1") int qty,
-                             @CookieValue(value = "cart", defaultValue = "") String cartContent) {
+    public String viewProduct(Model model, @PathVariable Long id,
+            @RequestParam(defaultValue = "1") int qty) {
         Product p = productService.findById(id).orElse(null);
 
         if (p != null) {
             model.addAttribute("product", p);
-            
-            Cart currentCart = cartService.getCartFromCookie(cartContent);
-            model.addAttribute("cart", currentCart);
-            
+
             // Mantener la cantidad seleccionada, mínimo 1
             int quantity = Math.max(1, qty);
             model.addAttribute("quantity", quantity);
@@ -66,54 +73,56 @@ public class ShopController {
         return "redirect:/";
     }
 
-    @GetMapping("/product/{id}/increase-qty")
-    public String increaseQuantity(@PathVariable Long id, @RequestParam(defaultValue = "1") int current) {
-        return "redirect:/product/" + id + "?qty=" + (current + 1);
+    @PostMapping("/product/{id}/review")
+    public String addReview(@PathVariable Long id,
+            @RequestParam String content,
+            @RequestParam double rating,
+            HttpServletRequest request) {
+        Product product = productService.findById(id).orElse(null);
+    var principal = request.getUserPrincipal();
+
+    if (product != null && principal != null) {
+        User user = userService.findByName(principal.getName()).orElse(null);
+        
+        if (user != null) {
+            Review review = new Review(product, user, content, rating);
+            reviewService.save(review);
+        }
     }
 
-    @GetMapping("/product/{id}/decrease-qty")
-    public String decreaseQuantity(@PathVariable Long id, @RequestParam(defaultValue = "1") int current) {
-        int newQty = Math.max(1, current - 1);
-        return "redirect:/product/" + id + "?qty=" + newQty;
+    return "redirect:/product/" + id;
     }
 
     @GetMapping("/cart")
-    public String cart(Model model, @CookieValue(value = "cart", defaultValue = "") String cartContent) {
-        Cart currentCart = cartService.getCartFromCookie(cartContent);
-
-        model.addAttribute("cart", currentCart);
+    public String cart() {
         return "cart";
     }
 
     @PostMapping("/cart/add")
-    public String addToCart(@RequestParam long productId,
+    public void addToCart(@RequestParam long productId,
             @RequestParam(defaultValue = "1") int quantity,
             @CookieValue(value = "cart", defaultValue = "") String cartContent, HttpServletResponse response,
-            HttpServletRequest request) {
+            HttpServletRequest request) throws IOException {
         String newContent = cartContent;
-        
-        // Añadir el producto la cantidad de veces especificada
+
         for (int i = 0; i < quantity; i++) {
             newContent = cartService.addProduct(newContent, productId);
         }
 
         Cookie cookie = new Cookie("cart", newContent);
-
         cookie.setPath("/");
-        cookie.setMaxAge(60 * 60 * 24 * 7); // 7 días (en segundos)
-
+        cookie.setMaxAge(60 * 60 * 24 * 7);
         response.addCookie(cookie);
 
         String referer = request.getHeader("Referer");
-
-        return "redirect:" + (referer != null ? referer : "/");
+        response.sendRedirect(referer != null ? referer : "/");
     }
 
     @PostMapping("/cart/remove/{id}")
-    public String removeFromCart(@PathVariable long id,
+    public void removeFromCart(@PathVariable long id,
             @CookieValue(value = "cart", defaultValue = "") String cartContent,
             HttpServletResponse response,
-            HttpServletRequest request) {
+            HttpServletRequest request) throws IOException {
 
         String newContent = cartService.removeProduct(cartContent, id);
 
@@ -123,17 +132,15 @@ public class ShopController {
         response.addCookie(cookie);
 
         String referer = request.getHeader("Referer");
-        return "redirect:" + (referer != null ? referer : "/cart");
+        response.sendRedirect(referer != null ? referer : "/cart");
     }
 
     @GetMapping("/order")
-    public String order(Model model, @CookieValue(value = "cart", defaultValue = "") String cartContent) {
-        model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
-        
+    public String order(Model model) {
         // Obtener todas las órdenes
         List<Order> allOrders = orderService.findAll();
         SimpleDateFormat dateFormat = new SimpleDateFormat("d 'de' MMMM 'de' yyyy");
-        
+
         // Convertir órdenes a formato Mustache
         List<Map<String, Object>> ordersData = allOrders.stream().map(order -> {
             Map<String, Object> orderMap = new HashMap<>();
@@ -144,9 +151,10 @@ public class ShopController {
             orderMap.put("total", String.format("%.2f", order.getTotalPrice()));
             orderMap.put("itemCount", order.getItems().size());
             orderMap.put("subtotal", String.format("%.2f", order.getTotalPrice() - order.getShippingCost()));
-            orderMap.put("shipping", order.getShippingCost() == 0 ? "Gratis" : String.format("€%.2f", order.getShippingCost()));
+            orderMap.put("shipping",
+                    order.getShippingCost() == 0 ? "Gratis" : String.format("€%.2f", order.getShippingCost()));
             orderMap.put("isCollapsed", true);
-            
+
             // Convertir items
             List<Map<String, Object>> itemsData = order.getItems().stream().map(item -> {
                 Map<String, Object> itemMap = new HashMap<>();
@@ -158,21 +166,25 @@ public class ShopController {
                 itemMap.put("canReview", order.getStatus().equals("Entregado"));
                 return itemMap;
             }).collect(Collectors.toList());
-            
+
             orderMap.put("items", itemsData);
             return orderMap;
         }).collect(Collectors.toList());
-        
+
         model.addAttribute("orders", ordersData);
         return "order";
     }
-    
+
     private String getStatusClass(String status) {
         switch (status) {
-            case "Entregado": return "entregado";
-            case "En reparto": return "shipping";
-            case "En tránsito": return "transit";
-            default: return "pending";
+            case "Entregado":
+                return "entregado";
+            case "En reparto":
+                return "shipping";
+            case "En tránsito":
+                return "transit";
+            default:
+                return "pending";
         }
     }
 }

@@ -10,8 +10,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 public class Product {
@@ -27,10 +29,12 @@ public class Product {
     private String description;
 
     @ElementCollection
+    @BatchSize(size = 50)
     private List<String> tags;
 
-    @ElementCollection
-    private List<String> images;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "product_id")
+    private List<Image> images = new ArrayList<>();
 
     @ManyToOne
     private Category category;
@@ -43,22 +47,17 @@ public class Product {
     }
 
     // Constructor
-    public Product(String name, double price, String description, List<String> tags, List<String> images) {
+    public Product(String name, double price, String description, List<String> tags) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.tags = tags;
-        this.images = images;
     }
 
     public double getAverageRating() {
-        if (reviews == null || reviews.isEmpty()) {
-            return 0.0;
-        }
+        if (reviews == null || reviews.isEmpty()) return 0.0;
         double total = 0;
-        for (Review r : reviews) {
-            total += r.getRating();
-        }
+        for (Review r : reviews) total += r.getRating();
         return total / reviews.size();
     }
 
@@ -66,121 +65,71 @@ public class Product {
         List<String> stars = new ArrayList<>();
         double totalRating = getAverageRating();
         for (int i = 1; i <= 5; i++) {
-            // fa = font-awesome
-            if (totalRating >= i) {
-                stars.add("fa-solid fa-star");
-            } else if (totalRating >= i - 0.5) {
-                stars.add("fa-solid fa-star-half-stroke");
-            } else {
-                stars.add("fa-regular fa-star");
-            }
+            if (totalRating >= i)             stars.add("fa-solid fa-star");
+            else if (totalRating >= i - 0.5) stars.add("fa-solid fa-star-half-stroke");
+            else                             stars.add("fa-regular fa-star");
         }
         return stars;
     }
 
-    // Dentro de la clase Product
-
-    public int getPercent5() {
-        return calculatePercentage(5);
-    }
-
-    public int getPercent4() {
-        return calculatePercentage(4);
-    }
-
-    public int getPercent3() {
-        return calculatePercentage(3);
-    }
-
-    public int getPercent2() {
-        return calculatePercentage(2);
-    }
-
-    public int getPercent1() {
-        return calculatePercentage(1);
-    }
+    public int getPercent5() { return calculatePercentage(5); }
+    public int getPercent4() { return calculatePercentage(4); }
+    public int getPercent3() { return calculatePercentage(3); }
+    public int getPercent2() { return calculatePercentage(2); }
+    public int getPercent1() { return calculatePercentage(1); }
 
     private int calculatePercentage(int starTarget) {
-        if (reviews == null || reviews.isEmpty()) {
-            return 0;
-        }
-
+        if (reviews == null || reviews.isEmpty()) return 0;
         long count = 0;
         for (Review r : reviews) {
-            // Redondeamos para que un 4.5 cuente como 5, o 4.2 como 4
-            if (Math.round(r.getRating()) == starTarget) {
-                count++;
-            }
+            if (Math.round(r.getRating()) == starTarget) count++;
         }
-
         return (int) ((count * 100) / reviews.size());
     }
 
     // Getters y Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId()               { return id; }
+    public void setId(Long id)        { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getName()           { return name; }
+    public void setName(String n)     { this.name = n; }
 
-    public String getName() {
-        return name;
-    }
+    public double getPrice()          { return price; }
+    public void setPrice(double p)    { this.price = p; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getDescription()    { return description; }
+    public void setDescription(String d) { this.description = d; }
 
-    public double getPrice() {
-        return price;
-    }
+    public List<String> getTags()     { return tags; }
+    public void setTags(List<String> t) { this.tags = t; }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public List<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
-
-    public List<String> getImages() {
-        return images;
-    }
-
-    public void setImages(List<String> images) {
-        this.images = images;
-    }
+    public List<Image> getImages()    { return images; }
+    public void setImages(List<Image> imgs) { this.images = imgs; }
 
     public String getMainImage() {
         if (images != null && !images.isEmpty()) {
-            return images.get(0);
+            return images.get(0).getUrl();
         }
-        return "default-plant.jpg";
+        return "/images/default-plant.jpg";
     }
 
     public String getFormattedPrice() {
         return String.format("%.2f", price);
     }
 
-    public Category getCategory() {
-        return category;
-    }
+    public Category getCategory()            { return category; }
+    public void setCategory(Category c)      { this.category = c; }
+}
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 }

@@ -1,5 +1,11 @@
 package es.urjc.daw04.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
 import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -25,9 +32,6 @@ import jakarta.transaction.Transactional;
 
 @Controller
 public class AuthController {
-
-    @Autowired
-    private CartService cartService;
 
     @Autowired
     private UserRepository userRepository;

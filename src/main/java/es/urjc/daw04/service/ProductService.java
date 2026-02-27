@@ -5,8 +5,10 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.urjc.daw04.model.Product;
+import es.urjc.daw04.repositories.CartItemRepository;
 import es.urjc.daw04.repositories.ProductRepository;
 
 @Service
@@ -14,6 +16,9 @@ public class ProductService {
 
     @Autowired
     private ProductRepository repository;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
 
     public List<Product> findAll() {
         return repository.findAll();
@@ -33,5 +38,11 @@ public class ProductService {
 
     public void save(Product product) {
         repository.save(product);
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        cartItemRepository.deleteByProductId(id);
+        repository.deleteById(id);
     }
 }

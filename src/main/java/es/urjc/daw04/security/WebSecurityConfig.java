@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -35,7 +37,12 @@ public class WebSecurityConfig {
 
         http.authenticationProvider(authenticationProvider());
 
+        CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
+
         http
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(requestHandler))
                 .authorizeHttpRequests(authorize -> authorize
                         // STATIC RESOURCES
                         .requestMatchers("/styles/**").permitAll()
@@ -45,18 +52,22 @@ public class WebSecurityConfig {
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/register").permitAll()
                         .requestMatchers("/").permitAll()
-                        .requestMatchers("/product/*").permitAll()
+                        .requestMatchers("/product/**").permitAll()
+                        .requestMatchers("/products/**").permitAll()
                         .requestMatchers("/cart").permitAll()
+                        .requestMatchers("/cart/**").permitAll()
                         // PRIVATE PAGES
-                        .requestMatchers("/user/address/**").hasAnyRole("USER")
-                        .requestMatchers("/user/*").hasAnyRole("USER")
                         .requestMatchers("/user").hasAnyRole("USER")
+                        .requestMatchers("/user/**").hasAnyRole("USER")
+                        .requestMatchers("/order").hasAnyRole("USER")
                         .requestMatchers("/order/**").hasAnyRole("USER")
-                        .requestMatchers("/admin").hasAnyRole("ADMIN"))
+                        .requestMatchers("/admin").hasAnyRole("ADMIN")
+                        .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                        .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .failureUrl("/loginerror")
-                        .defaultSuccessUrl("/")
+                        .defaultSuccessUrl("/", true)
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
