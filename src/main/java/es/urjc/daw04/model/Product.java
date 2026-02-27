@@ -120,3 +120,16 @@ public class Product {
     public Category getCategory()            { return category; }
     public void setCategory(Category c)      { this.category = c; }
 }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+}
