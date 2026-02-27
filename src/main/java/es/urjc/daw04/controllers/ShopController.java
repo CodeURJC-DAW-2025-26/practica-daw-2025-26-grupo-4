@@ -158,7 +158,8 @@ public class ShopController {
             // Convertir items
             List<Map<String, Object>> itemsData = order.getItems().stream().map(item -> {
                 Map<String, Object> itemMap = new HashMap<>();
-                itemMap.put("imageUrl", item.getProduct().getMainImage());
+                itemMap.put("productId", item.getProduct().getId());
+                itemMap.put("imageUrl", item.getProduct().getImages().get(0));
                 itemMap.put("name", item.getProduct().getName());
                 itemMap.put("quantity", item.getQuantity());
                 itemMap.put("price", String.format("%.2f", item.getProduct().getPrice()));

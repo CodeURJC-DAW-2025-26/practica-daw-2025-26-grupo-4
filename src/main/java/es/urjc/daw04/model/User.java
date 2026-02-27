@@ -3,6 +3,7 @@ package es.urjc.daw04.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,6 +27,8 @@ public class User {
 
     private LocalDate birthDate;
     private String fullName; // nombre y apellidos
+    
+    @Column(length = 1000)
     private String shippingAddress;
 
     public User() {

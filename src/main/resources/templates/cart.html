@@ -28,13 +28,15 @@
                     <div class="cart-items">
                         {{#cart.items}}
                         <div class="cart-item">
-                            <div class="item-image">
-                                <img src="{{product.mainImage}}" alt="{{product.name}}">
-                            </div>
-                            <div class="item-details">
-                                <h3>{{product.name}}</h3>
-                                <div class="item-price">€{{formattedPrice}}</div>
-                            </div>
+                            <a href="/product/{{product.id}}" style="display: contents; text-decoration: none; color: inherit;">
+                                <div class="item-image">
+                                    <img src="{{product.mainImage}}" alt="{{product.name}}">
+                                </div>
+                                <div class="item-details">
+                                    <h3>{{product.name}}</h3>
+                                    <div class="item-price">€{{formattedPrice}}</div>
+                                </div>
+                            </a>
                             <div class="item-actions">
                                 <div class="quantity-control">
                                     <form action="/cart/remove/{{product.id}}" method="post" style="display:inline;">

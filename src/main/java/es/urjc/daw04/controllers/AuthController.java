@@ -7,16 +7,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 import java.security.Principal;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import es.urjc.daw04.model.User;
 import es.urjc.daw04.repositories.UserRepository;
 import es.urjc.daw04.security.RepositoryUserDetailsService;
+import es.urjc.daw04.service.CartService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 
 @Controller
 public class AuthController {
@@ -46,13 +58,25 @@ public class AuthController {
     }
 
     @GetMapping("/user")
-    public String user(Model model, Principal principal) {
+    public String user(Model model, @CookieValue(value = "cart", defaultValue = "") String cartContent,
+            Principal principal, HttpServletRequest request) {
 
         String userName = principal.getName();
         User user = userRepository.findByName(userName).orElse(null);
 
         if (user != null) {
             model.addAttribute("userName", user.getName());
+            model.addAttribute("shippingAddress", user.getShippingAddress());
+        }
+
+        model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
+        
+        // Añadir token CSRF explícitamente
+        org.springframework.security.web.csrf.CsrfToken csrf = 
+            (org.springframework.security.web.csrf.CsrfToken) request.getAttribute("_csrf");
+        if (csrf != null) {
+            model.addAttribute("token", csrf.getToken());
+            System.out.println("CSRF Token: " + csrf.getToken());
         }
 
         return "user";
@@ -108,5 +132,75 @@ public class AuthController {
         );
 
         return "redirect:/";
+    }
+
+    @PostMapping("/user/address/save")
+    @Transactional
+    public String saveAddress(
+            @RequestParam(required = false) String street,
+            @RequestParam(required = false) String additional,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String province,
+            @RequestParam(required = false) String postalCode,
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String phone,
+            Principal principal) {
+
+        System.out.println("=== SAVE ADDRESS CALLED ===");
+        
+        if (principal == null) {
+            System.out.println("Principal is null, redirecting to login");
+            return "redirect:/login";
+        }
+
+        String userName = principal.getName();
+        System.out.println("User name: " + userName);
+        
+        User user = userRepository.findByName(userName).orElse(null);
+
+        if (user != null && street != null && !street.isEmpty()) {
+            System.out.println("Saving address for user: " + userName);
+            
+            // Construir la dirección como texto simple
+            StringBuilder addressBuilder = new StringBuilder();
+            addressBuilder.append(street);
+            if (additional != null && !additional.isEmpty()) {
+                addressBuilder.append("\n").append(additional);
+            }
+            if (city != null && province != null && postalCode != null) {
+                addressBuilder.append("\n").append(city).append(", ")
+                             .append(province).append(" ")
+                             .append(postalCode);
+            }
+            if (country != null) {
+                addressBuilder.append("\n").append(country);
+            }
+            if (phone != null) {
+                addressBuilder.append("\nTeléfono: ").append(phone);
+            }
+
+            user.setShippingAddress(addressBuilder.toString());
+            userRepository.save(user);
+            System.out.println("Address saved successfully");
+        } else {
+            System.out.println("User is null or street is empty");
+        }
+
+        System.out.println("Redirecting to /user");
+        return "redirect:/user";
+    }
+
+    @Transactional
+    @PostMapping("/user/address/delete")
+    public String deleteAddress(Principal principal) {
+        String userName = principal.getName();
+        User user = userRepository.findByName(userName).orElse(null);
+
+        if (user != null) {
+            user.setShippingAddress(null);
+            userRepository.save(user);
+        }
+
+        return "redirect:/user";
     }
 }

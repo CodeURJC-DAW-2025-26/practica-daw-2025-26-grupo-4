@@ -83,51 +83,29 @@
 
                 <!-- Address Section -->
                 <section class="settings-card">
-                    <h2>Mis direcciones</h2>
+                    <h2>Mi dirección de envío</h2>
                     
-                    <div class="addresses-container">
-                        <!-- Shipping -->
-                        <div class="address-column">
-                            <h3>Direcciones de envío</h3>
-                            <div class="address-list">
-                                <div class="address-card">
-                                    <div class="card-actions">
-                                        <button class="icon-btn edit-btn"><i class="fa-solid fa-pencil"></i></button>
-                                        <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
-                                    </div>
-                                    <strong>Javier Garzás Parra</strong>
-                                    <p>Calle estilo SCRUM Nº22 Piso 3A</p>
-                                    <p>Móstoles, Madrid 28938</p>
-                                    <p>España</p>
-                                    <p>Número de teléfono: 628417634</p>
-                                </div>
-                                <button class="add-address-btn">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
+                    <div class="address-container-single">
+                        {{#shippingAddress}}
+                        <div class="address-card">
+                            <div class="card-actions">
+                                <button type="button" class="icon-btn edit-btn" id="edit-address-btn"><i class="fa-solid fa-pencil"></i></button>
+                                <form action="/user/address/delete" method="post" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta dirección?');">
+                                    <input type="hidden" name="_csrf" value="{{token}}"/>
+                                    <button type="submit" class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
+                                </form>
+                            </div>
+                            <div id="address-display" style="white-space: pre-line;">
+                                {{shippingAddress}}
                             </div>
                         </div>
-
-                        <!-- Billing -->
-                        <div class="address-column">
-                            <h3>Direcciones de facturación</h3>
-                            <div class="address-list">
-                                <div class="address-card">
-                                    <div class="card-actions">
-                                        <button class="icon-btn edit-btn"><i class="fa-solid fa-pencil"></i></button>
-                                        <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
-                                    </div>
-                                    <strong>Javier Garzás Parra</strong>
-                                    <p>Avenida metodología Ágil</p>
-                                    <p>Nº2 Piso 1B</p>
-                                    <p>Móstoles, Madrid 28938</p>
-                                    <p>España</p>
-                                    <p>Número de teléfono: 628417634</p>
-                                </div>
-                                <button class="add-address-btn">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
+                        {{/shippingAddress}}
+                        {{^shippingAddress}}
+                        <button type="button" class="add-address-btn" id="add-address-btn">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Añadir dirección de envío</span>
+                        </button>
+                        {{/shippingAddress}}
                     </div>
                 </section>
 
@@ -135,6 +113,65 @@
         </main>
     </div>
 
+    <!-- Modal para añadir/editar dirección -->
+    <div id="address-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Añadir dirección de envío</h2>
+                <button type="button" class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <form id="address-form" action="/user/address/save" method="post">
+                <input type="hidden" name="_csrf" value="{{token}}"/>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="street">Calle y número*</label>
+                        <input type="text" id="street" name="street" required placeholder="Ej: Calle Mayor 123">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="additional">Información adicional</label>
+                        <input type="text" id="additional" name="additional" placeholder="Piso, puerta, bloque, etc.">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city">Ciudad*</label>
+                            <input type="text" id="city" name="city" required placeholder="Ej: Madrid">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="province">Provincia*</label>
+                            <input type="text" id="province" name="province" required placeholder="Ej: Madrid">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="postalCode">Código Postal*</label>
+                            <input type="text" id="postalCode" name="postalCode" required pattern="\d{5}" placeholder="Ej: 28001">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="country">País*</label>
+                            <input type="text" id="country" name="country" required placeholder="Ej: España">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Teléfono*</label>
+                        <input type="tel" id="phone" name="phone" required pattern="\d{9}" placeholder="Ej: 612345678">
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="cancel-btn" id="cancel-btn">Cancelar</button>
+                    <button type="submit" class="save-btn">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     {{>footer}}
+    <script src="/js/user.js"></script>
 </body>
 </html>
