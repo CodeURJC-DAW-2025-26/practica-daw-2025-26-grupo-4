@@ -42,6 +42,9 @@ public class AuthController {
     @Autowired
     private RepositoryUserDetailsService userDetailsService;
 
+    @Autowired
+    private CartService cartService;
+
     @GetMapping("/login")
     public String login() {
         return "login";
@@ -70,10 +73,10 @@ public class AuthController {
         }
 
         model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
-        
+
         // Añadir token CSRF explícitamente
-        org.springframework.security.web.csrf.CsrfToken csrf = 
-            (org.springframework.security.web.csrf.CsrfToken) request.getAttribute("_csrf");
+        org.springframework.security.web.csrf.CsrfToken csrf = (org.springframework.security.web.csrf.CsrfToken) request
+                .getAttribute("_csrf");
         if (csrf != null) {
             model.addAttribute("token", csrf.getToken());
             System.out.println("CSRF Token: " + csrf.getToken());
@@ -118,18 +121,16 @@ public class AuthController {
         // Autologuear al usuario
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-                userDetails, 
-                userDetails.getPassword(), 
-                userDetails.getAuthorities()
-        );
-        
+                userDetails,
+                userDetails.getPassword(),
+                userDetails.getAuthorities());
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        
+
         // Guardar el contexto de seguridad en la sesión HTTP
         request.getSession().setAttribute(
-            HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-            SecurityContextHolder.getContext()
-        );
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                SecurityContextHolder.getContext());
 
         return "redirect:/";
     }
@@ -147,7 +148,7 @@ public class AuthController {
             Principal principal) {
 
         System.out.println("=== SAVE ADDRESS CALLED ===");
-        
+
         if (principal == null) {
             System.out.println("Principal is null, redirecting to login");
             return "redirect:/login";
@@ -155,12 +156,12 @@ public class AuthController {
 
         String userName = principal.getName();
         System.out.println("User name: " + userName);
-        
+
         User user = userRepository.findByName(userName).orElse(null);
 
         if (user != null && street != null && !street.isEmpty()) {
             System.out.println("Saving address for user: " + userName);
-            
+
             // Construir la dirección como texto simple
             StringBuilder addressBuilder = new StringBuilder();
             addressBuilder.append(street);
@@ -169,8 +170,8 @@ public class AuthController {
             }
             if (city != null && province != null && postalCode != null) {
                 addressBuilder.append("\n").append(city).append(", ")
-                             .append(province).append(" ")
-                             .append(postalCode);
+                        .append(province).append(" ")
+                        .append(postalCode);
             }
             if (country != null) {
                 addressBuilder.append("\n").append(country);
@@ -202,5 +203,75 @@ public class AuthController {
         }
 
         return "redirect:/user";
+    }
+
+    @PostMapping("/user/password/change")
+    @Transactional
+    public String changePassword(
+            @RequestParam String oldPassword,
+            @RequestParam String newPassword,
+            @RequestParam String confirmPassword,
+            Principal principal,
+            Model model,
+            @CookieValue(value = "cart", defaultValue = "") String cartContent,
+            HttpServletRequest request) {
+
+        String userName = principal.getName();
+        User user = userRepository.findByName(userName).orElse(null);
+
+        // Validar que la contraseña antigua sea correcta
+        if (!passwordEncoder.matches(oldPassword, user.getEncodedPassword())) {
+            model.addAttribute("userName", user.getName());
+            model.addAttribute("error", "La contraseña antigua es incorrecta");
+            model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
+            org.springframework.security.web.csrf.CsrfToken csrf = (org.springframework.security.web.csrf.CsrfToken) request
+                    .getAttribute("_csrf");
+            if (csrf != null) {
+                model.addAttribute("token", csrf.getToken());
+            }
+            if (user.getShippingAddress() != null) {
+                model.addAttribute("shippingAddress", user.getShippingAddress());
+            }
+            return "user";
+        }
+
+        // Validar que la nueva contraseña y su confirmación sean iguales
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("userName", user.getName());
+            model.addAttribute("error", "Las nuevas contraseñas no coinciden");
+            model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
+            org.springframework.security.web.csrf.CsrfToken csrf = (org.springframework.security.web.csrf.CsrfToken) request
+                    .getAttribute("_csrf");
+            if (csrf != null) {
+                model.addAttribute("token", csrf.getToken());
+            }
+            if (user.getShippingAddress() != null) {
+                model.addAttribute("shippingAddress", user.getShippingAddress());
+            }
+            return "user";
+        }
+
+        // Validar que la nueva contraseña no sea igual a la antigua
+        if (oldPassword.equals(newPassword)) {
+            model.addAttribute("userName", user.getName());
+            model.addAttribute("error", "La nueva contraseña debe ser diferente a la antigua");
+            model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
+            org.springframework.security.web.csrf.CsrfToken csrf = (org.springframework.security.web.csrf.CsrfToken) request
+                    .getAttribute("_csrf");
+            if (csrf != null) {
+                model.addAttribute("token", csrf.getToken());
+            }
+            if (user.getShippingAddress() != null) {
+                model.addAttribute("shippingAddress", user.getShippingAddress());
+            }
+            return "user";
+        }
+
+        // Encriptar y guardar la nueva contraseña
+        user.setEncodedPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        // Redirigir con éxito
+        return "redirect:/user?passwordSuccess=true";
     }
 }

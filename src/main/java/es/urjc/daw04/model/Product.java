@@ -55,9 +55,11 @@ public class Product {
     }
 
     public double getAverageRating() {
-        if (reviews == null || reviews.isEmpty()) return 0.0;
+        if (reviews == null || reviews.isEmpty())
+            return 0.0;
         double total = 0;
-        for (Review r : reviews) total += r.getRating();
+        for (Review r : reviews)
+            total += r.getRating();
         return total / reviews.size();
     }
 
@@ -65,46 +67,95 @@ public class Product {
         List<String> stars = new ArrayList<>();
         double totalRating = getAverageRating();
         for (int i = 1; i <= 5; i++) {
-            if (totalRating >= i)             stars.add("fa-solid fa-star");
-            else if (totalRating >= i - 0.5) stars.add("fa-solid fa-star-half-stroke");
-            else                             stars.add("fa-regular fa-star");
+            if (totalRating >= i)
+                stars.add("fa-solid fa-star");
+            else if (totalRating >= i - 0.5)
+                stars.add("fa-solid fa-star-half-stroke");
+            else
+                stars.add("fa-regular fa-star");
         }
         return stars;
     }
 
-    public int getPercent5() { return calculatePercentage(5); }
-    public int getPercent4() { return calculatePercentage(4); }
-    public int getPercent3() { return calculatePercentage(3); }
-    public int getPercent2() { return calculatePercentage(2); }
-    public int getPercent1() { return calculatePercentage(1); }
+    public int getPercent5() {
+        return calculatePercentage(5);
+    }
+
+    public int getPercent4() {
+        return calculatePercentage(4);
+    }
+
+    public int getPercent3() {
+        return calculatePercentage(3);
+    }
+
+    public int getPercent2() {
+        return calculatePercentage(2);
+    }
+
+    public int getPercent1() {
+        return calculatePercentage(1);
+    }
 
     private int calculatePercentage(int starTarget) {
-        if (reviews == null || reviews.isEmpty()) return 0;
+        if (reviews == null || reviews.isEmpty())
+            return 0;
         long count = 0;
         for (Review r : reviews) {
-            if (Math.round(r.getRating()) == starTarget) count++;
+            if (Math.round(r.getRating()) == starTarget)
+                count++;
         }
         return (int) ((count * 100) / reviews.size());
     }
 
     // Getters y Setters
-    public Long getId()               { return id; }
-    public void setId(Long id)        { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getName()           { return name; }
-    public void setName(String n)     { this.name = n; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public double getPrice()          { return price; }
-    public void setPrice(double p)    { this.price = p; }
+    public String getName() {
+        return name;
+    }
 
-    public String getDescription()    { return description; }
-    public void setDescription(String d) { this.description = d; }
+    public void setName(String n) {
+        this.name = n;
+    }
 
-    public List<String> getTags()     { return tags; }
-    public void setTags(List<String> t) { this.tags = t; }
+    public double getPrice() {
+        return price;
+    }
 
-    public List<Image> getImages()    { return images; }
-    public void setImages(List<Image> imgs) { this.images = imgs; }
+    public void setPrice(double p) {
+        this.price = p;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String d) {
+        this.description = d;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> t) {
+        this.tags = t;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> imgs) {
+        this.images = imgs;
+    }
 
     public String getMainImage() {
         if (images != null && !images.isEmpty()) {
@@ -117,9 +168,9 @@ public class Product {
         return String.format("%.2f", price);
     }
 
-    public Category getCategory()            { return category; }
-    public void setCategory(Category c)      { this.category = c; }
-}
+    public Category getCategory() {
+        return category;
+    }
 
     public void setCategory(Category category) {
         this.category = category;
