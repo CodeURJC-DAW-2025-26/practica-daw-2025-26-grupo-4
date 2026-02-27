@@ -53,6 +53,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/register").permitAll()
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/product/**").permitAll()
+                        .requestMatchers("/products/**").permitAll()
                         .requestMatchers("/cart").permitAll()
                         .requestMatchers("/cart/**").permitAll()
                         // PRIVATE PAGES

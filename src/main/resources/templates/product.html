@@ -30,8 +30,8 @@
                     </div>
                     <div class="thumbnails">
                         {{#product.images}}
-                        <div class="thumbnail" onclick="changeImage(this, '{{.}}')">
-                            <img src="{{.}}" alt="Miniatura">
+                        <div class="thumbnail" onclick="changeImage(this, '{{url}}')">
+                            <img src="{{url}}" alt="Miniatura">
                         </div>
                         {{/product.images}}
                     </div>
@@ -123,31 +123,31 @@
                     <div>
                         <span>5 ★</span>
                         <div class="bar">
-                            <div class="fill" style="width: {{product.percent5}}%"></div>
+                            <div class="fill" data-width="{{product.percent5}}"></div>
                         </div>
                     </div>
                     <div>
                         <span>4 ★</span>
                         <div class="bar">
-                            <div class="fill" style="width: {{product.percent4}}%"></div>
+                            <div class="fill" data-width="{{product.percent4}}"></div>
                         </div>
                     </div>
                     <div>
                         <span>3 ★</span>
                         <div class="bar">
-                            <div class="fill" style="width: {{product.percent3}}%"></div>
+                            <div class="fill" data-width="{{product.percent3}}"></div>
                         </div>
                     </div>
                     <div>
                         <span>2 ★</span>
                         <div class="bar">
-                            <div class="fill" style="width: {{product.percent2}}%"></div>
+                            <div class="fill" data-width="{{product.percent2}}"></div>
                         </div>
                     </div>
                     <div>
                         <span>1 ★</span>
                         <div class="bar">
-                            <div class="fill" style="width: {{product.percent1}}%"></div>
+                            <div class="fill" data-width="{{product.percent1}}"></div>
                         </div>
                     </div>
                 </div>
@@ -172,6 +172,11 @@
     </div>
 
     <script>
+        // Aplicar anchos de las barras de valoración desde data-width
+        document.querySelectorAll('.fill[data-width]').forEach(el => {
+            el.style.width = el.dataset.width + '%';
+        });
+
         function changeQty(delta) {
             const display = document.getElementById('qty-value');
             const input = document.getElementById('qty-input');

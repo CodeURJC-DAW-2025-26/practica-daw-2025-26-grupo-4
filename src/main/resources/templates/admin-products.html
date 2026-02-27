@@ -18,14 +18,92 @@
             <div class="content-body">
                 <h1 class="page-title">Gestor de productos</h1>
 
-                <!-- Acciones principales -->
+                <!-- Mensajes de servidor -->
+                {{#errorMsg}}
+                <div class="form-alert form-alert--error">
+                    <i class="fa-solid fa-circle-exclamation"></i> {{errorMsg}}
+                </div>
+                {{/errorMsg}}
+                {{#successMsg}}
+                <div class="form-alert form-alert--success">
+                    <i class="fa-solid fa-circle-check"></i> {{successMsg}}
+                </div>
+                {{/successMsg}}
+
+                <!-- Formulario de creación de producto -->
                 <section class="admin-card product-management">
-                    <h2>Acciones</h2>
-                    <div class="action-buttons-container">
-                        <button class="action-btn primary-action">
-                            <i class="fa-solid fa-plus"></i> Añadir producto
-                        </button>
-                    </div>
+                    <h2>Añadir nuevo producto</h2>
+                    <form id="createProductForm" action="/admin/products/create" method="post" enctype="multipart/form-data" class="product-create-form" novalidate>
+                        <input type="hidden" name="_csrf" value="{{token}}">
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="name">Nombre <span class="required">*</span></label>
+                                <input type="text" id="name" name="name" placeholder="Ej: Monstera Deliciosa"
+                                       class="form-input" maxlength="100" autocomplete="off">
+                                <span class="form-error" id="err-name"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="price">Precio (€) <span class="required">*</span></label>
+                                <input type="number" id="price" name="price" step="0.01" min="0.01" max="99999"
+                                       placeholder="0.00" class="form-input">
+                                <span class="form-error" id="err-price"></span>
+                            </div>
+
+                            <div class="form-group form-group--wide">
+                                <label for="description">
+                                    Descripción
+                                    <span class="form-hint" id="desc-counter" style="float:right;">0 / 500</span>
+                                </label>
+                                <textarea id="description" name="description" rows="3"
+                                          placeholder="Describe el producto..." class="form-input form-textarea"
+                                          maxlength="500" oninput="updateCounter()"></textarea>
+                                <span class="form-error" id="err-description"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="tags">Etiquetas</label>
+                                <input type="text" id="tags" name="tags" placeholder="Verde, Interior, Tropical" class="form-input">
+                                <span class="form-hint">Separadas por comas</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="categoryId">Categoría</label>
+                                <select id="categoryId" name="categoryId" class="admin-select form-input">
+                                    <option value="">— Sin categoría —</option>
+                                    {{#categories}}
+                                    <option value="{{id}}">{{name}}</option>
+                                    {{/categories}}
+                                </select>
+                            </div>
+
+                            <div class="form-group form-group--wide">
+                                <label for="images">Imágenes del producto <span class="required">*</span></label>
+                                <div class="file-upload-wrapper">
+                                    <input type="file" id="images" name="images" accept="image/*" multiple
+                                           class="file-input" onchange="previewImages(event)">
+                                    <label for="images" class="file-upload-label">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <span id="file-label-text">Seleccionar imágenes...</span>
+                                    </label>
+                                </div>
+                                <span class="form-hint">Puedes seleccionar varias. Máx. 5 MB por imagen.</span>
+                                <span class="form-error" id="err-image"></span>
+                                <div id="image-preview-container" class="image-preview-container" style="display:none;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="action-btn primary-action">
+                                <i class="fa-solid fa-plus"></i> Crear producto
+                            </button>
+                            <button type="reset" class="action-btn secondary-action" onclick="resetForm()">
+                                <i class="fa-solid fa-rotate-left"></i> Limpiar
+                            </button>
+                        </div>
+                    </form>
                 </section>
 
                 <!-- Listado de productos -->
@@ -72,5 +150,160 @@
 
         {{>footer}}
     </div>
+
+    <script>
+        const MAX_IMAGE_MB = 5;
+        const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+
+        // --- Validación frontend ---
+        document.getElementById('createProductForm').addEventListener('submit', function(e) {
+            if (!validateForm()) {
+                e.preventDefault();
+            }
+        });
+
+        function validateForm() {
+            let valid = true;
+
+            // Nombre
+            const name = document.getElementById('name').value.trim();
+            if (!name) {
+                setError('name', 'El nombre es obligatorio.');
+                valid = false;
+            } else if (name.length < 2) {
+                setError('name', 'Mínimo 2 caracteres.');
+                valid = false;
+            } else if (name.length > 100) {
+                setError('name', 'Máximo 100 caracteres.');
+                valid = false;
+            } else {
+                clearError('name');
+            }
+
+            // Precio
+            const priceRaw = document.getElementById('price').value.trim();
+            const price = parseFloat(priceRaw);
+            if (!priceRaw) {
+                setError('price', 'El precio es obligatorio.');
+                valid = false;
+            } else if (isNaN(price) || price <= 0) {
+                setError('price', 'Introduce un precio mayor que 0.');
+                valid = false;
+            } else if (price > 99999) {
+                setError('price', 'El precio no puede superar 99.999 €.');
+                valid = false;
+            } else {
+                clearError('price');
+            }
+
+            // Descripción
+            const desc = document.getElementById('description').value;
+            if (desc.length > 500) {
+                setError('description', 'Máximo 500 caracteres.');
+                valid = false;
+            } else {
+                clearError('description');
+            }
+
+            // Imagen
+            const imageInput = document.getElementById('images');
+            if (!imageInput.files || imageInput.files.length === 0) {
+                setError('image', 'Debes subir al menos una imagen.');
+                valid = false;
+            } else {
+                let imgError = null;
+                for (const file of imageInput.files) {
+                    if (!ALLOWED_TYPES.includes(file.type)) {
+                        imgError = 'Formato no válido. Usa JPG, PNG, WEBP o GIF.';
+                        break;
+                    }
+                    if (file.size > MAX_IMAGE_MB * 1024 * 1024) {
+                        imgError = 'Cada imagen no puede superar los ' + MAX_IMAGE_MB + ' MB.';
+                        break;
+                    }
+                }
+                if (imgError) {
+                    setError('image', imgError);
+                    valid = false;
+                } else {
+                    clearError('image');
+                }
+            }
+
+            return valid;
+        }
+
+        function setError(field, msg) {
+            const el = document.getElementById('err-' + field);
+            if (el) { el.textContent = msg; el.style.display = 'block'; }
+            const input = document.getElementById(field);
+            if (input) input.classList.add('form-input--error');
+        }
+
+        function clearError(field) {
+            const el = document.getElementById('err-' + field);
+            if (el) { el.textContent = ''; el.style.display = 'none'; }
+            const input = document.getElementById(field);
+            if (input) input.classList.remove('form-input--error');
+        }
+
+        // --- Vista previa múltiple ---
+        function previewImages(event) {
+            const files = Array.from(event.target.files);
+            const container = document.getElementById('image-preview-container');
+            container.innerHTML = '';
+            clearError('image');
+
+            if (files.length === 0) {
+                document.getElementById('file-label-text').textContent = 'Seleccionar imágenes...';
+                container.style.display = 'none';
+                return;
+            }
+
+            document.getElementById('file-label-text').textContent =
+                files.length === 1 ? files[0].name : files.length + ' imágenes seleccionadas';
+
+            let hasError = false;
+            files.forEach(file => {
+                if (!ALLOWED_TYPES.includes(file.type)) {
+                    setError('image', 'Formato no válido. Usa JPG, PNG, WEBP o GIF.');
+                    hasError = true; return;
+                }
+                if (file.size > MAX_IMAGE_MB * 1024 * 1024) {
+                    setError('image', 'Cada imagen no puede superar los ' + MAX_IMAGE_MB + ' MB.');
+                    hasError = true; return;
+                }
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'image-preview';
+                    img.alt = file.name;
+                    container.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            if (!hasError) container.style.display = 'flex';
+        }
+
+        // --- Contador descripción ---
+        function updateCounter() {
+            const len = document.getElementById('description').value.length;
+            const counter = document.getElementById('desc-counter');
+            counter.textContent = len + ' / 500';
+            counter.style.color = len > 450 ? 'var(--color-danger)' : '';
+        }
+
+        // --- Reset ---
+        function resetForm() {
+            ['name', 'price', 'description', 'image'].forEach(clearError);
+            document.getElementById('file-label-text').textContent = 'Seleccionar imágenes...';
+            const container = document.getElementById('image-preview-container');
+            container.innerHTML = '';
+            container.style.display = 'none';
+            document.getElementById('desc-counter').textContent = '0 / 500';
+        }
+    </script>
 </body>
 </html>
