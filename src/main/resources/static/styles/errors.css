@@ -1,10 +1,23 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: var(--space-3) var(--space-5) var(--space-5);
+    gap: var(--space-2);
+}
+
+.main-content--full {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .error-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
     padding: var(--space-5);
-    background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-bg) 100%);
 }
 
 .error-content {
