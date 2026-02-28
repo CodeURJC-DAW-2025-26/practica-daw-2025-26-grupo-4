@@ -19,12 +19,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import es.urjc.daw04.model.Cart;
 import es.urjc.daw04.model.Order;
 import es.urjc.daw04.model.Product;
 import es.urjc.daw04.model.Review;
 import es.urjc.daw04.model.User;
-import es.urjc.daw04.model.Cart;
-
 import es.urjc.daw04.service.CartService;
 import es.urjc.daw04.service.OrderService;
 import es.urjc.daw04.service.ProductService;
@@ -281,7 +280,16 @@ public class ShopController {
             model.addAttribute("token", csrf.getToken());
         }
 
-        Page<Order> firstPage = orderService.findAllPaged(0, ORDERS_PAGE_SIZE);
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        User user = userService.findByName(principal.getName()).orElse(null);
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        Page<Order> firstPage = orderService.findByUserPaged(user, 0, ORDERS_PAGE_SIZE);
         model.addAttribute("orders", toOrdersData(firstPage.getContent(), principal));
         model.addAttribute("hasMore", firstPage.hasNext());
         return "order";
@@ -289,7 +297,18 @@ public class ShopController {
 
     @GetMapping("/api/orders/fragment")
     public String ordersFragment(@RequestParam(defaultValue = "1") int page, Model model, Principal principal) {
-        Page<Order> p = orderService.findAllPaged(page, ORDERS_PAGE_SIZE);
+        if (principal == null) {
+            model.addAttribute("orders", List.of());
+            return "fragments/orders";
+        }
+
+        User user = userService.findByName(principal.getName()).orElse(null);
+        if (user == null) {
+            model.addAttribute("orders", List.of());
+            return "fragments/orders";
+        }
+
+        Page<Order> p = orderService.findByUserPaged(user, page, ORDERS_PAGE_SIZE);
         model.addAttribute("orders", toOrdersData(p.getContent(), principal));
         return "fragments/orders";
     }
