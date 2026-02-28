@@ -5,13 +5,27 @@
     <td>{{categoryName}}</td>
     <td>{{price}} €</td>
     <td>
-        <form action="/admin/products/{{id}}/delete" method="post" style="display:inline;">
-            <input type="hidden" name="_csrf" value="{{token}}">
-            <button type="submit" class="action-btn danger-action"
-                    onclick="return confirm('¿Eliminar {{name}}?')">
-                <i class="fa-solid fa-trash"></i> Eliminar
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+            <button type="button" class="action-btn secondary-action" 
+                onclick="editProduct(this)"
+                data-id="{{id}}"
+                data-name="{{name}}"
+                data-price="{{price}}"
+                data-description="{{description}}"
+                data-tags="{{tags}}"
+                data-category-id="{{categoryId}}"
+                data-images='{{#images}}{{id}}|{{url}},{{/images}}'
+                >
+                <i class="fa-solid fa-pen"></i> Editar
             </button>
-        </form>
+            <form action="/admin/products/{{id}}/delete" method="post" style="display:inline; margin:0;">
+                <input type="hidden" name="_csrf" value="{{token}}">
+                <button type="submit" class="action-btn danger-action"
+                        onclick="return confirm('¿Eliminar {{name}}?')">
+                    <i class="fa-solid fa-trash"></i> Eliminar
+                </button>
+            </form>
+        </div>
     </td>
 </tr>
 {{/products}}

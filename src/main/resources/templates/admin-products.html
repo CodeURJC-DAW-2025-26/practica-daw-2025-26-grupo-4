@@ -44,7 +44,7 @@
 
                 <!-- Formulario de creación de producto -->
                 <section class="admin-card product-management">
-                    <h2>Añadir nuevo producto</h2>
+                    <h2 id="productFormTitle">Añadir nuevo producto</h2>
                     <form id="createProductForm" action="/admin/products/create" method="post" enctype="multipart/form-data" class="product-create-form" novalidate>
                         <input type="hidden" name="_csrf" value="{{token}}">
 
@@ -91,7 +91,10 @@
                             </div>
 
                             <div class="form-group form-group--wide">
-                                <label for="images">Imágenes del producto <span class="required">*</span></label>
+                                <label>Imágenes actuales</label>
+                                <div id="current-images-container" class="current-images-grid"></div>
+
+                                <label for="images" style="margin-top: 1rem;">Añadir nuevas imágenes</label>
                                 <div class="file-upload-wrapper">
                                     <input type="file" id="images" name="images" accept="image/*" multiple
                                            class="file-input" onchange="previewImages(event)">
@@ -108,10 +111,13 @@
                         </div>
 
                         <div class="form-actions">
-                            <button type="submit" class="action-btn primary-action">
+                            <button type="submit" id="productSubmitBtn" class="action-btn primary-action">
                                 <i class="fa-solid fa-plus"></i> Crear producto
                             </button>
-                            <button type="reset" class="action-btn secondary-action" onclick="resetForm()">
+                            <button type="button" id="productCancelBtn" class="action-btn secondary-action" style="display:none;" onclick="cancelEditProduct()">
+                                Cancelar
+                            </button>
+                            <button type="reset" id="productResetBtn" class="action-btn secondary-action" onclick="resetForm()">
                                 <i class="fa-solid fa-rotate-left"></i> Limpiar
                             </button>
                         </div>
@@ -208,13 +214,26 @@
                                 <td>{{categoryName}}</td>
                                 <td>{{price}} €</td>
                                 <td>
-                                    <form action="/admin/products/{{id}}/delete" method="post" style="display:inline;">
-                                        <input type="hidden" name="_csrf" value="{{token}}">
-                                        <button type="submit" class="action-btn danger-action"
-                                                onclick="return confirm('¿Eliminar {{name}}?')">
-                                            <i class="fa-solid fa-trash"></i> Eliminar
+                                    <div style="display:flex; gap:0.5rem; align-items:center;">
+                                        <button type="button" class="action-btn secondary-action" 
+                                            onclick="editProduct(this)"
+                                            data-id="{{id}}"
+                                            data-name="{{name}}"
+                                            data-price="{{price}}"
+                                            data-category-id="{{categoryId}}"
+                                            data-description="{{description}}"
+                                            data-tags="{{tags}}"
+                                            data-images='{{#images}}{{id}}|{{url}},{{/images}}'>
+                                            <i class="fa-solid fa-pen"></i> Editar
                                         </button>
-                                    </form>
+                                        <form action="/admin/products/{{id}}/delete" method="post" style="display:inline; margin:0;">
+                                            <input type="hidden" name="_csrf" value="{{token}}">
+                                            <button type="submit" class="action-btn danger-action"
+                                                    onclick="return confirm('¿Eliminar {{name}}?')">
+                                                <i class="fa-solid fa-trash"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             {{/products}}
@@ -249,6 +268,132 @@
     <script>
         const MAX_IMAGE_MB = 5;
         const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+
+        // --- Gestión de productos CRUD ---
+        function editProduct(btn) {
+            const id = btn.dataset.id;
+            const name = btn.dataset.name;
+            const price = btn.dataset.price;
+            const catId = btn.dataset.categoryId;
+            const desc = btn.dataset.description;
+            const tags = btn.dataset.tags;
+            const imagesStr = btn.dataset.images || ''; 
+            // Format: id|url,id|url,...
+
+            // 1. Rellenar campos simples
+            document.getElementById('name').value = name;
+            document.getElementById('price').value = price;
+            document.getElementById('description').value = desc;
+            document.getElementById('tags').value = tags;
+            document.getElementById('categoryId').value = catId;
+            updateCounter();
+
+            // 2. Cambiar estado del formulario
+            const form = document.getElementById('createProductForm');
+            form.action = '/admin/products/' + id + '/update';
+            
+            document.getElementById('productFormTitle').innerText = 'Editar producto: ' + name;
+            const submitBtn = document.getElementById('productSubmitBtn');
+            submitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Guardar Cambios';
+            
+            document.getElementById('productCancelBtn').style.display = 'inline-block';
+            document.getElementById('productResetBtn').style.display = 'none';
+
+            // 3. Renderizar imágenes actuales
+            const container = document.getElementById('current-images-container');
+            container.innerHTML = '';
+
+            if (imagesStr.trim()) {
+                const images = imagesStr.split(',').filter(s => s.trim().length > 0);
+                images.forEach(imgStr => {
+                    const parts = imgStr.split('|');
+                    if(parts.length < 2) return;
+                    const imgId = parts[0];
+                    const imgUrl = parts[1];
+
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'current-image-wrapper';
+                    wrapper.style.position = 'relative';
+                    wrapper.style.display = 'inline-block';
+                    wrapper.style.margin = '5px';
+
+                    const img = document.createElement('img');
+                    img.src = imgUrl;
+                    img.style.width = '80px';
+                    img.style.height = '80px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '4px';
+                    
+                    // Botón de borrar (X)
+                    const delBtn = document.createElement('button');
+                    delBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                    delBtn.className = 'image-delete-btn';
+                    delBtn.style.position = 'absolute';
+                    delBtn.style.top = '-5px';
+                    delBtn.style.right = '-5px';
+                    delBtn.style.background = 'red';
+                    delBtn.style.color = 'white';
+                    delBtn.style.border = 'none';
+                    delBtn.style.borderRadius = '50%';
+                    delBtn.style.width = '20px';
+                    delBtn.style.height = '20px';
+                    delBtn.style.cursor = 'pointer';
+                    delBtn.style.fontSize = '12px';
+                    delBtn.style.display = 'flex';
+                    delBtn.style.alignItems = 'center';
+                    delBtn.style.justifyContent = 'center';
+                    delBtn.onclick = function(e) {
+                         e.preventDefault(); 
+                         if(confirm('¿Borrar esta imagen?')) {
+                             deleteProductImage(id, imgId);
+                         }
+                    };
+
+                    wrapper.appendChild(img);
+                    wrapper.appendChild(delBtn);
+                    container.appendChild(wrapper);
+                });
+            } else {
+                container.innerHTML = '<p style="color:#666; font-size:0.9em; font-style:italic;">Sin imágenes actuales</p>';
+            }
+
+            // Scroll to form
+            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function cancelEditProduct() {
+            const form = document.getElementById('createProductForm');
+            form.reset();
+            form.action = '/admin/products/create';
+            
+            document.getElementById('productFormTitle').innerText = 'Añadir nuevo producto';
+            
+            const submitBtn = document.getElementById('productSubmitBtn');
+            submitBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Crear producto';
+            
+            document.getElementById('productCancelBtn').style.display = 'none';
+            document.getElementById('productResetBtn').style.display = 'inline-block';
+            
+            document.getElementById('current-images-container').innerHTML = '';
+            document.getElementById('image-preview-container').innerHTML = '';
+            updateCounter();
+        }
+
+        function deleteProductImage(productId, imageId) {
+            // Se crea un formulario dinámico para enviar la petición POST
+            const form = document.createElement('form');
+            form.method = 'post';
+            form.action = '/admin/products/' + productId + '/images/' + imageId + '/delete';
+            
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_csrf';
+            csrfInput.value = document.querySelector('input[name="_csrf"]').value;
+            
+            form.appendChild(csrfInput);
+            document.body.appendChild(form);
+            form.submit();
+        }
 
         // --- Gestión de categorías CRUD ---
         function editCategory(id, name, icon) {
