@@ -349,12 +349,22 @@ a {
 /* User Result Card */
 .user-result-card {
     background-color: var(--color-primary-200);
-    padding: var(--space-5);
     border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: var(--space-4);
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.user-result-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.user-card-header {
+    padding: var(--space-5);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
     gap: var(--space-5);
 }
 
@@ -362,6 +372,8 @@ a {
     display: flex;
     align-items: center;
     gap: var(--space-4);
+    flex: 1;
+    min-width: 0;
 }
 
 .user-avatar {
@@ -385,11 +397,102 @@ a {
 .user-card-actions {
     display: flex;
     gap: var(--space-3);
+    align-items: center;
+    flex-shrink: 0;
 }
 
-.manage-btn {
-    background-color: var(--color-warning);
+.action-buttons {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.action-buttons form {
+    display: inline;
+}
+
+.expand-btn {
+    background-color: var(--color-primary-500);
     color: var(--color-surface);
+    border: none;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+}
+
+.expand-btn:hover {
+    background-color: var(--color-primary-600);
+    transform: scale(1.05);
+}
+
+.expand-btn.expanded i {
+    transform: rotate(180deg);
+}
+
+.expand-btn i {
+    transition: transform 0.3s ease;
+}
+
+/* User Edit Form */
+.user-edit-form {
+    background-color: var(--color-primary-100);
+    padding: var(--space-5);
+    border-top: 1px solid var(--color-primary-300);
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px;
+    }
+}
+
+.edit-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+}
+
+@media (max-width: 900px) {
+    .edit-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.form-group label {
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+}
+
+.form-group--wide {
+    grid-column: 1 / -1;
+}
+
+.edit-form-actions {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
 }
 
 .block-btn {
@@ -438,10 +541,6 @@ a {
 .danger-action:hover {
     background-color: var(--color-danger);
     filter: brightness(0.9);
-}
-
-.user-result-card + .user-result-card {
-    margin-top: var(--space-4);
 }
 
 /* Actions */
