@@ -68,6 +68,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/user/**").hasAnyRole("USER")
                         .requestMatchers("/order").hasAnyRole("USER")
                         .requestMatchers("/order/**").hasAnyRole("USER")
+                        .requestMatchers("/review/**").hasAnyRole("USER")
                         .requestMatchers("/admin").hasAnyRole("ADMIN")
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                         .anyRequest().permitAll())

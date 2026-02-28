@@ -152,6 +152,36 @@
                     </div>
                 </div>
 
+                {{#userReview}}
+                <div class="user-review-section">
+                    <h3>Tu reseña</h3>
+                    <div class="comment user-comment">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <strong>{{userReview.authorName}}</strong>
+                                <div class="comment-stars">
+                                    {{#userReview.stars}}
+                                    <i class="{{.}}"></i>
+                                    {{/userReview.stars}}
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn-edit-review" onclick="openEditReviewModal({{userReview.id}}, '{{userReview.rating}}', '{{userReview.content}}')">
+                                    <i class="fa-solid fa-pen"></i> Editar
+                                </button>
+                                <form action="/review/{{userReview.id}}/delete" method="post" style="display:inline;">
+                                    <input type="hidden" name="_csrf" value="{{token}}">
+                                    <button type="submit" class="btn-delete-review" onclick="return confirm('¿Eliminar tu reseña?')">
+                                        <i class="fa-solid fa-trash"></i> Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <p>{{userReview.content}}</p>
+                    </div>
+                </div>
+                {{/userReview}}
+
                 <div class="comments" id="reviews-list">
                     {{#firstReviews}}
                     <div class="comment">
@@ -176,6 +206,41 @@
         </main>
     </div>
 
+    <!-- Edit Review Modal -->
+    <div id="edit-review-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar reseña</h2>
+                <button type="button" class="modal-close" id="close-edit-modal">&times;</button>
+            </div>
+            <form id="edit-review-form" method="post">
+                <input type="hidden" name="_csrf" value="{{token}}">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Puntuación*</label>
+                        <div class="star-rating">
+                            <i class="fa-regular fa-star" data-rating="1"></i>
+                            <i class="fa-regular fa-star" data-rating="2"></i>
+                            <i class="fa-regular fa-star" data-rating="3"></i>
+                            <i class="fa-regular fa-star" data-rating="4"></i>
+                            <i class="fa-regular fa-star" data-rating="5"></i>
+                        </div>
+                        <input type="hidden" id="edit-review-rating" name="rating"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-content">Comentario*</label>
+                        <textarea id="edit-content" name="content" required rows="4" placeholder="Cuéntanos tu experiencia con este producto..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel-btn" id="cancel-edit-btn">Cancelar</button>
+                    <button type="submit" class="save-btn">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="/js/pagination.js"></script>
     <script>
         initInfiniteScroll({
@@ -184,6 +249,106 @@
             spinnerId:   'reviews-spinner',
             ajaxUrl:     '/api/products/{{productId}}/reviews/fragment',
             hasMore:     {{reviewsHasMore}}
+        });
+
+        // Edit Review Modal Management
+        const editReviewModal = document.getElementById('edit-review-modal');
+        const closeEditModalBtn = document.getElementById('close-edit-modal');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const editReviewForm = document.getElementById('edit-review-form');
+        const editReviewRatingInput = document.getElementById('edit-review-rating');
+        const editContentTextarea = document.getElementById('edit-content');
+
+        function openEditReviewModal(reviewId, currentRating, currentContent) {
+            editReviewModal.style.display = 'flex';
+            editReviewForm.action = '/review/' + reviewId + '/edit';
+            editReviewForm.reset();
+            editContentTextarea.value = currentContent;
+            editReviewRatingInput.value = currentRating;
+
+            // Set stars based on current rating
+            const stars = document.querySelectorAll('#edit-review-modal .star-rating i');
+            stars.forEach(star => {
+                const rating = parseInt(star.getAttribute('data-rating'));
+                if (rating <= currentRating) {
+                    star.classList.remove('fa-regular');
+                    star.classList.add('fa-solid');
+                } else {
+                    star.classList.remove('fa-solid');
+                    star.classList.add('fa-regular');
+                }
+            });
+        }
+
+        function closeEditModal() {
+            editReviewModal.style.display = 'none';
+        }
+
+        closeEditModalBtn.addEventListener('click', closeEditModal);
+        cancelEditBtn.addEventListener('click', closeEditModal);
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target === editReviewModal) {
+                closeEditModal();
+            }
+        });
+
+        // Star rating system for edit modal
+        const editStars = document.querySelectorAll('#edit-review-modal .star-rating i');
+        let editSelectedRating = 0;
+
+        editStars.forEach((star, index) => {
+            star.addEventListener('mouseenter', () => {
+                editStars.forEach((s, i) => {
+                    if (i <= index) {
+                        s.classList.remove('fa-regular');
+                        s.classList.add('fa-solid');
+                    } else {
+                        s.classList.remove('fa-solid');
+                        s.classList.add('fa-regular');
+                    }
+                });
+            });
+
+            star.addEventListener('click', () => {
+                editSelectedRating = parseInt(star.getAttribute('data-rating'));
+                editReviewRatingInput.value = editSelectedRating;
+
+                editStars.forEach((s, i) => {
+                    if (i < editSelectedRating) {
+                        s.classList.remove('fa-regular');
+                        s.classList.add('fa-solid');
+                    } else {
+                        s.classList.remove('fa-solid');
+                        s.classList.add('fa-regular');
+                    }
+                });
+            });
+        });
+
+        // Reset to selected rating on mouse leave
+        const editStarContainer = document.querySelector('#edit-review-modal .star-rating');
+        if (editStarContainer) {
+            editStarContainer.addEventListener('mouseleave', () => {
+                editStars.forEach((s, i) => {
+                    if (i < editSelectedRating) {
+                        s.classList.remove('fa-regular');
+                        s.classList.add('fa-solid');
+                    } else {
+                        s.classList.remove('fa-solid');
+                        s.classList.add('fa-regular');
+                    }
+                });
+            });
+        }
+
+        // Validate form before submit
+        editReviewForm.addEventListener('submit', (e) => {
+            if (!editReviewRatingInput.value) {
+                e.preventDefault();
+                alert('Por favor, selecciona una puntuación');
+            }
         });
     </script>
     <script>

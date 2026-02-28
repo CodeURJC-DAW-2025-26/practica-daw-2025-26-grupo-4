@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 import es.urjc.daw04.model.Image;
 import es.urjc.daw04.model.Product;
 import es.urjc.daw04.model.User;
@@ -29,6 +28,7 @@ import es.urjc.daw04.service.CategoryService;
 import es.urjc.daw04.service.ImageService;
 import es.urjc.daw04.service.ProductService;
 import es.urjc.daw04.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class AdminController {

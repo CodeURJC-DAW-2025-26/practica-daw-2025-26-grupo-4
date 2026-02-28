@@ -3,6 +3,8 @@ package es.urjc.daw04.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.BatchSize;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -13,7 +15,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import org.hibernate.annotations.BatchSize;
 
 @Entity
 public class Product {
@@ -60,7 +61,8 @@ public class Product {
         double total = 0;
         for (Review r : reviews)
             total += r.getRating();
-        return total / reviews.size();
+        double average = total / reviews.size();
+        return Math.round(average * 100.0) / 100.0;
     }
 
     public List<String> getAverageStars() {

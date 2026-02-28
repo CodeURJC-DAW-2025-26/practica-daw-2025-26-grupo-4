@@ -26,7 +26,12 @@
                 <p class="item-price">€{{price}} c/u</p>
             </div>
             <div class="item-actions">
-                <button class="btn btn-secondary btn-sm">Dejar opinión</button>
+                {{#hasReview}}
+                <span class="review-already-left">Ya has dejado una reseña</span>
+                {{/hasReview}}
+                {{^hasReview}}
+                <button class="btn btn-secondary btn-sm" onclick="openReviewModal({{productId}}, '{{name}}')">Dejar opinión</button>
+                {{/hasReview}}
             </div>
         </div>
         {{/items}}
