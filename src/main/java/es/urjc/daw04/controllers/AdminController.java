@@ -220,6 +220,18 @@ public class AdminController {
         response.sendRedirect("/admin/products?catSuccess=true");
     }
 
+    @PostMapping("/admin/categories/{id}/update")
+    public void updateCategory(@PathVariable Long id, @RequestParam String name, @RequestParam(required = false) String icon, HttpServletResponse response) throws IOException {
+         categoryService.findById(id).ifPresent(category -> {
+             category.setName(name);
+             // Opcional: actualizar slug si cambia el nombre
+             category.setSlug(name.toLowerCase().replace(" ", "-").replaceAll("[^a-z0-9-]", ""));
+             category.setIcon(icon);
+             categoryService.save(category);
+         });
+         response.sendRedirect("/admin/products?catSuccess=true");
+    }
+
     @PostMapping("/admin/categories/{id}/delete")
     public void deleteCategory(@PathVariable Long id, HttpServletResponse response) throws IOException {
         try {
