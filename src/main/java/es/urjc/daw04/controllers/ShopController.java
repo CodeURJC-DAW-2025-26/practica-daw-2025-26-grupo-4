@@ -158,9 +158,30 @@ public class ShopController {
         response.sendRedirect(referer != null ? referer : "/cart");
     }
 
+    @PostMapping("/cart/buy")
+    public void buyNow(@RequestParam long productId,
+            @RequestParam(defaultValue = "1") int quantity,
+            HttpServletResponse response) throws IOException {
+        
+        // Start with empty cart to buy only this item
+        String newContent = "";
+        
+        // Add the product quantity times
+        for (int i = 0; i < quantity; i++) {
+            newContent = cartService.addProduct(newContent, productId);
+        }
+
+        Cookie cookie = new Cookie("cart", newContent);
+        cookie.setPath("/");
+        cookie.setMaxAge(60 * 60 * 24 * 7);
+        response.addCookie(cookie);
+
+        response.sendRedirect("/payment/success");
+    }
+
     // -- PAYMENT --
     @GetMapping("/payment/success")
-    public String processPaymentSuccess(@RequestParam("session_id") String sessionId,
+    public String processPaymentSuccess(
             @CookieValue(value = "cart", defaultValue = "") String cartContent,
             HttpServletResponse response, HttpServletRequest request) {
 
