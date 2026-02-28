@@ -1,0 +1,61 @@
+{{#recommendations}}
+{{#combo}}
+<div class="rec-combo-card">
+    <div class="rec-combo-badge">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> {{label}}
+    </div>
+    <div class="rec-combo-products">
+        {{#comboProducts}}
+        <a href="/product/{{id}}" class="rec-combo-item">
+            <div class="rec-combo-img-wrap">
+                <img src="{{mainImage}}" alt="{{name}}">
+            </div>
+            <div class="rec-combo-info">
+                <span class="rec-combo-name">{{name}}</span>
+                <span class="rec-combo-price">€{{formattedPrice}}</span>
+            </div>
+        </a>
+        {{/comboProducts}}
+    </div>
+    <div class="rec-combo-footer">
+        <span class="rec-combo-total">Total del combo: <strong>€{{formattedTotalPrice}}</strong></span>
+        <button class="btn btn--primary btn--sm" onclick="addComboToCart('{{comboIds}}')">
+            <i class="fa-solid fa-cart-plus"></i> Añadir todo al carrito
+        </button>
+    </div>
+</div>
+{{/combo}}
+{{^combo}}
+{{#singleProduct}}
+<div class="product-card">
+    <a href="/product/{{id}}">
+        <div class="image-container">
+            <img src="{{mainImage}}" alt="{{name}}">
+        </div>
+        <div class="card-details">
+            <h3>{{name}}</h3>
+            <p class="description">{{description}}</p>
+            <div class="tags">
+                {{#tags}}
+                <span class="tag">{{.}}</span>
+                {{/tags}}
+            </div>
+            <div class="price">€{{formattedPrice}}</div>
+            <div class="card-actions">
+                <form action="/cart/add" method="post" style="display:contents;">
+                    <input type="hidden" name="_csrf" value="{{token}}">
+                    <input type="hidden" name="productId" value="{{id}}">
+                    <button type="submit" class="btn btn--primary btn--sm btn--grow">
+                        <i class="fa-solid fa-cart-plus"></i> Añadir al carrito
+                    </button>
+                </form>
+                <button class="btn btn--ghost btn--sm btn--icon btn--fav">
+                    <i class="fa-regular fa-heart"></i>
+                </button>
+            </div>
+        </div>
+    </a>
+</div>
+{{/singleProduct}}
+{{/combo}}
+{{/recommendations}}
