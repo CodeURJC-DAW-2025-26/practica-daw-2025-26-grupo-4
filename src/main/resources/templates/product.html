@@ -72,7 +72,12 @@
                         </form>
                     </div>
                     {{/isAdmin}}
-                    <button class="btn-buy">Comprar ahora</button>
+                    <form action="/cart/buy" method="post" style="display:inline;">
+                        <input type="hidden" name="_csrf" value="{{token}}">
+                        <input type="hidden" name="productId" value="{{product.id}}">
+                        <input type="hidden" name="quantity" id="qty-input-buy" value="{{quantity}}"> 
+                        <button type="submit" class="btn-buy">Comprar ahora</button>
+                    </form>
                     <form action="/cart/add" method="post" style="display:inline;">
                         <input type="hidden" name="_csrf" value="{{token}}">
                         <input type="hidden" name="productId" value="{{product.id}}">
@@ -82,24 +87,29 @@
 
                     <div class="recommend">
                         <h3>Completa tu pedido con</h3>
-                        <a href="/product/{{recommendedProduct.id}}" class="recommend-card">
-                            <img
-                                src="{{recommendedProduct.mainImage}}">
-                            <div>
-                                <strong>{{recommendedProduct.name}}</strong>
-                                <div class="tags small">
-                                    {{#recommendedProduct.tags}}
-                                    <span class="tag">{{.}}</span>
-                                    {{/recommendedProduct.tags}}
+                        <div class="recommend-card">
+                            <a href="/product/{{recommendedProduct.id}}" style="display: flex; align-items: center; text-decoration: none; color: inherit; flex-grow: 1;">
+                                <img src="{{recommendedProduct.mainImage}}">
+                                <div>
+                                    <strong>{{recommendedProduct.name}}</strong>
+                                    <div class="tags small">
+                                        {{#recommendedProduct.tags}}
+                                        <span class="tag">{{.}}</span>
+                                        {{/recommendedProduct.tags}}
+                                    </div>
+                                    <span class="rec-price">€{{recommendedProduct.formattedPrice}}/u</span>
                                 </div>
-                                <span class="rec-price">€{{recommendedProduct.formattedPrice}}/u</span>
+                            </a>
+                            <div class="rec-actions" style="margin-left: auto;">
+                                <form action="/cart/add" method="post" style="display: inline;">
+                                    <input type="hidden" name="_csrf" value="{{token}}">
+                                    <input type="hidden" name="productId" value="{{recommendedProduct.id}}">
+                                    <button type="submit" style="background: none; border: none; cursor: pointer; color: var(--primary-color); font-size: 1.2rem;">
+                                        <i class="fa-solid fa-cart-plus"></i>
+                                    </button>
+                                </form>
                             </div>
-                            <div class="rec-actions">
-                                <i class="fa-solid fa-cart-plus"></i>
-                                <i class="fa-regular fa-heart"></i>
-                            </div>
-                        </a>
-
+                        </div>
                     </div>
                 </section>
             </div>
@@ -360,11 +370,13 @@
         function changeQty(delta) {
             const display = document.getElementById('qty-value');
             const input = document.getElementById('qty-input');
+            const inputBuy = document.getElementById('qty-input-buy');
             const priceEl = document.getElementById('total-price');
             const unitPrice = parseFloat(priceEl.dataset.unitPrice);
             const newVal = Math.max(1, parseInt(display.textContent) + delta);
             display.textContent = newVal;
             input.value = newVal;
+            if (inputBuy) inputBuy.value = newVal;
             priceEl.textContent = '€' + (unitPrice * newVal).toFixed(2);
         }
 

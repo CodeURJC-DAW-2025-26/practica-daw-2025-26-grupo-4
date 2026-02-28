@@ -23,6 +23,8 @@ import es.urjc.daw04.model.Order;
 import es.urjc.daw04.model.Product;
 import es.urjc.daw04.model.Review;
 import es.urjc.daw04.model.User;
+import es.urjc.daw04.model.Cart;
+
 import es.urjc.daw04.service.CartService;
 import es.urjc.daw04.service.OrderService;
 import es.urjc.daw04.service.ProductService;
@@ -52,6 +54,8 @@ public class ShopController {
 
     @Autowired
     private UserService userService;
+
+    // -- PRODUCTS --
 
     @GetMapping("/product/{id}")
     public String viewProduct(Model model, @PathVariable Long id,
@@ -114,31 +118,34 @@ public class ShopController {
             @RequestParam double rating,
             HttpServletRequest request) {
         Product product = productService.findById(id).orElse(null);
-    var principal = request.getUserPrincipal();
+        var principal = request.getUserPrincipal();
 
-    if (product != null && principal != null) {
-        User user = userService.findByName(principal.getName()).orElse(null);
-        
-        if (user != null) {
-            // Verificar si ya existe una reseña del usuario para este producto
-            Optional<Review> existingReview = reviewService.findByProductIdAndUserId(id, user.getId());
+
+        if (product != null && principal != null) {
+            User user = userService.findByName(principal.getName()).orElse(null);
             
-            if (existingReview.isPresent()) {
-                // Actualizar la reseña existente
-                Review review = existingReview.get();
-                review.setContent(content);
-                review.setRating(rating);
-                reviewService.save(review);
-            } else {
-                // Crear nueva reseña
-                Review review = new Review(product, user, content, rating);
-                reviewService.save(review);
+            if (user != null) {
+                // Verificar si ya existe una reseña del usuario para este producto
+                Optional<Review> existingReview = reviewService.findByProductIdAndUserId(id, user.getId());
+                
+                if (existingReview.isPresent()) {
+                    // Actualizar la reseña existente
+                    Review review = existingReview.get();
+                    review.setContent(content);
+                    review.setRating(rating);
+                    reviewService.save(review);
+                } else {
+                    // Crear nueva reseña
+                    Review review = new Review(product, user, content, rating);
+                    reviewService.save(review);
+                }
             }
         }
+
+        return "redirect:/product/" + id;
     }
 
-    return "redirect:/product/" + id;
-    }
+    // -- CART --
 
     @PostMapping("/review/{reviewId}/edit")
     public String editReview(@PathVariable Long reviewId,
@@ -215,6 +222,55 @@ public class ShopController {
         String referer = request.getHeader("Referer");
         response.sendRedirect(referer != null ? referer : "/cart");
     }
+
+    @PostMapping("/cart/buy")
+    public void buyNow(@RequestParam long productId,
+            @RequestParam(defaultValue = "1") int quantity,
+            HttpServletResponse response) throws IOException {
+        
+        // Start with empty cart to buy only this item
+        String newContent = "";
+        
+        // Add the product quantity times
+        for (int i = 0; i < quantity; i++) {
+            newContent = cartService.addProduct(newContent, productId);
+        }
+
+        Cookie cookie = new Cookie("cart", newContent);
+        cookie.setPath("/");
+        cookie.setMaxAge(60 * 60 * 24 * 7);
+        response.addCookie(cookie);
+
+        response.sendRedirect("/payment/success");
+    }
+
+    // -- PAYMENT --
+    @GetMapping("/payment/success")
+    public String processPaymentSuccess(
+            @CookieValue(value = "cart", defaultValue = "") String cartContent,
+            HttpServletResponse response, HttpServletRequest request) {
+
+        var principal = request.getUserPrincipal(); // Logged user check
+
+        if (principal != null && !cartContent.isEmpty()) {
+            User user = userService.findByName(principal.getName()).orElse(null);
+
+            if (user != null) {
+                Cart cart = cartService.getCartFromCookie(cartContent);
+                orderService.saveOrderFromCart(cart, user);
+
+                // Clear cart cookie
+                Cookie cookie = new Cookie("cart", "");
+                cookie.setPath("/");
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+            }
+        }
+
+        return "redirect:/order";
+    }
+
+    // -- ORDER --
 
     @GetMapping("/order")
     public String order(Model model, HttpServletRequest request, Principal principal) {

@@ -28,6 +28,8 @@ public class CartItem {
         this.quantity = quantity;
     }
 
+    // GETTERS & SETTERS
+
     public Long getId() {
         return id;
     }

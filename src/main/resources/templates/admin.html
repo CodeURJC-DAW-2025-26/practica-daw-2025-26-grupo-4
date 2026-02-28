@@ -236,8 +236,7 @@
             </div>
         </main>
     </div>
-<<<<<<< HEAD
-
+    <script src="/js/pagination.js"></script>
     <script>
         function toggleUserEdit(userId) {
             const form = document.getElementById(`edit-form-${userId}`);
@@ -252,9 +251,7 @@
                 if (btn) btn.classList.remove('expanded');
             }
         }
-=======
-    <script src="/js/pagination.js"></script>
-    <script>
+
         initInfiniteScroll({
             containerId: 'users-list',
             sentinelId:  'users-sentinel',
@@ -262,7 +259,6 @@
             ajaxUrl:     '/api/admin/users/fragment',
             hasMore:     {{hasMore}}
         });
->>>>>>> 97c6635bc00b56a57af7458846afc9ec2d9ba78f
     </script>
 </body>
 </html>
