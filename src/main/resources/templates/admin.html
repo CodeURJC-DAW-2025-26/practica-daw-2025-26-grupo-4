@@ -25,61 +25,50 @@
                 <section class="admin-card statistics-section">
                     <h2>Estadísticas y gráficos</h2>
                     
-                    <div class="stats-subsection">
-                        <h3>Destacados</h3>
-                        <div class="charts-container">
-                            <div class="chart-wrapper">
-                                <h4>Categorías más vendidas:</h4>
-                                <div class="chart-placeholder pie-chart">
-                                    <!-- Simple CSS Pie Chart Representation -->
-                                    <div class="pie-segment segment-1"></div>
-                                    <div class="pie-segment segment-2"></div>
-                                    <div class="pie-segment segment-3"></div>
-                                    <div class="pie-center"></div>
-                                    <div class="chart-legend">
-                                        <span>Ventas A</span>
-                                        <span>Ventas B</span>
-                                        <span>Ventas C</span>
-                                    </div>
+                    <div class="stats-subsection" style="display:flex; flex-direction:column; gap:20px;">
+                        
+                        <!-- Row 1: Pie Charts -->
+                        <div class="charts-container" style="display: flex; gap: 20px; justify-content: space-around; flex-wrap: wrap;">
+                            <div class="chart-wrapper" style="width: 45%; min-width: 300px; height: 500px; display: flex; flex-direction: column; align-items: center; padding: 10px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                <h4 style="margin-bottom: 15px;">Productos más comprados (Categoría):</h4>
+                                <div style="flex: 1; width: 100%; position: relative; min-height: 0;">
+                                    <canvas id="categoryChart"></canvas>
                                 </div>
                             </div>
-                            <div class="chart-wrapper">
-                                <h4>Reporte semanal de ventas:</h4>
-                                <div class="chart-placeholder bar-chart">
-                                    <!-- Simple CSS Bar Chart Representation -->
-                                    <div class="bar-container">
-                                        <div class="bar" style="height: 40%;"></div>
-                                        <div class="bar" style="height: 70%;"></div>
-                                        <div class="bar" style="height: 50%;"></div>
-                                        <div class="bar" style="height: 80%;"></div>
-                                        <div class="bar" style="height: 60%;"></div>
-                                        <div class="bar" style="height: 90%;"></div>
-                                        <div class="bar" style="height: 55%;"></div>
-                                    </div>
-                                    <div class="x-axis">
-                                        <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
-                                    </div>
+                            <div class="chart-wrapper" style="width: 45%; min-width: 300px; height: 500px; display: flex; flex-direction: column; align-items: center; padding: 10px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                <h4 style="margin-bottom: 15px;">Productos por etiqueta:</h4>
+                                <div style="flex: 1; width: 100%; position: relative; min-height: 0;">
+                                    <canvas id="tagsChart"></canvas>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="search-stats-form">
-                        <h3>Buscar gráfico o estadística</h3>
-                        <div class="form-row">
-                            <select class="admin-select">
-                                <option>Nombre del gráfico</option>
-                                <option>Ventas anuales</option>
-                                <option>Rentabilidad</option>
-                            </select>
-                            <select class="admin-select">
-                                <option>Tipo de gráfico</option>
-                                <option>Circular</option>
-                                <option>Barras</option>
-                                <option>Lineal</option>
-                            </select>
+                        <!-- Row 2: Bar & Line Charts -->
+                        <div class="charts-container" style="display: flex; gap: 20px; justify-content: space-around; flex-wrap: wrap; margin-top:20px;">
+                            <div class="chart-wrapper" style="width: 45%; min-width: 300px; height: 500px; display: flex; flex-direction: column; align-items: center; padding: 10px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                <h4 style="margin-bottom: 15px;">Ventas mensuales (€):</h4>
+                                <div style="flex: 1; width: 100%; position: relative; min-height: 0;">
+                                    <canvas id="monthlySalesChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper" style="width: 45%; min-width: 300px; height: 500px; display: flex; flex-direction: column; align-items: center; padding: 10px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                <h4 style="margin-bottom: 15px;">Relación visitas-compra (Pedidos):</h4>
+                                <div style="flex: 1; width: 100%; position: relative; min-height: 0;">
+                                    <canvas id="visitorsChart"></canvas>
+                                </div>
+                            </div>
                         </div>
-                        <button class="accept-btn">Aceptar</button>
+
+                        <!-- Row 3: Reviews -->
+                        <div class="charts-container" style="display: flex; gap: 20px; justify-content: space-around; flex-wrap: wrap; margin-top:20px;">
+                            <div class="chart-wrapper" style="width: 90%; min-width: 300px; height: 500px; display: flex; flex-direction: column; align-items: center; padding: 10px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                <h4 style="margin-bottom: 15px;">Evolución de reseñas:</h4>
+                                <div style="flex: 1; width: 100%; position: relative; min-height: 0;">
+                                    <canvas id="reviewsChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </section>
 
@@ -258,6 +247,83 @@
             spinnerId:   'users-spinner',
             ajaxUrl:     '/api/admin/users/fragment',
             hasMore:     {{hasMore}}
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        // Initialize Charts
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            // 1. Category Chart
+            initChart('categoryChart', 'doughnut', 
+                [{{#catLabels}}'{{{.}}}',{{/catLabels}}], 
+                [{{#catData}}{{.}},{{/catData}}], 
+                'Unidades por Categoría',
+                ['rgba(255, 99, 132, 0.6)','rgba(54, 162, 235, 0.6)','rgba(255, 206, 86, 0.6)','rgba(75, 192, 192, 0.6)']
+            );
+
+            // 2. Tags Chart
+            initChart('tagsChart', 'doughnut', 
+                [{{#tagLabels}}'{{{.}}}',{{/tagLabels}}], 
+                [{{#tagData}}{{.}},{{/tagData}}], 
+                'Unidades por Etiqueta',
+                ['rgba(153, 102, 255, 0.6)','rgba(255, 159, 64, 0.6)','rgba(199, 199, 199, 0.6)','rgba(83, 102, 255, 0.6)']
+            );
+
+            // 3. Monthly Sales Chart
+            initChart('monthlySalesChart', 'bar', 
+                [{{#monthlyLabels}}'{{{.}}}',{{/monthlyLabels}}], 
+                [{{#monthlyData}}{{.}},{{/monthlyData}}], 
+                'Ventas Mensuales (€)',
+                'rgba(75, 192, 192, 0.6)', 'rgba(75, 192, 192, 1)'
+            );
+
+            // 4. Visitors/Orders Chart (Line)
+            initChart('visitorsChart', 'line', 
+                [{{#visitorsLabels}}'{{{.}}}',{{/visitorsLabels}}], 
+                [{{#visitorsData}}{{.}},{{/visitorsData}}], 
+                'Total Pedidos'
+            );
+
+            // 5. Reviews Chart (Line)
+            initChart('reviewsChart', 'line', 
+                [{{#reviewsLabels}}'{{{.}}}',{{/reviewsLabels}}], 
+                [{{#reviewsData}}{{.}},{{/reviewsData}}], 
+                'Nuevas Reseñas'
+            );
+
+            function initChart(canvasId, type, labels, data, label, bgColor, borderColor) {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas) return;
+                
+                if (data.length === 0 || (data.length === 12 && data.every(v => v === 0))) {
+                     canvas.parentNode.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#666;">No hay datos disponibles</div>';
+                     return;
+                }
+
+                new Chart(canvas.getContext('2d'), {
+                    type: type,
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: label,
+                            data: data,
+                            backgroundColor: bgColor || 'rgba(54, 162, 235, 0.5)',
+                            borderColor: borderColor || 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1,
+                            fill: type === 'line' // Fill area under line for line charts? Optional
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: (type === 'bar' || type === 'line') ? {
+                            y: { beginAtZero: true }
+                        } : {}
+                    }
+                });
+            }
+
         });
     </script>
 </body>

@@ -27,9 +27,12 @@ import es.urjc.daw04.model.Product;
 import es.urjc.daw04.model.User;
 import es.urjc.daw04.service.CategoryService;
 import es.urjc.daw04.service.ImageService;
+import es.urjc.daw04.service.OrderService;
 import es.urjc.daw04.service.ProductService;
 import es.urjc.daw04.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
+import es.urjc.daw04.service.ReviewService;
+import es.urjc.daw04.model.Order;
 
 @Controller
 public class AdminController {
@@ -49,13 +52,82 @@ public class AdminController {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private OrderService orderService;
+    
+    @Autowired
+    private ReviewService reviewService;
+
     @GetMapping("/admin")
     public String admin(Model model) {
+        // Users
         Page<User> firstPage = userService.findAllPaged(0, ADMIN_USERS_PAGE_SIZE);
         List<Map<String, Object>> usersData = toUsersData(firstPage.getContent());
         model.addAttribute("users", usersData);
         model.addAttribute("hasMore", firstPage.hasNext());
+
+        // Charts Data
+        
+        // 1. Productos más comprados: Monthly sales by category (Pie Chart)
+        populatePieChart(model, "catLabels", "catData", orderService.getSalesByCategory());
+
+        // 2. Productos por etiqueta: Most sold tags (Pie Chart)
+        populatePieChart(model, "tagLabels", "tagData", orderService.getSalesByTag());
+
+        // 3. Ventas mensuales (Bar Chart)
+        populateBarChart(model, "monthlyLabels", "monthlyData", orderService.getMonthlySales());
+
+        // 4. Relación visitas-compra (Line Chart - using Orders Count)
+        populateBarChart(model, "visitorsLabels", "visitorsData", orderService.getOrdersCountByMonth());
+
+        // 5. Gráfico de reseñas (Line Chart)
+        populateBarChart(model, "reviewsLabels", "reviewsData", reviewService.getReviewCountByMonth());
+
         return "admin";
+    }
+
+    private void populatePieChart(Model model, String labelKey, String dataKey, List<Object[]> data) {
+         List<String> labels = new ArrayList<>();
+         List<Long> values = new ArrayList<>();
+         for (Object[] row : data) {
+             if (row[0] != null) {
+                 labels.add(row[0].toString());
+                 if (row[1] instanceof Long) {
+                    values.add((Long) row[1]);
+                 } else if (row[1] instanceof Number) {
+                    values.add(((Number) row[1]).longValue());
+                 }
+             }
+         }
+         model.addAttribute(labelKey, labels);
+         model.addAttribute(dataKey, values);
+    }
+    
+    private void populateBarChart(Model model, String labelKey, String dataKey, List<Object[]> data) {
+         List<String> labels = new ArrayList<>();
+         List<Double> values = new ArrayList<>();
+         String[] months = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
+         
+         // Initialize map with 0s
+         Map<Integer, Double> dataMap = new HashMap<>();
+         for (int i=1; i<=12; i++) dataMap.put(i, 0.0);
+
+         for (Object[] row : data) {
+             if (row[0] != null) {
+                int month = ((Number) row[0]).intValue();
+                double val = ((Number) row[1]).doubleValue();
+                dataMap.put(month, val);
+             }
+         }
+         
+         // Fill lists in order
+         for (int i=1; i<=12; i++) {
+             labels.add(months[i-1]);
+             values.add(dataMap.get(i));
+         }
+
+         model.addAttribute(labelKey, labels);
+         model.addAttribute(dataKey, values);
     }
 
     @GetMapping("/api/admin/users/fragment")

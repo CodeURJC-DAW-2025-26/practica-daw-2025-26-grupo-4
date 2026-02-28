@@ -27,6 +27,8 @@ public class Review {
 
     private double rating;
 
+    private java.time.LocalDate date;
+
     protected Review() {
     }
 
@@ -35,6 +37,7 @@ public class Review {
         this.user = user;
         this.content = content;
         this.rating = rating;
+        this.date = java.time.LocalDate.now();
     }
 
     public List<String> getStars() {
@@ -87,5 +90,13 @@ public class Review {
 
     public void setRating(double rating) {
         this.rating = rating;
+    }
+
+    public java.time.LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(java.time.LocalDate date) {
+        this.date = date;
     }
 }

@@ -20,6 +20,11 @@ public class ReviewService {
     public List<Review> findAll() {
         return repository.findAll();
     }
+    
+    public List<Object[]> getReviewCountByMonth() {
+        return repository.findReviewCountByMonth();
+    }
+
 
     public Optional<Review> findById(long id) {
         return repository.findById(id);

@@ -49,4 +49,20 @@ public class OrderService {
         order.setTotalPrice(order.getTotalPrice());
         repository.save(order);
     }
+
+    public List<Object[]> getSalesByCategory() {
+        return repository.findUnitsSoldByCategory();
+    }
+
+    public List<Object[]> getMonthlySales() {
+        return repository.findMonthlySales();
+    }
+
+    public List<Object[]> getSalesByTag() {
+        return repository.findUnitsSoldByTag();
+    }
+
+    public List<Object[]> getOrdersCountByMonth() {
+        return repository.findOrdersCountByMonth();
+    }
 }
