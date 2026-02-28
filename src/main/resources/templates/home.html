@@ -45,7 +45,9 @@
                     </div>
                     <p class="page-subtitle">Nuestra colección de plantas</p>
 
-                    <div class="product-grid">
+                    <div class="product-grid" id="product-grid"
+                         data-category-id="{{selectedCategoryId}}"
+                         data-q="{{searchQuery}}">
                     {{#products}}
                     <div class="product-card">
                         <a href="product/{{id}}">
@@ -83,12 +85,34 @@
                         <p>No hay productos disponibles.</p>
                     {{/products}}
                     </div>
+
+                    <div id="products-sentinel" class="scroll-sentinel"></div>
+                    <div id="products-spinner" class="scroll-spinner">
+                        <i class="fa-solid fa-spinner"></i> Cargando más productos...
+                    </div>
                 </div>
             </main>
         </div>
     </div>
 
     {{>footer}}
+    <script src="/js/pagination.js"></script>
+    <script>
+        initInfiniteScroll({
+            containerId:  'product-grid',
+            sentinelId:   'products-sentinel',
+            spinnerId:    'products-spinner',
+            ajaxUrl:      '/api/products/fragment',
+            hasMore:      {{hasMore}},
+            getParams: function() {
+                var grid = document.getElementById('product-grid');
+                return {
+                    categoryId: grid.dataset.categoryId,
+                    q:          grid.dataset.q
+                };
+            }
+        });
+    </script>
 </body>
 
 </html>

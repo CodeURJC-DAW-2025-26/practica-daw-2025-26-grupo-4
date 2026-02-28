@@ -56,6 +56,13 @@ public class WebSecurityConfig {
                         .requestMatchers("/products/**").permitAll()
                         .requestMatchers("/cart").permitAll()
                         .requestMatchers("/cart/**").permitAll()
+                        // ERROR PAGE
+                        .requestMatchers("/error").permitAll()
+                        // PUBLIC API FRAGMENTS
+                        .requestMatchers("/api/products/**").permitAll()
+                        // PRIVATE API FRAGMENTS
+                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/api/orders/**").hasAnyRole("USER")
                         // PRIVATE PAGES
                         .requestMatchers("/user").hasAnyRole("USER")
                         .requestMatchers("/user/**").hasAnyRole("USER")
@@ -63,7 +70,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/order/**").hasAnyRole("USER")
                         .requestMatchers("/admin").hasAnyRole("ADMIN")
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN")
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .failureUrl("/loginerror")

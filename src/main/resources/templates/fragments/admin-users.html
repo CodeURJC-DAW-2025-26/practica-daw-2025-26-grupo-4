@@ -1,0 +1,19 @@
+{{#users}}
+<div class="user-result-card">
+    <div class="user-info">
+        <i class="fa-solid fa-circle-user user-avatar"></i>
+        <div>
+            <div class="user-name">{{name}}</div>
+            <div style="font-size:var(--font-size-sm);color:var(--color-muted);">{{email}}</div>
+            <div style="font-size:var(--font-size-xs);color:var(--color-muted);">Rol: {{roles}}</div>
+        </div>
+    </div>
+    <form action="/admin/users/{{id}}/delete" method="post">
+        <input type="hidden" name="_csrf" value="{{token}}">
+        <button type="submit" class="block-btn"
+                onclick="return confirm('¿Eliminar al usuario {{name}}?')">
+            <i class="fa-solid fa-trash"></i> Eliminar
+        </button>
+    </form>
+</div>
+{{/users}}

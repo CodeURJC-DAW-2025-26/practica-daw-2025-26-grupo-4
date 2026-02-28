@@ -1,0 +1,11 @@
+{{#reviews}}
+<div class="comment">
+    <strong>{{authorName}}</strong>
+    <div class="comment-stars">
+        {{#stars}}
+        <i class="{{.}}"></i>
+        {{/stars}}
+    </div>
+    <p>{{content}}</p>
+</div>
+{{/reviews}}

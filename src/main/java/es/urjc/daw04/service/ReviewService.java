@@ -1,6 +1,8 @@
 package es.urjc.daw04.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import es.urjc.daw04.repositories.ReviewRepository;
 import es.urjc.daw04.model.Review;
@@ -23,5 +25,9 @@ public class ReviewService {
 
     public void save(Review review) {
         repository.save(review);
+    }
+
+    public Page<Review> findByProductIdPaged(long productId, int page, int size) {
+        return repository.findByProductId(productId, PageRequest.of(page, size));
     }
 }

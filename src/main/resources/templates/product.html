@@ -152,8 +152,8 @@
                     </div>
                 </div>
 
-                <div class="comments">
-                    {{#product.reviews}}
+                <div class="comments" id="reviews-list">
+                    {{#firstReviews}}
                     <div class="comment">
                         <strong>{{authorName}}</strong>
                         <div class="comment-stars">
@@ -163,7 +163,12 @@
                         </div>
                         <p>{{content}}</p>
                     </div>
-                    {{/product.reviews}}
+                    {{/firstReviews}}
+                </div>
+
+                <div id="reviews-sentinel" class="scroll-sentinel"></div>
+                <div id="reviews-spinner" class="scroll-spinner">
+                    <i class="fa-solid fa-spinner"></i> Cargando más reseñas...
                 </div>
 
             </section>
@@ -171,6 +176,16 @@
         </main>
     </div>
 
+    <script src="/js/pagination.js"></script>
+    <script>
+        initInfiniteScroll({
+            containerId: 'reviews-list',
+            sentinelId:  'reviews-sentinel',
+            spinnerId:   'reviews-spinner',
+            ajaxUrl:     '/api/products/{{productId}}/reviews/fragment',
+            hasMore:     {{reviewsHasMore}}
+        });
+    </script>
     <script>
         // Aplicar anchos de las barras de valoración desde data-width
         document.querySelectorAll('.fill[data-width]').forEach(el => {

@@ -20,6 +20,7 @@
             <div class="content-body">
                 <h1 class="page-title">Mis Pedidos</h1>
 
+                <div id="orders-list">
                 {{#orders}}
                 <div class="order-card {{#isCollapsed}}collapsed{{/isCollapsed}}">
                     <div class="order-header">
@@ -74,11 +75,27 @@
                     </button>
                 </div>
                 {{/orders}}
+                </div>
+
+                <div id="orders-sentinel" class="scroll-sentinel"></div>
+                <div id="orders-spinner" class="scroll-spinner">
+                    <i class="fa-solid fa-spinner"></i> Cargando más pedidos...
+                </div>
             </div>
         </main>
     </div>
 
     <script src="/js/order.js"></script>
+    <script src="/js/pagination.js"></script>
+    <script>
+        initInfiniteScroll({
+            containerId: 'orders-list',
+            sentinelId:  'orders-sentinel',
+            spinnerId:   'orders-spinner',
+            ajaxUrl:     '/api/orders/fragment',
+            hasMore:     {{hasMore}}
+        });
+    </script>
 
     {{>footer}}
 </body>

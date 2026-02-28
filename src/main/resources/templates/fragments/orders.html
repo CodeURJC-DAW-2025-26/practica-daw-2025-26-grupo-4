@@ -1,0 +1,54 @@
+{{#orders}}
+<div class="order-card collapsed">
+    <div class="order-header">
+        <div class="order-info">
+            <h3>Pedido #{{orderNumber}}</h3>
+            <p class="order-date">Realizado el {{orderDate}}</p>
+        </div>
+        <div class="order-status-right">
+            <span class="status-badge {{statusClass}}">{{statusText}}</span>
+            <span class="order-total">€{{total}}</span>
+            <span class="product-count">{{itemCount}} productos</span>
+        </div>
+    </div>
+
+    <div class="order-details">
+        {{#items}}
+        <div class="order-item">
+            <a href="/product/{{productId}}" class="item-image">
+                <img src="{{imageUrl}}" alt="{{name}}">
+            </a>
+            <div class="item-info">
+                <a href="/product/{{productId}}" style="text-decoration: none; color: inherit;">
+                    <h4>{{name}}</h4>
+                </a>
+                <p class="item-subtitle">Cantidad: {{quantity}}</p>
+                <p class="item-price">€{{price}} c/u</p>
+            </div>
+            <div class="item-actions">
+                <button class="btn btn-secondary btn-sm">Dejar opinión</button>
+            </div>
+        </div>
+        {{/items}}
+
+        <div class="order-summary">
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span>€{{subtotal}}</span>
+            </div>
+            <div class="summary-row">
+                <span>Envío</span>
+                <span class="free-shipping">{{shipping}}</span>
+            </div>
+            <div class="summary-total">
+                <span>Total</span>
+                <span>€{{total}}</span>
+            </div>
+        </div>
+    </div>
+
+    <button class="expand-btn">
+        <i class="fa-solid fa-chevron-down"></i>
+    </button>
+</div>
+{{/orders}}

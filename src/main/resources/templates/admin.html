@@ -87,6 +87,7 @@
                 <section class="admin-card user-management">
                     <h2>Gestión de usuarios</h2>
 
+                    <div id="users-list">
                     {{#users}}
                     <div class="user-result-card">
                         <div class="user-card-header">
@@ -223,11 +224,19 @@
                     {{^users}}
                     <p style="color:var(--color-muted);">No hay usuarios registrados.</p>
                     {{/users}}
+                    </div>
+
                 </section>
+
+                <div id="users-sentinel" class="scroll-sentinel"></div>
+                <div id="users-spinner" class="scroll-spinner">
+                    <i class="fa-solid fa-spinner"></i> Cargando más usuarios...
+                </div>
 
             </div>
         </main>
     </div>
+<<<<<<< HEAD
 
     <script>
         function toggleUserEdit(userId) {
@@ -243,6 +252,17 @@
                 if (btn) btn.classList.remove('expanded');
             }
         }
+=======
+    <script src="/js/pagination.js"></script>
+    <script>
+        initInfiniteScroll({
+            containerId: 'users-list',
+            sentinelId:  'users-sentinel',
+            spinnerId:   'users-spinner',
+            ajaxUrl:     '/api/admin/users/fragment',
+            hasMore:     {{hasMore}}
+        });
+>>>>>>> 97c6635bc00b56a57af7458846afc9ec2d9ba78f
     </script>
 </body>
 </html>
