@@ -117,6 +117,19 @@ public class AdminController {
             map.put("name", p.getName());
             map.put("categoryName", p.getCategory() != null ? p.getCategory().getName() : "-");
             map.put("price", String.format("%.2f", p.getPrice()));
+            map.put("description", p.getDescription() != null ? p.getDescription() : "");
+            map.put("tags", p.getTags() != null ? String.join(", ", p.getTags()) : "");
+            map.put("categoryId", p.getCategory() != null ? p.getCategory().getId() : "");
+            
+            // Imágenes actuales
+            List<Map<String, Object>> images = p.getImages().stream().map(img -> {
+                 Map<String, Object> imgMap = new HashMap<>();
+                 imgMap.put("id", img.getId());
+                 imgMap.put("url", "/images/" + img.getId());
+                 return imgMap;
+            }).collect(Collectors.toList());
+            map.put("images", images);
+            
             return map;
         }).collect(Collectors.toList());
     }
@@ -203,6 +216,70 @@ public class AdminController {
         }
 
         productService.save(product);
+        response.sendRedirect("/admin/products?success=true");
+    }
+
+    @PostMapping("/admin/products/{id}/update")
+    public void updateProduct(
+            @PathVariable Long id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String price,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) String tags,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(value = "images", required = false) List<MultipartFile> images,
+            HttpServletResponse response) throws IOException {
+
+        es.urjc.daw04.model.Product product = productService.findById(id).orElse(null);
+        if (product == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        // Validación básica
+        if (name == null || name.isBlank() || price == null || price.isBlank()) {
+            response.sendRedirect("/admin/products?error=Faltan campos obligatorios");
+            return;
+        }
+
+        try {
+            double priceVal = Double.parseDouble(price.replace(',', '.'));
+            product.setName(name.trim());
+            product.setPrice(priceVal);
+            product.setDescription(description != null ? description.trim() : "");
+            
+            List<String> tagList = (tags != null && !tags.isBlank())
+                    ? Arrays.stream(tags.split(",")).map(String::trim).filter(t -> !t.isEmpty()).collect(Collectors.toList())
+                    : new ArrayList<>();
+            product.setTags(tagList);
+
+            if (categoryId != null) {
+                categoryService.findById(categoryId).ifPresent(product::setCategory);
+            } else {
+                product.setCategory(null);
+            }
+
+            if (images != null) {
+                for (MultipartFile f : images) {
+                    if (f != null && !f.isEmpty()) {
+                         Image img = imageService.createImage(f);
+                         product.getImages().add(img);
+                    }
+                }
+            }
+            productService.save(product);
+            response.sendRedirect("/admin/products?success=true");
+        } catch (NumberFormatException e) {
+             response.sendRedirect("/admin/products?error=Precio inválido");
+        }
+    }
+
+    @PostMapping("/admin/products/{productId}/images/{imageId}/delete")
+    public void deleteProductImage(@PathVariable Long productId, @PathVariable Long imageId, HttpServletResponse response) throws IOException {
+        productService.findById(productId).ifPresent(product -> {
+             product.getImages().removeIf(img -> img.getId().equals(imageId));
+             productService.save(product);
+        });
         response.sendRedirect("/admin/products?success=true");
     }
 
