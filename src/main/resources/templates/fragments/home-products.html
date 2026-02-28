@@ -1,0 +1,31 @@
+{{#products}}
+<div class="product-card">
+    <a href="product/{{id}}">
+        <div class="image-container">
+            <img src="{{mainImage}}" alt="{{name}}">
+        </div>
+        <div class="card-details">
+            <h3>{{name}}</h3>
+            <p class="description">{{description}}</p>
+            <div class="tags">
+                {{#tags}}
+                <span class="tag">{{.}}</span>
+                {{/tags}}
+            </div>
+            <div class="price">€{{formattedPrice}}</div>
+            <div class="card-actions">
+                <form action="/cart/add" method="post" style="display:contents;">
+                    <input type="hidden" name="_csrf" value="{{token}}">
+                    <input type="hidden" name="productId" value="{{id}}">
+                    <button type="submit" class="btn btn--primary btn--sm btn--grow">
+                        <i class="fa-solid fa-cart-plus"></i> Añadir al carrito
+                    </button>
+                </form>
+                <button class="btn btn--ghost btn--sm btn--icon btn--fav">
+                    <i class="fa-regular fa-heart"></i>
+                </button>
+            </div>
+        </div>
+    </a>
+</div>
+{{/products}}

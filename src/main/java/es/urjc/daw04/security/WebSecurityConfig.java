@@ -58,6 +58,11 @@ public class WebSecurityConfig {
                         .requestMatchers("/cart/**").permitAll()
                         // ERROR PAGE
                         .requestMatchers("/error").permitAll()
+                        // PUBLIC API FRAGMENTS
+                        .requestMatchers("/api/products/**").permitAll()
+                        // PRIVATE API FRAGMENTS
+                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/api/orders/**").hasAnyRole("USER")
                         // PRIVATE PAGES
                         .requestMatchers("/user").hasAnyRole("USER")
                         .requestMatchers("/user/**").hasAnyRole("USER")

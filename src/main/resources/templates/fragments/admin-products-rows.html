@@ -1,0 +1,17 @@
+{{#products}}
+<tr>
+    <td>{{id}}</td>
+    <td>{{name}}</td>
+    <td>{{categoryName}}</td>
+    <td>{{price}} €</td>
+    <td>
+        <form action="/admin/products/{{id}}/delete" method="post" style="display:inline;">
+            <input type="hidden" name="_csrf" value="{{token}}">
+            <button type="submit" class="action-btn danger-action"
+                    onclick="return confirm('¿Eliminar {{name}}?')">
+                <i class="fa-solid fa-trash"></i> Eliminar
+            </button>
+        </form>
+    </td>
+</tr>
+{{/products}}

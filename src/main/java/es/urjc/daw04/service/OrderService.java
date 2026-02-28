@@ -17,6 +17,10 @@ public class OrderService {
         return repository.findAll();
     }
 
+    public org.springframework.data.domain.Page<Order> findAllPaged(int page, int size) {
+        return repository.findAll(org.springframework.data.domain.PageRequest.of(page, size));
+    }
+
     public Optional<Order> findById(long id) {
         return repository.findById(id);
     }

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import es.urjc.daw04.model.Image;
 import es.urjc.daw04.model.Product;
+import es.urjc.daw04.model.User;
 import es.urjc.daw04.service.CategoryService;
 import es.urjc.daw04.service.ImageService;
 import es.urjc.daw04.service.ProductService;
@@ -29,6 +31,9 @@ import es.urjc.daw04.service.UserService;
 
 @Controller
 public class AdminController {
+
+    private static final int ADMIN_USERS_PAGE_SIZE = 5;
+    private static final int ADMIN_PRODUCTS_PAGE_SIZE = 10;
 
     @Autowired
     private ProductService productService;
@@ -44,7 +49,22 @@ public class AdminController {
 
     @GetMapping("/admin")
     public String admin(Model model) {
-        List<Map<String, Object>> usersData = userService.findAll().stream().map(u -> {
+        Page<User> firstPage = userService.findAllPaged(0, ADMIN_USERS_PAGE_SIZE);
+        List<Map<String, Object>> usersData = toUsersData(firstPage.getContent());
+        model.addAttribute("users", usersData);
+        model.addAttribute("hasMore", firstPage.hasNext());
+        return "admin";
+    }
+
+    @GetMapping("/api/admin/users/fragment")
+    public String adminUsersFragment(@RequestParam(defaultValue = "1") int page, Model model) {
+        Page<User> p = userService.findAllPaged(page, ADMIN_USERS_PAGE_SIZE);
+        model.addAttribute("users", toUsersData(p.getContent()));
+        return "fragments/admin-users";
+    }
+
+    private List<Map<String, Object>> toUsersData(List<User> users) {
+        return users.stream().map(u -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", u.getId());
             map.put("name", u.getName());
@@ -53,23 +73,15 @@ public class AdminController {
             map.put("roles", String.join(", ", u.getRoles()));
             return map;
         }).collect(Collectors.toList());
-        model.addAttribute("users", usersData);
-        return "admin";
     }
 
     @GetMapping("/admin/products")
     public String adminProducts(Model model,
             @RequestParam(required = false) String error,
             @RequestParam(required = false) String success) {
-        List<Map<String, Object>> productsData = productService.findAll().stream().map(p -> {
-            Map<String, Object> map = new HashMap<>();
-            map.put("id", p.getId());
-            map.put("name", p.getName());
-            map.put("categoryName", p.getCategory() != null ? p.getCategory().getName() : "-");
-            map.put("price", String.format("%.2f", p.getPrice()));
-            return map;
-        }).collect(Collectors.toList());
-        model.addAttribute("products", productsData);
+        Page<Product> firstPage = productService.findAllPaged(0, ADMIN_PRODUCTS_PAGE_SIZE);
+        model.addAttribute("products", toProductsData(firstPage.getContent()));
+        model.addAttribute("hasMore", firstPage.hasNext());
 
         List<Map<String, Object>> categoriesData = categoryService.findAll().stream().map(c -> {
             Map<String, Object> map = new HashMap<>();
@@ -83,6 +95,24 @@ public class AdminController {
         if (success != null) model.addAttribute("successMsg", "Producto creado correctamente.");
 
         return "admin-products";
+    }
+
+    @GetMapping("/api/admin/products/fragment")
+    public String adminProductsFragment(@RequestParam(defaultValue = "1") int page, Model model) {
+        Page<Product> p = productService.findAllPaged(page, ADMIN_PRODUCTS_PAGE_SIZE);
+        model.addAttribute("products", toProductsData(p.getContent()));
+        return "fragments/admin-products-rows";
+    }
+
+    private List<Map<String, Object>> toProductsData(List<Product> products) {
+        return products.stream().map(p -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", p.getId());
+            map.put("name", p.getName());
+            map.put("categoryName", p.getCategory() != null ? p.getCategory().getName() : "-");
+            map.put("price", String.format("%.2f", p.getPrice()));
+            return map;
+        }).collect(Collectors.toList());
     }
 
     private static final long MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB

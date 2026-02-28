@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -33,6 +34,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @Controller
 public class ShopController {
 
+    private static final int ORDERS_PAGE_SIZE = 5;
+    private static final int REVIEWS_PAGE_SIZE = 5;
+
     @Autowired
     private ProductService productService;
 
@@ -56,7 +60,6 @@ public class ShopController {
         if (p != null) {
             model.addAttribute("product", p);
 
-            // Mantener la cantidad seleccionada, mínimo 1
             int quantity = Math.max(1, qty);
             model.addAttribute("quantity", quantity);
 
@@ -67,10 +70,24 @@ public class ShopController {
 
             model.addAttribute("recommendedProduct", recommended);
 
+            // Reseñas paginadas
+            Page<Review> firstRevsPage = reviewService.findByProductIdPaged(id, 0, REVIEWS_PAGE_SIZE);
+            model.addAttribute("firstReviews", firstRevsPage.getContent());
+            model.addAttribute("reviewsHasMore", firstRevsPage.hasNext());
+            model.addAttribute("productId", id);
+
             return "product";
-        } else {
         }
         return "redirect:/";
+    }
+
+    @GetMapping("/api/products/{id}/reviews/fragment")
+    public String reviewsFragment(@PathVariable Long id,
+            @RequestParam(defaultValue = "1") int page,
+            Model model) {
+        Page<Review> p = reviewService.findByProductIdPaged(id, page, REVIEWS_PAGE_SIZE);
+        model.addAttribute("reviews", p.getContent());
+        return "fragments/reviews";
     }
 
     @PostMapping("/product/{id}/review")
@@ -137,12 +154,22 @@ public class ShopController {
 
     @GetMapping("/order")
     public String order(Model model) {
-        // Obtener todas las órdenes
-        List<Order> allOrders = orderService.findAll();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("d 'de' MMMM 'de' yyyy");
+        Page<Order> firstPage = orderService.findAllPaged(0, ORDERS_PAGE_SIZE);
+        model.addAttribute("orders", toOrdersData(firstPage.getContent()));
+        model.addAttribute("hasMore", firstPage.hasNext());
+        return "order";
+    }
 
-        // Convertir órdenes a formato Mustache
-        List<Map<String, Object>> ordersData = allOrders.stream().map(order -> {
+    @GetMapping("/api/orders/fragment")
+    public String ordersFragment(@RequestParam(defaultValue = "1") int page, Model model) {
+        Page<Order> p = orderService.findAllPaged(page, ORDERS_PAGE_SIZE);
+        model.addAttribute("orders", toOrdersData(p.getContent()));
+        return "fragments/orders";
+    }
+
+    private List<Map<String, Object>> toOrdersData(List<Order> allOrders) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d 'de' MMMM 'de' yyyy");
+        return allOrders.stream().map(order -> {
             Map<String, Object> orderMap = new HashMap<>();
             orderMap.put("orderNumber", "ORD-" + String.format("%04d", order.getId()));
             orderMap.put("orderDate", dateFormat.format(order.getOrderDate()));
@@ -155,7 +182,6 @@ public class ShopController {
                     order.getShippingCost() == 0 ? "Gratis" : String.format("€%.2f", order.getShippingCost()));
             orderMap.put("isCollapsed", true);
 
-            // Convertir items
             List<Map<String, Object>> itemsData = order.getItems().stream().map(item -> {
                 Map<String, Object> itemMap = new HashMap<>();
                 itemMap.put("productId", item.getProduct().getId());
@@ -170,9 +196,6 @@ public class ShopController {
             orderMap.put("items", itemsData);
             return orderMap;
         }).collect(Collectors.toList());
-
-        model.addAttribute("orders", ordersData);
-        return "order";
     }
 
     private String getStatusClass(String status) {

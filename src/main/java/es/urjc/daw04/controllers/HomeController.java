@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class HomeController {
+
+    private static final int HOME_PAGE_SIZE = 6;
 
     @Autowired
     private ProductService productService;
@@ -50,13 +53,18 @@ public class HomeController {
 
         String searchQuery = q == null ? "" : q.trim();
 
+        Page<?> firstPage;
         if (selectedCategoryId == null) {
             model.addAttribute("products", List.of());
+            firstPage = Page.empty();
         } else if (!searchQuery.isEmpty()) {
-            model.addAttribute("products", productService.searchByCategoryId(selectedCategoryId, searchQuery));
+            firstPage = productService.searchByCategoryIdPaged(selectedCategoryId, searchQuery, 0, HOME_PAGE_SIZE);
+            model.addAttribute("products", firstPage.getContent());
         } else {
-            model.addAttribute("products", productService.findByCategoryId(selectedCategoryId));
+            firstPage = productService.findByCategoryIdPaged(selectedCategoryId, 0, HOME_PAGE_SIZE);
+            model.addAttribute("products", firstPage.getContent());
         }
+        model.addAttribute("hasMore", !firstPage.isEmpty() && firstPage.hasNext());
 
         List<Map<String, Object>> categoryViews = new ArrayList<>();
         String selectedCategoryName = "Plantas";
@@ -80,5 +88,27 @@ public class HomeController {
         model.addAttribute("searchQuery", searchQuery);
 
         return "home";
+    }
+
+    @GetMapping("/api/products/fragment")
+    public String productsFragment(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String q,
+            @RequestParam(defaultValue = "1") int page,
+            Model model) {
+
+        String searchQuery = q == null ? "" : q.trim();
+
+        if (categoryId == null) {
+            model.addAttribute("products", List.of());
+        } else if (!searchQuery.isEmpty()) {
+            Page<?> p = productService.searchByCategoryIdPaged(categoryId, searchQuery, page, HOME_PAGE_SIZE);
+            model.addAttribute("products", p.getContent());
+        } else {
+            Page<?> p = productService.findByCategoryIdPaged(categoryId, page, HOME_PAGE_SIZE);
+            model.addAttribute("products", p.getContent());
+        }
+
+        return "fragments/home-products";
     }
 }

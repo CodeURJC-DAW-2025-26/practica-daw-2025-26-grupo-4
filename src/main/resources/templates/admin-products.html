@@ -119,7 +119,7 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="products-tbody">
                             {{#products}}
                             <tr>
                                 <td>{{id}}</td>
@@ -144,6 +144,10 @@
                             {{/products}}
                         </tbody>
                     </table>
+                    <div id="products-sentinel" class="scroll-sentinel"></div>
+                    <div id="products-spinner" class="scroll-spinner">
+                        <i class="fa-solid fa-spinner"></i> Cargando más productos...
+                    </div>
                 </section>
             </div>
         </main>
@@ -151,6 +155,16 @@
         {{>footer}}
     </div>
 
+    <script src="/js/pagination.js"></script>
+    <script>
+        initInfiniteScroll({
+            containerId: 'products-tbody',
+            sentinelId:  'products-sentinel',
+            spinnerId:   'products-spinner',
+            ajaxUrl:     '/api/admin/products/fragment',
+            hasMore:     {{hasMore}}
+        });
+    </script>
     <script>
         const MAX_IMAGE_MB = 5;
         const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
