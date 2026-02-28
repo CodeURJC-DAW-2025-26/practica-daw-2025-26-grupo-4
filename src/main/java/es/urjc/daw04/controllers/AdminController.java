@@ -78,7 +78,9 @@ public class AdminController {
     @GetMapping("/admin/products")
     public String adminProducts(Model model,
             @RequestParam(required = false) String error,
-            @RequestParam(required = false) String success) {
+            @RequestParam(required = false) String success,
+            @RequestParam(required = false) String catError,
+            @RequestParam(required = false) String catSuccess) {
         Page<Product> firstPage = productService.findAllPaged(0, ADMIN_PRODUCTS_PAGE_SIZE);
         model.addAttribute("products", toProductsData(firstPage.getContent()));
         model.addAttribute("hasMore", firstPage.hasNext());
@@ -87,12 +89,16 @@ public class AdminController {
             Map<String, Object> map = new HashMap<>();
             map.put("id", c.getId());
             map.put("name", c.getName());
+            map.put("icon", c.getIcon());
             return map;
         }).collect(Collectors.toList());
         model.addAttribute("categories", categoriesData);
 
         if (error != null) model.addAttribute("errorMsg", error);
         if (success != null) model.addAttribute("successMsg", "Producto creado correctamente.");
+
+        if (catError != null) model.addAttribute("catErrorMsg", catError);
+        if (catSuccess != null) model.addAttribute("catSuccessMsg", "Categoría gestionada correctamente.");
 
         return "admin-products";
     }
@@ -204,6 +210,37 @@ public class AdminController {
     public void deleteProduct(@PathVariable Long id, HttpServletResponse response) throws IOException {
         productService.deleteById(id);
         response.sendRedirect("/admin/products");
+    }
+
+    @PostMapping("/admin/categories/create")
+    public void createCategory(@RequestParam String name, @RequestParam(required = false) String icon, HttpServletResponse response) throws IOException {
+        String slug = name.toLowerCase().replace(" ", "-").replaceAll("[^a-z0-9-]", "");
+        es.urjc.daw04.model.Category category = new es.urjc.daw04.model.Category(name, slug, icon);
+        categoryService.save(category);
+        response.sendRedirect("/admin/products?catSuccess=true");
+    }
+
+    @PostMapping("/admin/categories/{id}/update")
+    public void updateCategory(@PathVariable Long id, @RequestParam String name, @RequestParam(required = false) String icon, HttpServletResponse response) throws IOException {
+         categoryService.findById(id).ifPresent(category -> {
+             category.setName(name);
+             // Opcional: actualizar slug si cambia el nombre
+             category.setSlug(name.toLowerCase().replace(" ", "-").replaceAll("[^a-z0-9-]", ""));
+             category.setIcon(icon);
+             categoryService.save(category);
+         });
+         response.sendRedirect("/admin/products?catSuccess=true");
+    }
+
+    @PostMapping("/admin/categories/{id}/delete")
+    public void deleteCategory(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        try {
+            categoryService.deleteById(id);
+            response.sendRedirect("/admin/products?catSuccess=true");
+        } catch (Exception e) {
+             String error = "No se puede eliminar la categoría porque tiene productos asociados o ocurrió un error.";
+             response.sendRedirect("/admin/products?catError=" + URLEncoder.encode(error, StandardCharsets.UTF_8));
+        }
     }
 
     @PostMapping("/admin/users/{id}/delete")

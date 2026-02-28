@@ -18,7 +18,7 @@
             <div class="content-body">
                 <h1 class="page-title">Gestor de productos</h1>
 
-                <!-- Mensajes de servidor -->
+                <!-- Mensajes de productos -->
                 {{#errorMsg}}
                 <div class="form-alert form-alert--error">
                     <i class="fa-solid fa-circle-exclamation"></i> {{errorMsg}}
@@ -29,6 +29,18 @@
                     <i class="fa-solid fa-circle-check"></i> {{successMsg}}
                 </div>
                 {{/successMsg}}
+
+                <!-- Mensajes de categorías -->
+                {{#catErrorMsg}}
+                <div class="form-alert form-alert--error">
+                    <i class="fa-solid fa-circle-exclamation"></i> {{catErrorMsg}}
+                </div>
+                {{/catErrorMsg}}
+                {{#catSuccessMsg}}
+                <div class="form-alert form-alert--success">
+                    <i class="fa-solid fa-circle-check"></i> {{catSuccessMsg}}
+                </div>
+                {{/catSuccessMsg}}
 
                 <!-- Formulario de creación de producto -->
                 <section class="admin-card product-management">
@@ -106,6 +118,75 @@
                     </form>
                 </section>
 
+                <!-- Gestión de Categorías -->
+                <section class="admin-card category-management">
+                    <h2>Gestión de Categorías</h2>
+                    <div class="category-manager-layout" style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                        <!-- Formulario Crear/Editar Categoría -->
+                        <div class="create-category-col" style="flex: 1; min-width: 300px;">
+                            <h3 id="categoryFormTitle">Añadir nueva categoría</h3>
+                            <form id="categoryForm" action="/admin/categories/create" method="post">
+                                <input type="hidden" name="_csrf" value="{{token}}">
+                                <div class="form-group">
+                                    <label for="catName">Nombre <span class="required">*</span></label>
+                                    <input type="text" id="catName" name="name" class="form-input" required placeholder="Ej: Herramientas">
+                                </div>
+                                <div class="form-group">
+                                    <label for="catIcon">
+                                        Icono (Clase FontAwesome)
+                                        <a href="https://fontawesome.com/search?o=r&m=free" target="_blank" rel="noopener noreferrer" style="font-size: 0.85em; margin-left: 0.5rem; text-decoration: underline;">
+                                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver lista
+                                        </a>
+                                    </label>
+                                    <input type="text" id="catIcon" name="icon" class="form-input" placeholder="Ej: fa-solid fa-seedling">
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                                    <button type="submit" id="categorySubmitBtn" class="action-btn primary-action">
+                                        <i class="fa-solid fa-plus"></i> Añadir Categoría
+                                    </button>
+                                    <button type="button" id="categoryCancelBtn" class="action-btn secondary-action" style="display: none;" onclick="cancelEditCategory()">
+                                        Cancelar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+
+                        <!-- Lista de Categorías -->
+                        <div class="list-category-col" style="flex: 1; min-width: 300px;">
+                            <h3>Categorías existentes</h3>
+                            <ul class="category-list" style="list-style: none; padding: 0;">
+                                {{#categories}}
+                                <li style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid var(--border-color);">
+                                    <span>
+                                        {{#icon}}<i class="{{icon}}" style="margin-right: 0.5rem;"></i>{{/icon}}
+                                        <strong>{{name}}</strong>
+                                    </span>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <button type="button" class="action-btn secondary-action icon-only" 
+                                                onclick="editCategory('{{id}}', '{{name}}', '{{icon}}')" 
+                                                title="Editar categoría">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button>
+                                        <form action="/admin/categories/{{id}}/delete" method="post" style="margin: 0;">
+                                            <input type="hidden" name="_csrf" value="{{token}}">
+                                            <button type="submit" class="action-btn danger-action icon-only" 
+                                                    onclick="return confirm('¿Eliminar categoría {{name}}?')"
+                                                    title="Eliminar categoría">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </li>
+                                {{/categories}}
+                                {{^categories}}
+                                <li style="padding: 1rem; color: var(--text-color-light); text-align: center;">No hay categorías.</li>
+                                {{/categories}}
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Listado de productos -->
                 <section class="admin-card">
                     <h2>Productos</h2>
@@ -168,6 +249,40 @@
     <script>
         const MAX_IMAGE_MB = 5;
         const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+
+        // --- Gestión de categorías CRUD ---
+        function editCategory(id, name, icon) {
+            // Cambiar título
+            document.getElementById('categoryFormTitle').innerText = 'Editar categoría: ' + name;
+            // Rellenar datos
+            document.getElementById('catName').value = name;
+            document.getElementById('catIcon').value = icon;
+            // Cambiar acción del form
+            const form = document.getElementById('categoryForm');
+            form.action = '/admin/categories/' + id + '/update';
+            // Cambiar botón submit
+            const btn = document.getElementById('categorySubmitBtn');
+            btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Guardar Cambios';
+            // Mostrar botón cancelar
+            document.getElementById('categoryCancelBtn').style.display = 'inline-block';
+            
+            // Scroll hacia el formulario (opcional, por usabilidad)
+            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function cancelEditCategory() {
+            // Resetear form (limpia inputs)
+            const form = document.getElementById('categoryForm');
+            form.reset();
+            // Restaurar acción
+            form.action = '/admin/categories/create';
+            // Restaurar título
+            document.getElementById('categoryFormTitle').innerText = 'Añadir nueva categoría';
+            // Restaurar botón submit
+            document.getElementById('categorySubmitBtn').innerHTML = '<i class="fa-solid fa-plus"></i> Añadir Categoría';
+            // Ocultar botón cancelar
+            document.getElementById('categoryCancelBtn').style.display = 'none';
+        }
 
         // --- Validación frontend ---
         document.getElementById('createProductForm').addEventListener('submit', function(e) {
