@@ -89,21 +89,135 @@
 
                     {{#users}}
                     <div class="user-result-card">
-                        <div class="user-info">
-                            <i class="fa-solid fa-circle-user user-avatar"></i>
-                            <div>
-                                <div class="user-name">{{name}}</div>
-                                <div style="font-size:var(--font-size-sm);color:var(--color-muted);">{{email}}</div>
-                                <div style="font-size:var(--font-size-xs);color:var(--color-muted);">Rol: {{roles}}</div>
+                        <div class="user-card-header">
+                            <div class="user-info">
+                                <i class="fa-solid fa-circle-user user-avatar"></i>
+                                <div>
+                                    <div class="user-name">{{name}}</div>
+                                    <div style="font-size:var(--font-size-sm);color:var(--color-muted);">{{email}}</div>
+                                    <div style="font-size:var(--font-size-xs);color:var(--color-muted);">Rol: {{roles}}</div>
+                                    {{#isAdmin}}
+                                    <div style="font-size:var(--font-size-xs);color:#1976d2;font-weight:bold;">
+                                        <i class="fa-solid fa-shield"></i> ADMINISTRADOR
+                                    </div>
+                                    {{/isAdmin}}
+                                    {{#banned}}
+                                    <div style="font-size:var(--font-size-xs);color:#d32f2f;font-weight:bold;">
+                                        <i class="fa-solid fa-ban"></i> USUARIO BANEADO
+                                    </div>
+                                    {{/banned}}
+                                </div>
+                            </div>
+                            <div class="user-card-actions">
+                                {{^isAdmin}}
+                                <div class="action-buttons">
+                                    {{#banned}}
+                                    <form action="/admin/users/{{id}}/unban" method="post">
+                                        <input type="hidden" name="_csrf" value="{{token}}">
+                                        <button type="submit" class="accept-btn" title="Desbanear usuario">
+                                            <i class="fa-solid fa-check"></i>
+                                        </button>
+                                    </form>
+                                    {{/banned}}
+                                    {{^banned}}
+                                    <form action="/admin/users/{{id}}/ban" method="post">
+                                        <input type="hidden" name="_csrf" value="{{token}}">
+                                        <button type="submit" class="block-btn" title="Banear usuario">
+                                            <i class="fa-solid fa-ban"></i>
+                                        </button>
+                                    </form>
+                                    {{/banned}}
+                                    <form action="/admin/users/{{id}}/delete" method="post">
+                                        <input type="hidden" name="_csrf" value="{{token}}">
+                                        <button type="submit" class="block-btn" title="Eliminar usuario"
+                                                onclick="return confirm('¿Eliminar al usuario {{name}}?')">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                {{/isAdmin}}
+                                {{^isAdmin}}
+                                <button type="button" class="expand-btn" onclick="toggleUserEdit('{{id}}')">
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </button>
+                                {{/isAdmin}}
                             </div>
                         </div>
-                        <form action="/admin/users/{{id}}/delete" method="post">
-                            <input type="hidden" name="_csrf" value="{{token}}">
-                            <button type="submit" class="block-btn"
-                                    onclick="return confirm('¿Eliminar al usuario {{name}}?')">
-                                <i class="fa-solid fa-trash"></i> Eliminar
-                            </button>
-                        </form>
+                        
+                        <!-- Edit Form (Initially Hidden) -->
+                        {{^isAdmin}}
+                        <div class="user-edit-form" id="edit-form-{{id}}" style="display:none;">
+                            <form action="/admin/users/{{id}}/edit" method="post">
+                                <input type="hidden" name="_csrf" value="{{token}}">
+                                
+                                <div class="edit-form-grid">
+                                    <div class="form-group">
+                                        <label for="name-{{id}}">Nombre de usuario</label>
+                                        <input type="text" id="name-{{id}}" name="name" value="{{name}}" class="form-input" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="email-{{id}}">Email</label>
+                                        <input type="email" id="email-{{id}}" name="email" value="{{email}}" class="form-input" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="fullName-{{id}}">Nombre completo</label>
+                                        <input type="text" id="fullName-{{id}}" name="fullName" value="{{fullName}}" class="form-input">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="birthDate-{{id}}">Fecha de nacimiento</label>
+                                        <input type="date" id="birthDate-{{id}}" name="birthDate" value="{{birthDate}}" class="form-input">
+                                    </div>
+                                    
+                                    <div class="form-group form-group--wide">
+                                        <label for="street-{{id}}">Calle y número</label>
+                                        <input type="text" id="street-{{id}}" name="street" placeholder="Ej: Calle Mayor 123" value="{{street}}" class="form-input">
+                                    </div>
+                                    
+                                    <div class="form-group form-group--wide">
+                                        <label for="additional-{{id}}">Información adicional</label>
+                                        <input type="text" id="additional-{{id}}" name="additional" placeholder="Piso, puerta, bloque, etc." value="{{additional}}" class="form-input">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="city-{{id}}">Ciudad</label>
+                                        <input type="text" id="city-{{id}}" name="city" placeholder="Ej: Madrid" value="{{city}}" class="form-input">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="province-{{id}}">Provincia</label>
+                                        <input type="text" id="province-{{id}}" name="province" placeholder="Ej: Madrid" value="{{province}}" class="form-input">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="postalCode-{{id}}">Código Postal</label>
+                                        <input type="text" id="postalCode-{{id}}" name="postalCode" placeholder="Ej: 28001" value="{{postalCode}}" class="form-input">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="country-{{id}}">País</label>
+                                        <input type="text" id="country-{{id}}" name="country" placeholder="Ej: España" value="{{country}}" class="form-input">
+                                    </div>
+                                    
+                                    <div class="form-group form-group--wide">
+                                        <label for="phone-{{id}}">Teléfono</label>
+                                        <input type="tel" id="phone-{{id}}" name="phone" placeholder="Ej: 612345678" value="{{phone}}" class="form-input">
+                                    </div>
+                                </div>
+                                
+                                <div class="edit-form-actions">
+                                    <button type="submit" class="accept-btn">
+                                        <i class="fa-solid fa-save"></i> Guardar cambios
+                                    </button>
+                                    <button type="button" class="block-btn" onclick="toggleUserEdit('{{id}}')">
+                                        <i class="fa-solid fa-times"></i> Cancelar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        {{/isAdmin}}
                     </div>
                     {{/users}}
                     {{^users}}
@@ -114,5 +228,21 @@
             </div>
         </main>
     </div>
+
+    <script>
+        function toggleUserEdit(userId) {
+            const form = document.getElementById(`edit-form-${userId}`);
+            const btnSelector = `button[onclick*="toggleUserEdit('${userId}')"]`;
+            const btn = document.querySelector(btnSelector);
+            
+            if (form && form.style.display === 'none') {
+                form.style.display = 'block';
+                if (btn) btn.classList.add('expanded');
+            } else if (form) {
+                form.style.display = 'none';
+                if (btn) btn.classList.remove('expanded');
+            }
+        }
+    </script>
 </body>
 </html>

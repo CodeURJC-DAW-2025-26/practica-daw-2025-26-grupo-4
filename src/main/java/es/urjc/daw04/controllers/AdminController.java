@@ -3,6 +3,7 @@ package es.urjc.daw04.controllers;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -50,11 +51,69 @@ public class AdminController {
             map.put("name", u.getName());
             map.put("fullName", u.getFullName() != null ? u.getFullName() : "");
             map.put("email", u.getEmail() != null ? u.getEmail() : "");
+            map.put("birthDate", u.getBirthDate() != null ? u.getBirthDate().toString() : "");
+            map.put("shippingAddress", u.getShippingAddress() != null ? u.getShippingAddress() : "");
+
+            // Parsear campos de dirección
+            parseAddressFields(u.getShippingAddress(), map);
+
             map.put("roles", String.join(", ", u.getRoles()));
+            map.put("rolesList", u.getRoles());
+            map.put("banned", u.isBanned());
+            map.put("isAdmin", u.isAdmin());
             return map;
         }).collect(Collectors.toList());
         model.addAttribute("users", usersData);
         return "admin";
+    }
+
+    private void parseAddressFields(String address, Map<String, Object> map) {
+        // Valores por defecto
+        map.put("street", "");
+        map.put("additional", "");
+        map.put("city", "");
+        map.put("province", "");
+        map.put("postalCode", "");
+        map.put("country", "");
+        map.put("phone", "");
+
+        if (address == null || address.isBlank()) {
+            return;
+        }
+
+        // Parsear las líneas de la dirección
+        String[] lines = address.split("\n");
+        for (String line : lines) {
+            if (line.contains(":")) {
+                String[] parts = line.split(":", 2);
+                String label = parts[0].trim();
+                String value = parts.length > 1 ? parts[1].trim() : "";
+
+                switch (label) {
+                    case "Calle":
+                        map.put("street", value);
+                        break;
+                    case "Información adicional":
+                        map.put("additional", value);
+                        break;
+                    case "Ciudad":
+                        map.put("city", value);
+                        break;
+                    case "Provincia":
+                        map.put("province", value);
+                        break;
+                    case "Código Postal":
+                        map.put("postalCode", value);
+                        break;
+                    case "País":
+                        map.put("country", value);
+                        break;
+                    case "Teléfono":
+                        map.put("phone", value);
+                        break;
+                }
+            }
+        }
     }
 
     @GetMapping("/admin/products")
@@ -79,14 +138,17 @@ public class AdminController {
         }).collect(Collectors.toList());
         model.addAttribute("categories", categoriesData);
 
-        if (error != null) model.addAttribute("errorMsg", error);
-        if (success != null) model.addAttribute("successMsg", "Producto creado correctamente.");
+        if (error != null)
+            model.addAttribute("errorMsg", error);
+        if (success != null)
+            model.addAttribute("successMsg", "Producto creado correctamente.");
 
         return "admin-products";
     }
 
     private static final long MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
-    private static final List<String> ALLOWED_MIME = List.of("image/jpeg", "image/png", "image/webp", "image/gif", "image/avif");
+    private static final List<String> ALLOWED_MIME = List.of("image/jpeg", "image/png", "image/webp", "image/gif",
+            "image/avif");
 
     @PostMapping("/admin/products/create")
     public void createProduct(
@@ -142,7 +204,8 @@ public class AdminController {
         }
 
         if (validationError != null) {
-            response.sendRedirect("/admin/products?error=" + URLEncoder.encode(validationError, StandardCharsets.UTF_8));
+            response.sendRedirect(
+                    "/admin/products?error=" + URLEncoder.encode(validationError, StandardCharsets.UTF_8));
             return;
         }
 
@@ -150,7 +213,8 @@ public class AdminController {
         double priceVal = Double.parseDouble(price.replace(',', '.'));
 
         List<String> tagList = (tags != null && !tags.isBlank())
-                ? Arrays.stream(tags.split(",")).map(String::trim).filter(t -> !t.isEmpty()).collect(Collectors.toList())
+                ? Arrays.stream(tags.split(",")).map(String::trim).filter(t -> !t.isEmpty())
+                        .collect(Collectors.toList())
                 : List.of();
 
         Product product = new Product(name.trim(), priceVal,
@@ -178,8 +242,95 @@ public class AdminController {
 
     @PostMapping("/admin/users/{id}/delete")
     public void deleteUser(@PathVariable Long id, HttpServletResponse response) throws IOException {
-        userService.deleteById(id);
+        userService.findById(id).ifPresent(user -> {
+            if (!user.isAdmin()) {
+                userService.deleteById(id);
+            }
+        });
         response.sendRedirect("/admin");
     }
 
+    @PostMapping("/admin/users/{id}/ban")
+    public void banUser(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        userService.findById(id).ifPresent(user -> {
+            if (!user.isAdmin()) {
+                user.setBanned(true);
+                userService.save(user);
+            }
+        });
+        response.sendRedirect("/admin");
+    }
+
+    @PostMapping("/admin/users/{id}/unban")
+    public void unbanUser(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        userService.findById(id).ifPresent(user -> {
+            if (!user.isAdmin()) {
+                user.setBanned(false);
+                userService.save(user);
+            }
+        });
+        response.sendRedirect("/admin");
+    }
+
+    @PostMapping("/admin/users/{id}/edit")
+    public void editUser(
+            @PathVariable Long id,
+            @RequestParam String name,
+            @RequestParam String email,
+            @RequestParam String fullName,
+            @RequestParam(required = false) String birthDate,
+            @RequestParam(required = false) String street,
+            @RequestParam(required = false) String additional,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String province,
+            @RequestParam(required = false) String postalCode,
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String phone,
+            HttpServletResponse response) throws IOException {
+
+        userService.findById(id).ifPresent(user -> {
+            // No permitir editar administradores
+            if (!user.isAdmin()) {
+                user.setName(name.trim());
+                user.setEmail(email.trim());
+                user.setFullName(fullName.trim());
+
+                if (birthDate != null && !birthDate.isBlank()) {
+                    try {
+                        user.setBirthDate(LocalDate.parse(birthDate));
+                    } catch (Exception e) {
+                        // Ignorar si el formato es inválido
+                    }
+                }
+
+                // Combinar campos de dirección en un solo string
+                StringBuilder addressBuilder = new StringBuilder();
+                if (street != null && !street.isBlank()) {
+                    addressBuilder.append("Calle: ").append(street.trim()).append("\n");
+                }
+                if (additional != null && !additional.isBlank()) {
+                    addressBuilder.append("Información adicional: ").append(additional.trim()).append("\n");
+                }
+                if (city != null && !city.isBlank()) {
+                    addressBuilder.append("Ciudad: ").append(city.trim()).append("\n");
+                }
+                if (province != null && !province.isBlank()) {
+                    addressBuilder.append("Provincia: ").append(province.trim()).append("\n");
+                }
+                if (postalCode != null && !postalCode.isBlank()) {
+                    addressBuilder.append("Código Postal: ").append(postalCode.trim()).append("\n");
+                }
+                if (country != null && !country.isBlank()) {
+                    addressBuilder.append("País: ").append(country.trim()).append("\n");
+                }
+                if (phone != null && !phone.isBlank()) {
+                    addressBuilder.append("Teléfono: ").append(phone.trim());
+                }
+
+                user.setShippingAddress(addressBuilder.toString());
+                userService.save(user);
+            }
+        });
+        response.sendRedirect("/admin");
+    }
 }

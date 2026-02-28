@@ -27,6 +27,11 @@ public class RepositoryUserDetailsService implements UserDetailsService {
         User user = userRepository.findByName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
+        // Verificar si el usuario está baneado
+        if (user.isBanned()) {
+            throw new UsernameNotFoundException("Este usuario ha sido baneado y no puede iniciar sesión");
+        }
+
         List<GrantedAuthority> roles = new ArrayList<>();
         for (String role : user.getRoles()) {
             roles.add(new SimpleGrantedAuthority("ROLE_" + role));

@@ -27,9 +27,11 @@ public class User {
 
     private LocalDate birthDate;
     private String fullName; // nombre y apellidos
-    
+
     @Column(length = 1000)
     private String shippingAddress;
+
+    private boolean banned = false;
 
     public User() {
     }
@@ -123,5 +125,17 @@ public class User {
 
     public void setShippingAddress(String shippingAddress) {
         this.shippingAddress = shippingAddress;
+    }
+
+    public boolean isBanned() {
+        return banned;
+    }
+
+    public void setBanned(boolean banned) {
+        this.banned = banned;
+    }
+
+    public boolean isAdmin() {
+        return roles != null && roles.contains("ADMIN");
     }
 }
