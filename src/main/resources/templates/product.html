@@ -162,6 +162,34 @@
                     </div>
                 </div>
 
+                {{^userReview}}
+                <div class="add-review-section">
+                    <h3>Escribe tu reseña</h3>
+                    <form action="/product/{{product.id}}/review" method="post" id="add-review-form">
+                        <input type="hidden" name="_csrf" value="{{token}}">
+                        
+                        <div class="form-group">
+                            <label>Puntuación</label>
+                            <div class="star-rating" id="add-star-rating">
+                                <i class="fa-regular fa-star" data-rating="1"></i>
+                                <i class="fa-regular fa-star" data-rating="2"></i>
+                                <i class="fa-regular fa-star" data-rating="3"></i>
+                                <i class="fa-regular fa-star" data-rating="4"></i>
+                                <i class="fa-regular fa-star" data-rating="5"></i>
+                            </div>
+                            <input type="hidden" id="add-review-rating" name="rating" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Comentario</label>
+                            <textarea name="content" rows="4" placeholder="Cuéntanos qué te ha parecido..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="save-btn">Publicar reseña</button>
+                    </form>
+                </div>
+                {{/userReview}}
+
                 {{#userReview}}
                 <div class="user-review-section">
                     <h3>Tu reseña</h3>
@@ -360,6 +388,69 @@
                 alert('Por favor, selecciona una puntuación');
             }
         });
+
+        // ----------------------------------------------------
+        // Logic for ADD review form (star rating)
+        // ----------------------------------------------------
+        const addStars = document.querySelectorAll('#add-review-form .star-rating i');
+        const addRatingInput = document.getElementById('add-review-rating');
+        const addReviewForm = document.getElementById('add-review-form');
+        let addSelectedRating = 0;
+
+        if (addStars && addStars.length > 0) {
+            addStars.forEach((star, index) => {
+                star.addEventListener('mouseenter', () => {
+                    addStars.forEach((s, i) => {
+                        if (i <= index) {
+                            s.classList.remove('fa-regular');
+                            s.classList.add('fa-solid');
+                        } else {
+                            s.classList.remove('fa-solid');
+                            s.classList.add('fa-regular');
+                        }
+                    });
+                });
+
+                star.addEventListener('click', () => {
+                    addSelectedRating = parseInt(star.getAttribute('data-rating'));
+                    if (addRatingInput) addRatingInput.value = addSelectedRating;
+
+                    addStars.forEach((s, i) => {
+                        if (i < addSelectedRating) {
+                            s.classList.remove('fa-regular');
+                            s.classList.add('fa-solid');
+                        } else {
+                            s.classList.remove('fa-solid');
+                            s.classList.add('fa-regular');
+                        }
+                    });
+                });
+            });
+
+            const addStarContainer = document.querySelector('#add-review-form .star-rating');
+            if (addStarContainer) {
+                addStarContainer.addEventListener('mouseleave', () => {
+                    addStars.forEach((s, i) => {
+                        if (i < addSelectedRating) {
+                            s.classList.remove('fa-regular');
+                            s.classList.add('fa-solid');
+                        } else {
+                            s.classList.remove('fa-solid');
+                            s.classList.add('fa-regular');
+                        }
+                    });
+                });
+            }
+
+            if (addReviewForm) {
+                addReviewForm.addEventListener('submit', (e) => {
+                    if (!addRatingInput || !addRatingInput.value) {
+                        e.preventDefault();
+                        alert('Por favor, selecciona una puntuación para tu reseña.');
+                    }
+                });
+            }
+        }
     </script>
     <script>
         // Aplicar anchos de las barras de valoración desde data-width
