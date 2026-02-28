@@ -21,6 +21,8 @@ import es.urjc.daw04.model.Order;
 import es.urjc.daw04.model.Product;
 import es.urjc.daw04.model.Review;
 import es.urjc.daw04.model.User;
+import es.urjc.daw04.model.Cart;
+
 import es.urjc.daw04.service.CartService;
 import es.urjc.daw04.service.OrderService;
 import es.urjc.daw04.service.ProductService;
@@ -51,6 +53,8 @@ public class ShopController {
 
     @Autowired
     private UserService userService;
+
+    // -- PRODUCTS --
 
     @GetMapping("/product/{id}")
     public String viewProduct(Model model, @PathVariable Long id,
@@ -96,19 +100,21 @@ public class ShopController {
             @RequestParam double rating,
             HttpServletRequest request) {
         Product product = productService.findById(id).orElse(null);
-    var principal = request.getUserPrincipal();
+        var principal = request.getUserPrincipal();
 
-    if (product != null && principal != null) {
-        User user = userService.findByName(principal.getName()).orElse(null);
-        
-        if (user != null) {
-            Review review = new Review(product, user, content, rating);
-            reviewService.save(review);
+        if (product != null && principal != null) {
+            User user = userService.findByName(principal.getName()).orElse(null);
+
+            if (user != null) {
+                Review review = new Review(product, user, content, rating);
+                reviewService.save(review);
+            }
         }
+
+        return "redirect:/product/" + id;
     }
 
-    return "redirect:/product/" + id;
-    }
+    // -- CART --
 
     @GetMapping("/cart")
     public String cart() {
@@ -152,18 +158,60 @@ public class ShopController {
         response.sendRedirect(referer != null ? referer : "/cart");
     }
 
+    // -- PAYMENT --
+    @GetMapping("/payment/success")
+    public String processPaymentSuccess(@RequestParam("session_id") String sessionId,
+            @CookieValue(value = "cart", defaultValue = "") String cartContent,
+            HttpServletResponse response, HttpServletRequest request) {
+
+        var principal = request.getUserPrincipal(); // Logged user check
+
+        if (principal != null && !cartContent.isEmpty()) {
+            User user = userService.findByName(principal.getName()).orElse(null);
+
+            if (user != null) {
+                Cart cart = cartService.getCartFromCookie(cartContent);
+                orderService.saveOrderFromCart(cart, user);
+
+                // Clear cart cookie
+                Cookie cookie = new Cookie("cart", "");
+                cookie.setPath("/");
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+            }
+        }
+
+        return "redirect:/order";
+    }
+
+    // -- ORDER --
+
     @GetMapping("/order")
-    public String order(Model model) {
-        Page<Order> firstPage = orderService.findAllPaged(0, ORDERS_PAGE_SIZE);
-        model.addAttribute("orders", toOrdersData(firstPage.getContent()));
-        model.addAttribute("hasMore", firstPage.hasNext());
-        return "order";
+    public String order(Model model, HttpServletRequest request) {
+        var principal = request.getUserPrincipal();
+        if (principal != null) {
+            User user = userService.findByName(principal.getName()).orElse(null);
+            if (user != null) {
+                Page<Order> page = orderService.findByUserPaged(user, 0, ORDERS_PAGE_SIZE);
+                model.addAttribute("orders", toOrdersData(page.getContent()));
+                model.addAttribute("hasMore", page.hasNext());
+                return "order";
+            }
+        }
+        return "redirect:/login";
     }
 
     @GetMapping("/api/orders/fragment")
-    public String ordersFragment(@RequestParam(defaultValue = "1") int page, Model model) {
-        Page<Order> p = orderService.findAllPaged(page, ORDERS_PAGE_SIZE);
-        model.addAttribute("orders", toOrdersData(p.getContent()));
+    public String ordersFragment(@RequestParam(defaultValue = "1") int page, Model model, HttpServletRequest request) {
+        var principal = request.getUserPrincipal();
+        if (principal != null) {
+            User user = userService.findByName(principal.getName()).orElse(null);
+            if (user != null) {
+                Page<Order> p = orderService.findByUserPaged(user, page, ORDERS_PAGE_SIZE);
+                model.addAttribute("orders", toOrdersData(p.getContent()));
+                model.addAttribute("hasMore", p.hasNext());
+            }
+        }
         return "fragments/orders";
     }
 

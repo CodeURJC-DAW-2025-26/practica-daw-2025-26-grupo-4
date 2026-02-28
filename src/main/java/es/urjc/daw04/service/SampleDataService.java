@@ -15,7 +15,6 @@ import es.urjc.daw04.model.Product;
 import es.urjc.daw04.model.User;
 import es.urjc.daw04.repositories.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -62,9 +61,9 @@ public class SampleDataService {
 
     @PostConstruct
     public void init() {
-        // Crear usuarios de prueba
+        User userNormal = userRepository.findByName("user").orElse(null);
         if (userRepository.findByName("user").isEmpty()) {
-            User userNormal = new User();
+            userNormal = new User();
             userNormal.setName("user");
             userNormal.setEmail("pruebas@gmail.com");
             userNormal.setEncodedPassword(passwordEncoder.encode("user"));
@@ -369,11 +368,15 @@ public class SampleDataService {
 
         if (orderService.findAll().isEmpty()) {
             List<Product> products = productService.findAll();
-            if (products.size() >= 2) {
-                Product first = products.get(0);
-                Product second = products.get(1);
-                orderService.save(new Order(
-                        new ArrayList<CartItem>(List.of(new CartItem(first, 2), new CartItem(second, 1)))));
+            if (products.size() >= 2 && userNormal != null) {
+                Order orderPrueba = new Order();
+                orderPrueba.setUser(userNormal); // <--- VINCULAMOS AL USUARIO "user"
+                orderPrueba.addItem(new CartItem(products.get(0), 2));
+                orderPrueba.addItem(new CartItem(products.get(1), 1));
+                orderPrueba.setTotalPrice(orderPrueba.getTotalPrice());
+                orderPrueba.setShippingCost(4.95);
+                orderPrueba.setStatus("Entregado"); // Para que pueda escribir reviews
+                orderService.save(orderPrueba);
             }
         }
     }
