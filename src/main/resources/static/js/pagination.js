@@ -2,13 +2,13 @@
  * Infinite scroll using IntersectionObserver.
  *
  * @param {object} options
- * @param {string}   options.containerId   - id del elemento al que añadir los items
- * @param {string}   options.sentinelId    - id del centinela que observar
- * @param {string}   options.spinnerId     - id del spinner
- * @param {string}   options.ajaxUrl       - URL base del endpoint de fragmentos
- * @param {boolean}  options.hasMore       - si hay más items tras la primera carga
- * @param {function} [options.getParams]   - función que devuelve un objeto con params extra
- * @param {boolean}  [options.appendToTbody] - si true, añade dentro del <tbody> del container
+ * @param {string}   options.containerId   - id of the element to append items to
+ * @param {string}   options.sentinelId    - id of the sentinel element to observe
+ * @param {string}   options.spinnerId     - id of the spinner element
+ * @param {string}   options.ajaxUrl       - base URL of the fragment endpoint
+ * @param {boolean}  options.hasMore       - whether there are more items after the initial load
+ * @param {function} [options.getParams]   - function that returns an object with extra params
+ * @param {boolean}  [options.appendToTbody] - if true, appends inside the container's <tbody>
  */
 function initInfiniteScroll({ containerId, sentinelId, spinnerId, ajaxUrl, hasMore, getParams, appendToTbody }) {
     const sentinel = document.getElementById(sentinelId);
@@ -71,7 +71,7 @@ function initInfiniteScroll({ containerId, sentinelId, spinnerId, ajaxUrl, hasMo
 
             currentPage++;
         } catch (err) {
-            console.error('[InfiniteScroll] Error cargando página:', err);
+            console.error('[InfiniteScroll] Error loading page:', err);
         } finally {
             loading = false;
             spinner.style.display = 'none';

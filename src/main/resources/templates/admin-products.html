@@ -30,7 +30,7 @@
                 </div>
                 {{/successMsg}}
 
-                <!-- Mensajes de categorías -->
+                <!-- Category messages -->
                 {{#catErrorMsg}}
                 <div class="form-alert form-alert--error">
                     <i class="fa-solid fa-circle-exclamation"></i> {{catErrorMsg}}
@@ -42,7 +42,7 @@
                 </div>
                 {{/catSuccessMsg}}
 
-                <!-- Formulario de creación de producto -->
+                <!-- Product creation form -->
                 <section class="admin-card product-management">
                     <h2 id="productFormTitle">Añadir nuevo producto</h2>
                     <form id="createProductForm" action="/admin/products/create" method="post" enctype="multipart/form-data" class="product-create-form" novalidate>
@@ -124,11 +124,11 @@
                     </form>
                 </section>
 
-                <!-- Gestión de Categorías -->
+                <!-- Category management -->
                 <section class="admin-card category-management">
                     <h2>Gestión de Categorías</h2>
                     <div class="category-manager-layout" style="display: flex; gap: 2rem; flex-wrap: wrap;">
-                        <!-- Formulario Crear/Editar Categoría -->
+                        <!-- Create/Edit Category form -->
                         <div class="create-category-col" style="flex: 1; min-width: 300px;">
                             <h3 id="categoryFormTitle">Añadir nueva categoría</h3>
                             <form id="categoryForm" action="/admin/categories/create" method="post">
@@ -158,7 +158,7 @@
                         </div>
 
 
-                        <!-- Lista de Categorías -->
+                        <!-- Category list -->
                         <div class="list-category-col" style="flex: 1; min-width: 300px;">
                             <h3>Categorías existentes</h3>
                             <ul class="category-list" style="list-style: none; padding: 0;">

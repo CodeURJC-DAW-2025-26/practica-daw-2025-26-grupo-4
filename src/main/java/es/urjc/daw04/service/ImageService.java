@@ -25,10 +25,10 @@ public class ImageService {
         try {
             image.setImageFile(new SerialBlob(imageFile.getBytes()));
         } catch (Exception e) {
-            throw new IOException("Error al guardar la imagen", e);
+            throw new IOException("Error saving the image", e);
         }
-        // No guardamos aquí: el CascadeType.ALL del Product persiste la imagen
-        // al hacer productService.save(product)
+        // Not saved here: the CascadeType.ALL on Product will persist the image
+        // when calling productService.save(product)
         return image;
     }
 
@@ -37,18 +37,18 @@ public class ImageService {
         try {
             image.setImageFile(new SerialBlob(resource.getInputStream().readAllBytes()));
         } catch (Exception e) {
-            throw new IOException("Error al cargar la imagen desde recurso: " + resource.getFilename(), e);
+            throw new IOException("Error loading image from resource: " + resource.getFilename(), e);
         }
-        // No guardamos aquí: el CascadeType.ALL del Product persiste la imagen
+        // Not saved here: the CascadeType.ALL on Product will persist the image
         return image;
     }
 
     public Resource getImageFile(long id) throws SQLException {
         Image image = imageRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Imagen no encontrada: " + id));
+                .orElseThrow(() -> new RuntimeException("Image not found: " + id));
         if (image.getImageFile() != null) {
             return new InputStreamResource(image.getImageFile().getBinaryStream());
         }
-        throw new RuntimeException("Datos de imagen vacíos para id: " + id);
+        throw new RuntimeException("Empty image data for id: " + id);
     }
 }

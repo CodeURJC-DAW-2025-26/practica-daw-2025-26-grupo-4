@@ -75,7 +75,7 @@ public class AuthController {
 
         model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
 
-        // Añadir token CSRF explícitamente
+        // Add CSRF token explicitly
         org.springframework.security.web.csrf.CsrfToken csrf = (org.springframework.security.web.csrf.CsrfToken) request
                 .getAttribute("_csrf");
         if (csrf != null) {
@@ -91,25 +91,25 @@ public class AuthController {
             @RequestParam String password, @RequestParam(name = "confirm-password") String confirmPassword,
             Model model, HttpServletRequest request) {
 
-        // Validar que las contraseñas coincidan
+        // Validate that passwords match
         if (!password.equals(confirmPassword)) {
             model.addAttribute("error", "Las contraseñas no coinciden");
             return "login";
         }
 
-        // Validar que el usuario no exista
+        // Validate that the username is not already taken
         if (userRepository.findByName(username).isPresent()) {
             model.addAttribute("error", "El nombre de usuario ya está en uso");
             return "login";
         }
 
-        // Validar que el email no exista
+        // Validate that the email is not already registered
         if (userRepository.findByEmail(email).isPresent()) {
             model.addAttribute("error", "El email ya está registrado");
             return "login";
         }
 
-        // Crear nuevo usuario
+        // Create new user
         User newUser = new User();
         newUser.setName(username);
         newUser.setEmail(email);
@@ -119,10 +119,10 @@ public class AuthController {
 
         userRepository.save(newUser);
 
-        // Enviar correo de bienvenida
-        emailService.enviarCorreoBienvenida(email, name);
+        // Send welcome email
+        emailService.sendWelcomeEmail(email, name);
 
-        // Autologuear al usuario
+        // Auto-login the user
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 userDetails,
@@ -131,7 +131,7 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Guardar el contexto de seguridad en la sesión HTTP
+        // Store the security context in the HTTP session
         request.getSession().setAttribute(
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                 SecurityContextHolder.getContext());
@@ -166,7 +166,7 @@ public class AuthController {
         if (user != null && street != null && !street.isEmpty()) {
             System.out.println("Saving address for user: " + userName);
 
-            // Construir la dirección como texto simple
+            // Build the address as plain text
             StringBuilder addressBuilder = new StringBuilder();
             addressBuilder.append(street);
             if (additional != null && !additional.isEmpty()) {
@@ -223,34 +223,34 @@ public class AuthController {
         String userName = principal.getName();
         User user = userRepository.findByName(userName).orElse(null);
 
-        // Validar que la contraseña antigua sea correcta
+        // Validate that the old password is correct
         if (!passwordEncoder.matches(oldPassword, user.getEncodedPassword())) {
             addUserAttributesToModel(model, user, cartContent, request, "La contraseña antigua es incorrecta");
             return "user";
         }
 
-        // Validar que la nueva contraseña y su confirmación sean iguales
+        // Validate that the new password and confirmation match
         if (!newPassword.equals(confirmPassword)) {
             addUserAttributesToModel(model, user, cartContent, request, "Las nuevas contraseñas no coinciden");
             return "user";
         }
 
-        // Validar que la nueva contraseña no sea igual a la antigua
+        // Validate that the new password differs from the old one
         if (oldPassword.equals(newPassword)) {
             addUserAttributesToModel(model, user, cartContent, request,
                     "La nueva contraseña debe ser diferente a la antigua");
             return "user";
         }
 
-        // Encriptar y guardar la nueva contraseña
+        // Encrypt and save the new password
         user.setEncodedPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
 
-        // Redirigir con éxito
+        // Redirect on success
         return "redirect:/user?passwordSuccess=true";
     }
 
-    // Método auxiliar para agregar atributos del usuario al modelo
+    // Helper method to add user attributes to the model
     private void addUserAttributesToModel(Model model, User user, String cartContent,
             HttpServletRequest request, String errorMessage) {
         model.addAttribute("userName", user.getName() != null ? user.getName() : "Establecer nombre de usuario");
@@ -283,12 +283,12 @@ public class AuthController {
         String userName = principal.getName();
         User user = userRepository.findByName(userName).orElse(null);
 
-        // Actualizar nombre completo si no contiene "Establecer"
+        // Update full name if it doesn't contain "Establecer"
         if (fullName != null && !fullName.isEmpty() && !fullName.startsWith("Establecer")) {
             user.setFullName(fullName);
         }
 
-        // Actualizar fecha de nacimiento si no está vacía
+        // Update birth date if not empty
         if (birthDate != null && !birthDate.isEmpty()) {
             user.setBirthDate(java.time.LocalDate.parse(birthDate));
         }

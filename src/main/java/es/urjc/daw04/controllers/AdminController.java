@@ -67,19 +67,19 @@ public class AdminController {
 
         // Charts Data
 
-        // 1. Productos más comprados: Monthly sales by category (Pie Chart)
+        // 1. Most purchased products: Monthly sales by category (Pie Chart)
         populatePieChart(model, "catLabels", "catData", orderService.getSalesByCategory());
 
-        // 2. Productos por etiqueta: Most sold tags (Pie Chart)
+        // 2. Products by tag: Most sold tags (Pie Chart)
         populatePieChart(model, "tagLabels", "tagData", orderService.getSalesByTag());
 
-        // 3. Ventas mensuales (Bar Chart)
+        // 3. Monthly sales (Bar Chart)
         populateBarChart(model, "monthlyLabels", "monthlyData", orderService.getMonthlySales());
 
-        // 4. Relación visitas-compra (Line Chart - using Orders Count)
+        // 4. Visit-to-purchase ratio (Line Chart - using Orders Count)
         populateBarChart(model, "visitorsLabels", "visitorsData", orderService.getOrdersCountByMonth());
 
-        // 5. Gráfico de reseñas (Line Chart)
+        // 5. Reviews chart (Line Chart)
         populateBarChart(model, "reviewsLabels", "reviewsData", reviewService.getReviewCountByMonth());
 
         return "admin";
@@ -148,7 +148,7 @@ public class AdminController {
             map.put("birthDate", u.getBirthDate() != null ? u.getBirthDate().toString() : "");
             map.put("shippingAddress", u.getShippingAddress() != null ? u.getShippingAddress() : "");
 
-            // Parsear campos de dirección
+            // Parse address fields
             parseAddressFields(u.getShippingAddress(), map);
 
             map.put("roles", String.join(", ", u.getRoles()));
@@ -160,7 +160,7 @@ public class AdminController {
     }
 
     private void parseAddressFields(String address, Map<String, Object> map) {
-        // Valores por defecto
+        // Default values
         map.put("street", "");
         map.put("additional", "");
         map.put("city", "");
@@ -173,7 +173,7 @@ public class AdminController {
             return;
         }
 
-        // Parsear las líneas de la dirección
+        // Parse address lines
         String[] lines = address.split("\n");
         for (String line : lines) {
             if (line.contains(":")) {
@@ -259,7 +259,7 @@ public class AdminController {
             map.put("tags", p.getTags() != null ? String.join(", ", p.getTags()) : "");
             map.put("categoryId", p.getCategory() != null ? p.getCategory().getId() : "");
 
-            // Imágenes actuales
+            // Current images
             List<Map<String, Object>> images = p.getImages().stream().map(img -> {
                 Map<String, Object> imgMap = new HashMap<>();
                 imgMap.put("id", img.getId());
@@ -286,7 +286,7 @@ public class AdminController {
             @RequestParam(value = "images", required = false) List<MultipartFile> images,
             HttpServletResponse response) throws IOException {
 
-        // --- Validación backend ---
+        // --- Backend validation ---
         String validationError = null;
 
         List<MultipartFile> validImages = (images != null)
@@ -294,38 +294,38 @@ public class AdminController {
                 : List.of();
 
         if (name == null || name.isBlank()) {
-            validationError = "El nombre es obligatorio.";
+            validationError = "Name is required.";
         } else if (name.trim().length() < 2) {
-            validationError = "El nombre debe tener al menos 2 caracteres.";
+            validationError = "Name must be at least 2 characters long.";
         } else if (name.trim().length() > 100) {
-            validationError = "El nombre no puede superar los 100 caracteres.";
+            validationError = "Name cannot exceed 100 characters.";
         } else if (price == null || price.isBlank()) {
-            validationError = "El precio es obligatorio.";
+            validationError = "Price is required.";
         } else {
             try {
                 double priceVal = Double.parseDouble(price.replace(',', '.'));
                 if (priceVal <= 0) {
-                    validationError = "El precio debe ser mayor que 0.";
+                    validationError = "Price must be greater than 0.";
                 } else if (priceVal > 99999) {
-                    validationError = "El precio no puede superar 99.999 €.";
+                    validationError = "Price cannot exceed \u20ac99,999.";
                 } else if (description != null && description.length() > 500) {
-                    validationError = "La descripción no puede superar los 500 caracteres.";
+                    validationError = "Description cannot exceed 500 characters.";
                 } else if (validImages.isEmpty()) {
-                    validationError = "Debes subir al menos una imagen.";
+                    validationError = "You must upload at least one image.";
                 } else {
                     for (MultipartFile f : validImages) {
                         if (f.getSize() > MAX_IMAGE_SIZE) {
-                            validationError = "Cada imagen no puede superar los 5 MB.";
+                            validationError = "Each image cannot exceed 5 MB.";
                             break;
                         }
                         if (f.getContentType() == null || !ALLOWED_MIME.contains(f.getContentType())) {
-                            validationError = "Solo se permiten imágenes JPG, PNG, WEBP o GIF.";
+                            validationError = "Only JPG, PNG, WEBP or GIF images are allowed.";
                             break;
                         }
                     }
                 }
             } catch (NumberFormatException e) {
-                validationError = "El precio introducido no es válido.";
+                validationError = "The price entered is not valid.";
             }
         }
 
@@ -335,7 +335,7 @@ public class AdminController {
             return;
         }
 
-        // --- Creación ---
+        // --- Creation ---
         double priceVal = Double.parseDouble(price.replace(',', '.'));
 
         List<String> tagList = (tags != null && !tags.isBlank())
@@ -377,7 +377,7 @@ public class AdminController {
             return;
         }
 
-        // Validación básica
+        // Basic validation
         if (name == null || name.isBlank() || price == null || price.isBlank()) {
             response.sendRedirect("/admin/products?error=Faltan campos obligatorios");
             return;
@@ -446,7 +446,7 @@ public class AdminController {
             @RequestParam(required = false) String icon, HttpServletResponse response) throws IOException {
         categoryService.findById(id).ifPresent(category -> {
             category.setName(name);
-            // Opcional: actualizar slug si cambia el nombre
+            // Opcional: update slug if name changes
             category.setSlug(name.toLowerCase().replace(" ", "-").replaceAll("[^a-z0-9-]", ""));
             category.setIcon(icon);
             categoryService.save(category);
@@ -514,7 +514,7 @@ public class AdminController {
             HttpServletResponse response) throws IOException {
 
         userService.findById(id).ifPresent(user -> {
-            // No permitir editar administradores
+            // Do not allow editing administrators
             if (!user.isAdmin()) {
                 user.setName(name.trim());
                 user.setEmail(email.trim());
@@ -524,11 +524,11 @@ public class AdminController {
                     try {
                         user.setBirthDate(LocalDate.parse(birthDate));
                     } catch (Exception e) {
-                        // Ignorar si el formato es inválido
+                        // Ignore if format is invalid
                     }
                 }
 
-                // Combinar campos de dirección en un solo string
+                // Combine address fields into a single string
                 StringBuilder addressBuilder = new StringBuilder();
                 if (street != null && !street.isBlank()) {
                     addressBuilder.append("Calle: ").append(street.trim()).append("\n");

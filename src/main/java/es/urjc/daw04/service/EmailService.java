@@ -11,25 +11,25 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void enviarCorreoBienvenida(String destinatario, String nombreUsuario) {
+    public void sendWelcomeEmail(String recipient, String username) {
         try {
-            System.out.println("Intentando enviar correo a: " + destinatario);
-            SimpleMailMessage mensaje = new SimpleMailMessage();
-            mensaje.setTo(destinatario);
-            mensaje.setSubject("¡Bienvenido a PlantaZón!");
-            mensaje.setText(crearContenidoCorreo(nombreUsuario));
-            mensaje.setFrom("plantazon417@gmail.com");
+            System.out.println("Attempting to send email to: " + recipient);
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(recipient);
+            message.setSubject("¡Bienvenido a PlantaZón!");
+            message.setText(createEmailContent(username));
+            message.setFrom("plantazon417@gmail.com");
 
-            mailSender.send(mensaje);
-            System.out.println("✓ Correo enviado exitosamente a: " + destinatario);
+            mailSender.send(message);
+            System.out.println("Email sent successfully to: " + recipient);
         } catch (Exception e) {
-            System.err.println("✗ Error al enviar correo a " + destinatario + ": " + e.getMessage());
+            System.err.println("Error sending email to " + recipient + ": " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    private String crearContenidoCorreo(String nombreUsuario) {
-        return "Hola " + nombreUsuario + ",\n\n" +
+    private String createEmailContent(String username) {
+        return "Hola " + username + ",\n\n" +
                 "¡Bienvenido a PlantaZon! Nos alegra mucho que te hayas unido a nuestra comunidad.\n\n" +
                 "En PlantaZon encontrarás:\n" +
                 "✓ Una amplia variedad de plantas para tu hogar\n" +

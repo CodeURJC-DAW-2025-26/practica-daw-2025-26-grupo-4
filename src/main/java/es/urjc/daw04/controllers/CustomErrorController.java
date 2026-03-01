@@ -22,23 +22,23 @@ public class CustomErrorController implements ErrorController {
         String message;
         switch (status) {
             case 400:
-                message = "Solicitud incorrecta";
+                message = "Bad request";
                 break;
             case 403:
-                message = "Acceso denegado";
+                message = "Access denied";
                 break;
             case 404:
-                message = "Página no encontrada";
+                message = "Page not found";
                 break;
             case 405:
-                message = "Método no permitido";
+                message = "Method not allowed";
                 break;
             case 500:
-                message = "Error interno del servidor";
+                message = "Internal server error";
                 break;
             default:
                 HttpStatus httpStatus = HttpStatus.resolve(status);
-                message = httpStatus != null ? httpStatus.getReasonPhrase() : "Error inesperado";
+                message = httpStatus != null ? httpStatus.getReasonPhrase() : "Unexpected error";
         }
         model.addAttribute("message", message);
 
@@ -48,16 +48,16 @@ public class CustomErrorController implements ErrorController {
             String defaultDetail;
             switch (status) {
                 case 404:
-                    defaultDetail = "El recurso que buscas no existe o ha sido eliminado.";
+                    defaultDetail = "The requested resource does not exist or has been removed.";
                     break;
                 case 403:
-                    defaultDetail = "No tienes permiso para acceder a esta página.";
+                    defaultDetail = "You do not have permission to access this page.";
                     break;
                 case 500:
-                    defaultDetail = "Ha ocurrido un problema en el servidor. Inténtalo más tarde.";
+                    defaultDetail = "A server error has occurred. Please try again later.";
                     break;
                 default:
-                    defaultDetail = "Por favor, vuelve al inicio e inténtalo de nuevo.";
+                    defaultDetail = "Please go back to the home page and try again.";
             }
             model.addAttribute("detail", defaultDetail);
         }

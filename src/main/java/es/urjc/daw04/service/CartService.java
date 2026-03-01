@@ -15,16 +15,16 @@ public class CartService {
     @Autowired
     private ProductService productService;
 
-    // --- MÉTODOS AUXILIARES (PRIVADOS) ---
+    // --- PRIVATE HELPER METHODS ---
 
-    // Traduce: "1:2_5:1" -> {1=2, 5=1}
+    // Decodes: "1:2_5:1" -> {1=2, 5=1}
     private Map<Long, Integer> decodeCookie(String content) {
         Map<Long, Integer> map = new HashMap<>();
         if (content == null || content.isEmpty())
             return map;
 
         try {
-            // Reemplazamos el separador por "_" para evitar caracteres inválidos como la coma
+            // Split by "_" to avoid invalid characters like commas
             String[] items = content.split("_");
             for (String item : items) {
                 String[] parts = item.split(":");
@@ -33,13 +33,13 @@ public class CartService {
                 }
             }
         } catch (Exception e) {
-            // Si la cookie está mal formateada (el usuario la ha editado a mano),
-            // devolvemos lo que hayamos podido recuperar o un mapa vacío.
+            // If the cookie is malformed (e.g. manually edited by the user),
+            // return whatever we managed to parse, or an empty map.
         }
         return map;
     }
 
-    // Traduce: {1=2, 5=1} -> "1:2_5:1"
+    // Encodes: {1=2, 5=1} -> "1:2_5:1"
     private String encodeCookie(Map<Long, Integer> map) {
         if (map == null || map.isEmpty()) return "";
         List<String> pairs = new ArrayList<>();
@@ -49,7 +49,7 @@ public class CartService {
         return String.join("_", pairs);
     }
 
-    // --- MÉTODOS PÚBLICOS ---
+    // --- PUBLIC METHODS ---
 
     public String addProduct(String currentContent, Long productId) {
         Map<Long, Integer> map = decodeCookie(currentContent);
@@ -70,12 +70,12 @@ public class CartService {
     }
 
     public Cart getCartFromCookie(String content) {
-        Cart cart = new Cart(); // Creamos un carrito nuevo y vacío para CADA petición
+        Cart cart = new Cart(); // Create a new empty cart for EACH request
         Map<Long, Integer> map = decodeCookie(content);
 
         for (Map.Entry<Long, Integer> entry : map.entrySet()) {
             productService.findById(entry.getKey()).ifPresent(p -> {
-                // Añadimos items al carrito temporal
+                // Add items to the temporary cart
                 cart.addItem(new CartItem(p, entry.getValue()));
             });
         }
