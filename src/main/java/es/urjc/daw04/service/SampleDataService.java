@@ -17,7 +17,6 @@ import es.urjc.daw04.model.User;
 import es.urjc.daw04.repositories.UserRepository;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Service

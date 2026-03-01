@@ -55,7 +55,7 @@ public class Review {
         return stars;
     }
 
-    // Getters y Setters
+    // Getters & Setters
     public long getId() {
         return id;
     }
