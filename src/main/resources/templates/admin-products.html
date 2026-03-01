@@ -219,7 +219,7 @@
                                             onclick="editProduct(this)"
                                             data-id="{{id}}"
                                             data-name="{{name}}"
-                                            data-price="{{price}}"
+                                            data-price="{{rawPrice}}"
                                             data-category-id="{{categoryId}}"
                                             data-description="{{description}}"
                                             data-tags="{{tags}}"
@@ -479,12 +479,13 @@
                 clearError('description');
             }
 
-            // Imagen
+            // Imagen (solo obligatoria al crear, no al editar)
             const imageInput = document.getElementById('images');
-            if (!imageInput.files || imageInput.files.length === 0) {
+            const isEditing = document.getElementById('createProductForm').action.includes('/update');
+            if (!isEditing && (!imageInput.files || imageInput.files.length === 0)) {
                 setError('image', 'Debes subir al menos una imagen.');
                 valid = false;
-            } else {
+            } else if (imageInput.files && imageInput.files.length > 0) {
                 let imgError = null;
                 for (const file of imageInput.files) {
                     if (!ALLOWED_TYPES.includes(file.type)) {

@@ -58,20 +58,6 @@
                         <button type="button" onclick="changeQty(1)">+</button>
                     </div>
 
-                    {{#isAdmin}}
-                    <div class="admin-actions" style="margin-bottom: var(--space-4); display:flex; gap: var(--space-3);">
-                        <a href="/admin/products/{{product.id}}/edit" class="action-btn primary-action">
-                            <i class="fa-solid fa-pen-to-square"></i> Editar
-                        </a>
-                        <form action="/admin/products/{{product.id}}/delete" method="post" style="display:inline;">
-                            <input type="hidden" name="_csrf" value="{{token}}">
-                            <button type="submit" class="action-btn danger-action"
-                                    onclick="return confirm('¿Eliminar este producto?')">
-                                <i class="fa-solid fa-trash"></i> Eliminar
-                            </button>
-                        </form>
-                    </div>
-                    {{/isAdmin}}
                     <form action="/cart/buy" method="post" style="display:inline;">
                         <input type="hidden" name="_csrf" value="{{token}}">
                         <input type="hidden" name="productId" value="{{product.id}}">
