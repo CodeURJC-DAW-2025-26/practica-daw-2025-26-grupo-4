@@ -30,19 +30,31 @@
                     </a>
                     {{/isAdmin}}
                     {{^isAdmin}}
+                    {{#isLogged}}
                     <a href="/user" class="dropdown-item">
                         <i class="fa-solid fa-user"></i> Ver perfil
                     </a>
                     <a href="/order" class="dropdown-item">
                         <i class="fa-solid fa-bag-shopping"></i> Ver mis pedidos
                     </a>
+                    {{/isLogged}}
+                    {{^isLogged}}
+                    <a href="/login" class="dropdown-item">
+                        <i class="fa-solid fa-right-to-bracket"></i> Iniciar sesión
+                    </a>
+                    <a href="/login?register=true" class="dropdown-item">
+                        <i class="fa-solid fa-user-plus"></i> Registrarse
+                    </a>
+                    {{/isLogged}}
                     {{/isAdmin}}
+                    {{#isLogged}}
                     <form action="/logout" method="post" class="logout-form">
                         <input type="hidden" name="_csrf" value="{{token}}">
                         <button type="submit" class="dropdown-item logout-btn">
                             <i class="fa-solid fa-sign-out-alt"></i> Cerrar sesión
                         </button>
                     </form>
+                    {{/isLogged}}
                 </div>
             </div>
         </div>

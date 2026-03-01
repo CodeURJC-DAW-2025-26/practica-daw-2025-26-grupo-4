@@ -52,6 +52,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/register").permitAll()
                         .requestMatchers("/").permitAll()
+                        // ALLOW ONLY AUTHENTICATED USERS TO POST REVIEWS
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/product/*/review").authenticated()
                         .requestMatchers("/product/**").permitAll()
                         .requestMatchers("/products/**").permitAll()
                         .requestMatchers("/cart").permitAll()

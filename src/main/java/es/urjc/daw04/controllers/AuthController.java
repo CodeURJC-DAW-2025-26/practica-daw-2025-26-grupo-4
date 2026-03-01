@@ -43,13 +43,17 @@ public class AuthController {
     private EmailService emailService;
 
     @GetMapping("/login")
-    public String login() {
+    public String login(Model model, @RequestParam(required = false) String register) {
+        if (register != null) {
+            model.addAttribute("registerMode", true);
+        }
         return "login";
     }
 
     @GetMapping("/loginerror")
-    public String loginerror() {
-        return "errors";
+    public String loginerror(Model model) {
+        model.addAttribute("error", "Usuario o contraseña incorrectos");
+        return "login";
     }
 
     @GetMapping("/private")

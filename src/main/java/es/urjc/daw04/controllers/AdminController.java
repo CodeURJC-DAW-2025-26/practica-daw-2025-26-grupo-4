@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -260,6 +261,7 @@ public class AdminController {
             map.put("name", p.getName());
             map.put("categoryName", p.getCategory() != null ? p.getCategory().getName() : "-");
             map.put("price", String.format("%.2f", p.getPrice()));
+            map.put("rawPrice", String.format(Locale.ROOT, "%.2f", p.getPrice()));
             map.put("description", p.getDescription() != null ? p.getDescription() : "");
             map.put("tags", p.getTags() != null ? String.join(", ", p.getTags()) : "");
             map.put("categoryId", p.getCategory() != null ? p.getCategory().getId() : "");

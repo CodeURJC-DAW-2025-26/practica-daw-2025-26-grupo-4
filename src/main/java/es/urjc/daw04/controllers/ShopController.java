@@ -117,8 +117,9 @@ public class ShopController {
             @RequestParam String content,
             @RequestParam double rating,
             HttpServletRequest request) {
-        Product product = productService.findById(id).orElse(null);
+
         var principal = request.getUserPrincipal();
+        Product product = productService.findById(id).orElse(null);
 
         if (product != null && principal != null) {
             Long userId = Long.parseLong(principal.getName());
