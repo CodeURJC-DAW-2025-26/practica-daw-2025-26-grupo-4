@@ -27,7 +27,7 @@ public class User {
     private List<String> roles;
 
     private LocalDate birthDate;
-    private String fullName; // nombre y apellidos
+    private String fullName; // full name and surnames
 
     @Column(length = 1000)
     private String shippingAddress;
