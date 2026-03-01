@@ -9,13 +9,18 @@
     <link rel="stylesheet" href="/styles/components.css">
     <link rel="stylesheet" href="/styles/login.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
 
+    <a href="/" class="back-home-btn">
+        <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+    </a>
+
     <div class="main-container">
 
-        <div class="login-card mode-login">
+        <div class="login-card {{#registerMode}}mode-register{{/registerMode}}{{^registerMode}}mode-login{{/registerMode}}">
             <div class="header">
                 <div class="logo-wrap brand-logo-wrap">
                     <img class="logo brand-logo" src="/images/logoDAW.png" alt="Logo PlantaZon">
