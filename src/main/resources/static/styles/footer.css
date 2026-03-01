@@ -30,9 +30,15 @@
   gap: var(--space-2);
 }
 
-.footer-column li span {
+.footer-column li a {
   color: #fff;
   opacity: 0.9;
+  text-decoration: none;
+}
+
+.footer-column li a:hover {
+  opacity: 1;
+  text-decoration: underline;
 }
 
 .footer-bottom {

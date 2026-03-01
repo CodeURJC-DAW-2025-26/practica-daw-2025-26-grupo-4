@@ -46,7 +46,12 @@ public class OrderService {
             order.addItem(dbItem);
         }
 
-        order.setTotalPrice(order.getTotalPrice());
+        // Calculate total from items
+        double itemsTotal = order.getItems().stream()
+            .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
+            .sum();
+        order.setTotalPrice(itemsTotal + order.getShippingCost());
+        
         repository.save(order);
     }
 

@@ -1,23 +1,23 @@
 package es.urjc.daw04.service;
 
-import jakarta.annotation.PostConstruct;
+import java.util.Calendar;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import es.urjc.daw04.model.Review;
-import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import es.urjc.daw04.model.CartItem;
 import es.urjc.daw04.model.Category;
 import es.urjc.daw04.model.EnumStatus;
 import es.urjc.daw04.model.Order;
 import es.urjc.daw04.model.Product;
+import es.urjc.daw04.model.Review;
 import es.urjc.daw04.model.User;
 import es.urjc.daw04.repositories.UserRepository;
-
-import java.util.Calendar;
-import java.util.List;
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class SampleDataService {
@@ -411,8 +411,12 @@ public class SampleDataService {
                 orderPrueba.setUser(userNormal); // <--- LINKED TO "user"
                 orderPrueba.addItem(new CartItem(products.get(0), 2));
                 orderPrueba.addItem(new CartItem(products.get(1), 1));
-                orderPrueba.setTotalPrice(orderPrueba.getTotalPrice());
                 orderPrueba.setShippingCost(4.95);
+                // Calculate total from items
+                double itemsTotal = orderPrueba.getItems().stream()
+                    .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
+                    .sum();
+                orderPrueba.setTotalPrice(itemsTotal + orderPrueba.getShippingCost());
                 orderPrueba.setStatus(EnumStatus.DELIVERED); // So that they can write reviews
                 orderService.save(orderPrueba);
             }
@@ -440,8 +444,11 @@ public class SampleDataService {
                 o1.setOrderDate(cal.getTime());
                 o1.addItem(new CartItem(allProducts.get(2), 1));
                 o1.addItem(new CartItem(allProducts.get(5), 2));
-                o1.setTotalPrice(o1.getTotalPrice());
                 o1.setShippingCost(4.95);
+                double total1 = o1.getItems().stream()
+                    .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
+                    .sum();
+                o1.setTotalPrice(total1 + o1.getShippingCost());
                 o1.setStatus(EnumStatus.DELIVERED);
                 orderService.save(o1);
 
@@ -451,8 +458,11 @@ public class SampleDataService {
                 o2.setUser(uSofia);
                 o2.setOrderDate(cal.getTime());
                 o2.addItem(new CartItem(allProducts.get(10), 1));
-                o2.setTotalPrice(o2.getTotalPrice());
                 o2.setShippingCost(3.50);
+                double total2 = o2.getItems().stream()
+                    .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
+                    .sum();
+                o2.setTotalPrice(total2 + o2.getShippingCost());
                 o2.setStatus(EnumStatus.DELIVERED);
                 orderService.save(o2);
 
@@ -463,8 +473,11 @@ public class SampleDataService {
                 o3.setOrderDate(cal.getTime());
                 o3.addItem(new CartItem(allProducts.get(15), 3));
                 o3.addItem(new CartItem(allProducts.get(20), 1));
-                o3.setTotalPrice(o3.getTotalPrice());
                 o3.setShippingCost(5.00);
+                double total3 = o3.getItems().stream()
+                    .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
+                    .sum();
+                o3.setTotalPrice(total3 + o3.getShippingCost());
                 o3.setStatus(EnumStatus.DELIVERED);
                 orderService.save(o3);
 
@@ -474,8 +487,11 @@ public class SampleDataService {
                 o4.setUser(uLucas);
                 o4.setOrderDate(cal.getTime());
                 o4.addItem(new CartItem(allProducts.get(8), 2));
-                o4.setTotalPrice(o4.getTotalPrice());
                 o4.setShippingCost(4.95);
+                double total4 = o4.getItems().stream()
+                    .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
+                    .sum();
+                o4.setTotalPrice(total4 + o4.getShippingCost());
                 o4.setStatus(EnumStatus.DELIVERED);
                 orderService.save(o4);
 
@@ -486,8 +502,11 @@ public class SampleDataService {
                 o5.setOrderDate(cal.getTime());
                 o5.addItem(new CartItem(allProducts.get(30), 1));
                 o5.addItem(new CartItem(allProducts.get(31), 1));
-                o5.setTotalPrice(o5.getTotalPrice());
                 o5.setShippingCost(4.95);
+                double total5 = o5.getItems().stream()
+                    .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
+                    .sum();
+                o5.setTotalPrice(total5 + o5.getShippingCost());
                 o5.setStatus(EnumStatus.PENDING);
                 orderService.save(o5);
             }

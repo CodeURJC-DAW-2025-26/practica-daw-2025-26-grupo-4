@@ -1,7 +1,7 @@
 package es.urjc.daw04.model;
 
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -34,7 +34,7 @@ public class Order {
 
     public Order() {
         this.orderDate = new Date();
-        this.status = "PENDING";
+        this.status = EnumStatus.PENDING;
     }
 
     public void addItem(CartItem item) {
