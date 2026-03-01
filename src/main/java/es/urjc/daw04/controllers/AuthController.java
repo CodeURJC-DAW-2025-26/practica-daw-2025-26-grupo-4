@@ -61,8 +61,8 @@ public class AuthController {
     public String user(Model model, @CookieValue(value = "cart", defaultValue = "") String cartContent,
             Principal principal, HttpServletRequest request) {
 
-        String userName = principal.getName();
-        User user = userRepository.findByName(userName).orElse(null);
+        Long userId = Long.parseLong(principal.getName());
+        User user = userRepository.findById(userId).orElse(null);
 
         if (user != null) {
             model.addAttribute("userName", user.getName() != null ? user.getName() : "Establecer nombre de usuario");
@@ -158,13 +158,12 @@ public class AuthController {
             return "redirect:/login";
         }
 
-        String userName = principal.getName();
-        System.out.println("User name: " + userName);
+        Long userId = Long.parseLong(principal.getName());
+        System.out.println("User ID: " + userId);
 
-        User user = userRepository.findByName(userName).orElse(null);
+        User user = userRepository.findById(userId).orElse(null);
 
         if (user != null && street != null && !street.isEmpty()) {
-            System.out.println("Saving address for user: " + userName);
 
             // Construir la dirección como texto simple
             StringBuilder addressBuilder = new StringBuilder();
@@ -198,8 +197,8 @@ public class AuthController {
     @Transactional
     @PostMapping("/user/address/delete")
     public String deleteAddress(Principal principal) {
-        String userName = principal.getName();
-        User user = userRepository.findByName(userName).orElse(null);
+        Long userId = Long.parseLong(principal.getName());
+        User user = userRepository.findById(userId).orElse(null);
 
         if (user != null) {
             user.setShippingAddress(null);
@@ -220,8 +219,8 @@ public class AuthController {
             @CookieValue(value = "cart", defaultValue = "") String cartContent,
             HttpServletRequest request) {
 
-        String userName = principal.getName();
-        User user = userRepository.findByName(userName).orElse(null);
+        Long userId = Long.parseLong(principal.getName());
+        User user = userRepository.findById(userId).orElse(null);
 
         // Validar que la contraseña antigua sea correcta
         if (!passwordEncoder.matches(oldPassword, user.getEncodedPassword())) {
@@ -274,14 +273,31 @@ public class AuthController {
             @RequestParam(required = false) String username,
             @RequestParam(required = false) String fullName,
             @RequestParam(required = false) String birthDate,
-            Principal principal) {
+            Principal principal,
+            Model model,
+            @CookieValue(value = "cart", defaultValue = "") String cartContent,
+            HttpServletRequest request) {
 
         if (principal == null) {
             return "redirect:/login";
         }
 
-        String userName = principal.getName();
-        User user = userRepository.findByName(userName).orElse(null);
+        Long userId = Long.parseLong(principal.getName());
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        // Validar y actualizar username si es diferente
+        if (username != null && !username.isEmpty() && !username.equals(user.getName())) {
+            // Verificar si el nuevo username ya está en uso
+            if (userRepository.findByName(username).isPresent()) {
+                addUserAttributesToModel(model, user, cartContent, request, "El nombre de usuario ya está en uso");
+                return "user";
+            }
+            user.setName(username);
+        }
 
         // Actualizar nombre completo si no contiene "Establecer"
         if (fullName != null && !fullName.isEmpty() && !fullName.startsWith("Establecer")) {
@@ -290,7 +306,11 @@ public class AuthController {
 
         // Actualizar fecha de nacimiento si no está vacía
         if (birthDate != null && !birthDate.isEmpty()) {
-            user.setBirthDate(java.time.LocalDate.parse(birthDate));
+            try {
+                user.setBirthDate(java.time.LocalDate.parse(birthDate));
+            } catch (Exception e) {
+                // Ignorar si el formato es inválido
+            }
         }
 
         userRepository.save(user);

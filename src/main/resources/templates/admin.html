@@ -256,7 +256,7 @@
             
             // 1. Category Chart
             initChart('categoryChart', 'doughnut', 
-                [{{#catLabels}}'{{{.}}}',{{/catLabels}}], 
+                [{{#catLabels}}'{{.}}',{{/catLabels}}], 
                 [{{#catData}}{{.}},{{/catData}}], 
                 'Unidades por Categoría',
                 ['rgba(255, 99, 132, 0.6)','rgba(54, 162, 235, 0.6)','rgba(255, 206, 86, 0.6)','rgba(75, 192, 192, 0.6)']
@@ -264,7 +264,7 @@
 
             // 2. Tags Chart
             initChart('tagsChart', 'doughnut', 
-                [{{#tagLabels}}'{{{.}}}',{{/tagLabels}}], 
+                [{{#tagLabels}}'{{.}}',{{/tagLabels}}], 
                 [{{#tagData}}{{.}},{{/tagData}}], 
                 'Unidades por Etiqueta',
                 ['rgba(153, 102, 255, 0.6)','rgba(255, 159, 64, 0.6)','rgba(199, 199, 199, 0.6)','rgba(83, 102, 255, 0.6)']
@@ -272,7 +272,7 @@
 
             // 3. Monthly Sales Chart
             initChart('monthlySalesChart', 'bar', 
-                [{{#monthlyLabels}}'{{{.}}}',{{/monthlyLabels}}], 
+                [{{#monthlyLabels}}'{{.}}',{{/monthlyLabels}}], 
                 [{{#monthlyData}}{{.}},{{/monthlyData}}], 
                 'Ventas Mensuales (€)',
                 'rgba(75, 192, 192, 0.6)', 'rgba(75, 192, 192, 1)'
@@ -280,14 +280,14 @@
 
             // 4. Visitors/Orders Chart (Line)
             initChart('visitorsChart', 'line', 
-                [{{#visitorsLabels}}'{{{.}}}',{{/visitorsLabels}}], 
+                [{{#visitorsLabels}}'{{.}}',{{/visitorsLabels}}], 
                 [{{#visitorsData}}{{.}},{{/visitorsData}}], 
                 'Total Pedidos'
             );
 
             // 5. Reviews Chart (Line)
             initChart('reviewsChart', 'line', 
-                [{{#reviewsLabels}}'{{{.}}}',{{/reviewsLabels}}], 
+                [{{#reviewsLabels}}'{{.}}',{{/reviewsLabels}}], 
                 [{{#reviewsData}}{{.}},{{/reviewsData}}], 
                 'Nuevas Reseñas'
             );

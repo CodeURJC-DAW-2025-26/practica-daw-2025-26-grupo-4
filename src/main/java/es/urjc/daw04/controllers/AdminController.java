@@ -57,12 +57,19 @@ public class AdminController {
     private ReviewService reviewService;
 
     @GetMapping("/admin")
-    public String admin(Model model) {
+    public String admin(Model model, jakarta.servlet.http.HttpServletRequest request) {
         // Users
         Page<User> firstPage = userService.findAllPaged(0, ADMIN_USERS_PAGE_SIZE);
         List<Map<String, Object>> usersData = toUsersData(firstPage.getContent());
         model.addAttribute("users", usersData);
         model.addAttribute("hasMore", firstPage.hasNext());
+
+        // Añadir token CSRF
+        org.springframework.security.web.csrf.CsrfToken csrf = (org.springframework.security.web.csrf.CsrfToken) request
+                .getAttribute("_csrf");
+        if (csrf != null) {
+            model.addAttribute("token", csrf.getToken());
+        }
 
         // Charts Data
 

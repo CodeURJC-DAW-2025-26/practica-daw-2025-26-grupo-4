@@ -83,7 +83,8 @@ public class ShopController {
 
             // Reseña del usuario actual si existe
             if (principal != null) {
-                User user = userService.findByName(principal.getName()).orElse(null);
+                Long userId = Long.parseLong(principal.getName());
+                User user = userService.findById(userId).orElse(null);
                 if (user != null) {
                     Optional<Review> userReview = reviewService.findByProductIdAndUserId(id, user.getId());
                     userReview.ifPresent(review -> model.addAttribute("userReview", review));
@@ -91,8 +92,8 @@ public class ShopController {
             }
 
             // Añadir token CSRF
-            org.springframework.security.web.csrf.CsrfToken csrf = 
-                (org.springframework.security.web.csrf.CsrfToken) request.getAttribute("_csrf");
+            org.springframework.security.web.csrf.CsrfToken csrf = (org.springframework.security.web.csrf.CsrfToken) request
+                    .getAttribute("_csrf");
             if (csrf != null) {
                 model.addAttribute("token", csrf.getToken());
             }
@@ -119,14 +120,14 @@ public class ShopController {
         Product product = productService.findById(id).orElse(null);
         var principal = request.getUserPrincipal();
 
-
         if (product != null && principal != null) {
-            User user = userService.findByName(principal.getName()).orElse(null);
-            
+            Long userId = Long.parseLong(principal.getName());
+            User user = userService.findById(userId).orElse(null);
+
             if (user != null) {
                 // Verificar si ya existe una reseña del usuario para este producto
                 Optional<Review> existingReview = reviewService.findByProductIdAndUserId(id, user.getId());
-                
+
                 if (existingReview.isPresent()) {
                     // Actualizar la reseña existente
                     Review review = existingReview.get();
@@ -152,9 +153,10 @@ public class ShopController {
             @RequestParam double rating,
             Principal principal) {
         Review review = reviewService.findById(reviewId).orElse(null);
-        
+
         if (review != null && principal != null) {
-            User user = userService.findByName(principal.getName()).orElse(null);
+            Long userId = Long.parseLong(principal.getName());
+            User user = userService.findById(userId).orElse(null);
             if (user != null && review.getUser().getId().equals(user.getId())) {
                 review.setContent(content);
                 review.setRating(rating);
@@ -168,9 +170,10 @@ public class ShopController {
     @PostMapping("/review/{reviewId}/delete")
     public String deleteReview(@PathVariable Long reviewId, Principal principal) {
         Review review = reviewService.findById(reviewId).orElse(null);
-        
+
         if (review != null && principal != null) {
-            User user = userService.findByName(principal.getName()).orElse(null);
+            Long userId = Long.parseLong(principal.getName());
+            User user = userService.findById(userId).orElse(null);
             if (user != null && review.getUser().getId().equals(user.getId())) {
                 Long productId = review.getProduct().getId();
                 reviewService.delete(reviewId);
@@ -226,10 +229,10 @@ public class ShopController {
     public void buyNow(@RequestParam long productId,
             @RequestParam(defaultValue = "1") int quantity,
             HttpServletResponse response) throws IOException {
-        
+
         // Start with empty cart to buy only this item
         String newContent = "";
-        
+
         // Add the product quantity times
         for (int i = 0; i < quantity; i++) {
             newContent = cartService.addProduct(newContent, productId);
@@ -252,7 +255,8 @@ public class ShopController {
         var principal = request.getUserPrincipal(); // Logged user check
 
         if (principal != null && !cartContent.isEmpty()) {
-            User user = userService.findByName(principal.getName()).orElse(null);
+            Long userId = Long.parseLong(principal.getName());
+            User user = userService.findById(userId).orElse(null);
 
             if (user != null) {
                 Cart cart = cartService.getCartFromCookie(cartContent);
@@ -274,8 +278,8 @@ public class ShopController {
     @GetMapping("/order")
     public String order(Model model, HttpServletRequest request, Principal principal) {
         // Añadir token CSRF
-        org.springframework.security.web.csrf.CsrfToken csrf = 
-            (org.springframework.security.web.csrf.CsrfToken) request.getAttribute("_csrf");
+        org.springframework.security.web.csrf.CsrfToken csrf = (org.springframework.security.web.csrf.CsrfToken) request
+                .getAttribute("_csrf");
         if (csrf != null) {
             model.addAttribute("token", csrf.getToken());
         }
@@ -284,7 +288,8 @@ public class ShopController {
             return "redirect:/login";
         }
 
-        User user = userService.findByName(principal.getName()).orElse(null);
+        Long userId = Long.parseLong(principal.getName());
+        User user = userService.findById(userId).orElse(null);
         if (user == null) {
             return "redirect:/login";
         }
@@ -302,7 +307,8 @@ public class ShopController {
             return "fragments/orders";
         }
 
-        User user = userService.findByName(principal.getName()).orElse(null);
+        Long userId = Long.parseLong(principal.getName());
+        User user = userService.findById(userId).orElse(null);
         if (user == null) {
             model.addAttribute("orders", List.of());
             return "fragments/orders";
@@ -319,19 +325,19 @@ public class ShopController {
             @RequestParam double rating,
             @RequestParam String content,
             Principal principal) {
-        
+
         if (principal == null) {
             return "redirect:/login";
         }
 
-        String userName = principal.getName();
-        User user = userService.findByName(userName).orElse(null);
+        Long userId = Long.parseLong(principal.getName());
+        User user = userService.findById(userId).orElse(null);
         Product product = productService.findById(productId).orElse(null);
-        
+
         if (user != null && product != null) {
             // Verificar si ya existe una reseña del usuario para este producto
             Optional<Review> existingReview = reviewService.findByProductIdAndUserId(productId, user.getId());
-            
+
             if (existingReview.isPresent()) {
                 // Actualizar la reseña existente
                 Review review = existingReview.get();
@@ -344,20 +350,21 @@ public class ShopController {
                 reviewService.save(review);
             }
         }
-        
+
         return "redirect:/order";
     }
 
     private List<Map<String, Object>> toOrdersData(List<Order> allOrders, Principal principal) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("d 'de' MMMM 'de' yyyy");
-        
+
         // Obtener el usuario actual
         User currentUser = null;
         if (principal != null) {
-            currentUser = userService.findByName(principal.getName()).orElse(null);
+            Long userId = Long.parseLong(principal.getName());
+            currentUser = userService.findById(userId).orElse(null);
         }
         final User user = currentUser;
-        
+
         return allOrders.stream().map(order -> {
             Map<String, Object> orderMap = new HashMap<>();
             orderMap.put("orderNumber", "ORD-" + String.format("%04d", order.getId()));
@@ -374,21 +381,22 @@ public class ShopController {
             List<Map<String, Object>> itemsData = order.getItems().stream().map(item -> {
                 Map<String, Object> itemMap = new HashMap<>();
                 itemMap.put("productId", item.getProduct().getId());
-                itemMap.put("imageUrl", item.getProduct().getImages().isEmpty() ? "/images/default" : item.getProduct().getImages().get(0).getUrl());
+                itemMap.put("imageUrl", item.getProduct().getImages().isEmpty() ? "/images/default"
+                        : item.getProduct().getImages().get(0).getUrl());
                 itemMap.put("name", item.getProduct().getName());
                 itemMap.put("quantity", item.getQuantity());
                 itemMap.put("price", String.format("%.2f", item.getProduct().getPrice()));
                 itemMap.put("canReview", order.getStatus().equals("Entregado"));
-                
+
                 // Verificar si el usuario ya dejó reseña para este producto
                 boolean hasReview = false;
                 if (user != null) {
                     Optional<Review> existingReview = reviewService.findByProductIdAndUserId(
-                        item.getProduct().getId(), user.getId());
+                            item.getProduct().getId(), user.getId());
                     hasReview = existingReview.isPresent();
                 }
                 itemMap.put("hasReview", hasReview);
-                
+
                 return itemMap;
             }).collect(Collectors.toList());
 
