@@ -16,7 +16,7 @@ public class EmailService {
             System.out.println("Attempting to send email to: " + recipient);
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(recipient);
-            message.setSubject("¡Bienvenido a PlantaZón!");
+            message.setSubject("¡Bienvenido a PlantaZon!");
             message.setText(createEmailContent(username));
             message.setFrom("plantazon417@gmail.com");
 
