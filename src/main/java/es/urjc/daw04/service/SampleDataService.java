@@ -15,6 +15,8 @@ import es.urjc.daw04.model.Product;
 import es.urjc.daw04.model.User;
 import es.urjc.daw04.repositories.UserRepository;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -377,6 +379,79 @@ public class SampleDataService {
                 orderPrueba.setShippingCost(4.95);
                 orderPrueba.setStatus("Entregado"); // Para que pueda escribir reviews
                 orderService.save(orderPrueba);
+            }
+
+            // Crear usuarios adicionales para nuevos pedidos
+            User uLucas = new User("Lucas", "Lucas Garcia", "lucas@example.com", passwordEncoder.encode("pass"), "USER");
+            userRepository.save(uLucas);
+            
+            User uSofia = new User("Sofia", "Sofia Martin", "sofia@example.com", passwordEncoder.encode("pass"), "USER");
+            userRepository.save(uSofia);
+            
+            User uMateo = new User("Mateo", "Mateo Ruiz", "mateo@example.com", passwordEncoder.encode("pass"), "USER");
+            userRepository.save(uMateo);
+
+            List<Product> allProducts = productService.findAll();
+            if (allProducts.size() >= 10) {
+                Calendar cal = Calendar.getInstance();
+
+                // Pedido 1: Lucas - Febrero 2026
+                cal.set(2026, Calendar.FEBRUARY, 10);
+                Order o1 = new Order();
+                o1.setUser(uLucas);
+                o1.setOrderDate(cal.getTime());
+                o1.addItem(new CartItem(allProducts.get(2), 1));
+                o1.addItem(new CartItem(allProducts.get(5), 2));
+                o1.setTotalPrice(o1.getTotalPrice());
+                o1.setShippingCost(4.95);
+                o1.setStatus("Entregado");
+                orderService.save(o1);
+
+                // Pedido 2: Sofia - Enero 2026
+                cal.set(2026, Calendar.JANUARY, 15);
+                Order o2 = new Order();
+                o2.setUser(uSofia);
+                o2.setOrderDate(cal.getTime());
+                o2.addItem(new CartItem(allProducts.get(10), 1));
+                o2.setTotalPrice(o2.getTotalPrice());
+                o2.setShippingCost(3.50);
+                o2.setStatus("Entregado");
+                orderService.save(o2);
+
+                // Pedido 3: Mateo - Diciembre 2025
+                cal.set(2025, Calendar.DECEMBER, 5);
+                Order o3 = new Order();
+                o3.setUser(uMateo);
+                o3.setOrderDate(cal.getTime());
+                o3.addItem(new CartItem(allProducts.get(15), 3));
+                o3.addItem(new CartItem(allProducts.get(20), 1));
+                o3.setTotalPrice(o3.getTotalPrice());
+                o3.setShippingCost(5.00);
+                o3.setStatus("Entregado");
+                orderService.save(o3);
+
+                // Pedido 4: Lucas - Enero 2026 (otro pedido)
+                cal.set(2026, Calendar.JANUARY, 28);
+                Order o4 = new Order();
+                o4.setUser(uLucas);
+                o4.setOrderDate(cal.getTime());
+                o4.addItem(new CartItem(allProducts.get(8), 2));
+                o4.setTotalPrice(o4.getTotalPrice());
+                o4.setShippingCost(4.95);
+                o4.setStatus("Entregado");
+                orderService.save(o4);
+                
+                // Pedido 5: Sofia - Febrero 2026
+                cal.set(2026, Calendar.FEBRUARY, 20);
+                Order o5 = new Order();
+                o5.setUser(uSofia);
+                o5.setOrderDate(cal.getTime());
+                o5.addItem(new CartItem(allProducts.get(30), 1));
+                o5.addItem(new CartItem(allProducts.get(31), 1));
+                o5.setTotalPrice(o5.getTotalPrice());
+                o5.setShippingCost(4.95);
+                o5.setStatus("Procesando");
+                orderService.save(o5);
             }
         }
     }

@@ -6,7 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,6 @@ import es.urjc.daw04.service.ProductService;
 import es.urjc.daw04.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import es.urjc.daw04.service.ReviewService;
-import es.urjc.daw04.model.Order;
 
 @Controller
 public class AdminController {
@@ -54,7 +52,7 @@ public class AdminController {
 
     @Autowired
     private OrderService orderService;
-    
+
     @Autowired
     private ReviewService reviewService;
 
@@ -67,7 +65,7 @@ public class AdminController {
         model.addAttribute("hasMore", firstPage.hasNext());
 
         // Charts Data
-        
+
         // 1. Productos más comprados: Monthly sales by category (Pie Chart)
         populatePieChart(model, "catLabels", "catData", orderService.getSalesByCategory());
 
@@ -87,47 +85,49 @@ public class AdminController {
     }
 
     private void populatePieChart(Model model, String labelKey, String dataKey, List<Object[]> data) {
-         List<String> labels = new ArrayList<>();
-         List<Long> values = new ArrayList<>();
-         for (Object[] row : data) {
-             if (row[0] != null) {
-                 labels.add(row[0].toString());
-                 if (row[1] instanceof Long) {
+        List<String> labels = new ArrayList<>();
+        List<Long> values = new ArrayList<>();
+        for (Object[] row : data) {
+            if (row[0] != null) {
+                labels.add(row[0].toString());
+                if (row[1] instanceof Long) {
                     values.add((Long) row[1]);
-                 } else if (row[1] instanceof Number) {
+                } else if (row[1] instanceof Number) {
                     values.add(((Number) row[1]).longValue());
-                 }
-             }
-         }
-         model.addAttribute(labelKey, labels);
-         model.addAttribute(dataKey, values);
+                }
+            }
+        }
+        model.addAttribute(labelKey, labels);
+        model.addAttribute(dataKey, values);
     }
-    
-    private void populateBarChart(Model model, String labelKey, String dataKey, List<Object[]> data) {
-         List<String> labels = new ArrayList<>();
-         List<Double> values = new ArrayList<>();
-         String[] months = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
-         
-         // Initialize map with 0s
-         Map<Integer, Double> dataMap = new HashMap<>();
-         for (int i=1; i<=12; i++) dataMap.put(i, 0.0);
 
-         for (Object[] row : data) {
-             if (row[0] != null) {
+    private void populateBarChart(Model model, String labelKey, String dataKey, List<Object[]> data) {
+        List<String> labels = new ArrayList<>();
+        List<Double> values = new ArrayList<>();
+        String[] months = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
+                "Octubre", "Noviembre", "Diciembre" };
+
+        // Initialize map with 0s
+        Map<Integer, Double> dataMap = new HashMap<>();
+        for (int i = 1; i <= 12; i++)
+            dataMap.put(i, 0.0);
+
+        for (Object[] row : data) {
+            if (row[0] != null) {
                 int month = ((Number) row[0]).intValue();
                 double val = ((Number) row[1]).doubleValue();
                 dataMap.put(month, val);
-             }
-         }
-         
-         // Fill lists in order
-         for (int i=1; i<=12; i++) {
-             labels.add(months[i-1]);
-             values.add(dataMap.get(i));
-         }
+            }
+        }
 
-         model.addAttribute(labelKey, labels);
-         model.addAttribute(dataKey, values);
+        // Fill lists in order
+        for (int i = 1; i <= 12; i++) {
+            labels.add(months[i - 1]);
+            values.add(dataMap.get(i));
+        }
+
+        model.addAttribute(labelKey, labels);
+        model.addAttribute(dataKey, values);
     }
 
     @GetMapping("/api/admin/users/fragment")
@@ -231,8 +231,10 @@ public class AdminController {
         if (success != null)
             model.addAttribute("successMsg", "Producto creado correctamente.");
 
-        if (catError != null) model.addAttribute("catErrorMsg", catError);
-        if (catSuccess != null) model.addAttribute("catSuccessMsg", "Categoría gestionada correctamente.");
+        if (catError != null)
+            model.addAttribute("catErrorMsg", catError);
+        if (catSuccess != null)
+            model.addAttribute("catSuccessMsg", "Categoría gestionada correctamente.");
 
         return "admin-products";
     }
@@ -254,16 +256,16 @@ public class AdminController {
             map.put("description", p.getDescription() != null ? p.getDescription() : "");
             map.put("tags", p.getTags() != null ? String.join(", ", p.getTags()) : "");
             map.put("categoryId", p.getCategory() != null ? p.getCategory().getId() : "");
-            
+
             // Imágenes actuales
             List<Map<String, Object>> images = p.getImages().stream().map(img -> {
-                 Map<String, Object> imgMap = new HashMap<>();
-                 imgMap.put("id", img.getId());
-                 imgMap.put("url", "/images/" + img.getId());
-                 return imgMap;
+                Map<String, Object> imgMap = new HashMap<>();
+                imgMap.put("id", img.getId());
+                imgMap.put("url", "/images/" + img.getId());
+                return imgMap;
             }).collect(Collectors.toList());
             map.put("images", images);
-            
+
             return map;
         }).collect(Collectors.toList());
     }
@@ -384,9 +386,10 @@ public class AdminController {
             product.setName(name.trim());
             product.setPrice(priceVal);
             product.setDescription(description != null ? description.trim() : "");
-            
+
             List<String> tagList = (tags != null && !tags.isBlank())
-                    ? Arrays.stream(tags.split(",")).map(String::trim).filter(t -> !t.isEmpty()).collect(Collectors.toList())
+                    ? Arrays.stream(tags.split(",")).map(String::trim).filter(t -> !t.isEmpty())
+                            .collect(Collectors.toList())
                     : new ArrayList<>();
             product.setTags(tagList);
 
@@ -399,23 +402,24 @@ public class AdminController {
             if (images != null) {
                 for (MultipartFile f : images) {
                     if (f != null && !f.isEmpty()) {
-                         Image img = imageService.createImage(f);
-                         product.getImages().add(img);
+                        Image img = imageService.createImage(f);
+                        product.getImages().add(img);
                     }
                 }
             }
             productService.save(product);
             response.sendRedirect("/admin/products?success=true");
         } catch (NumberFormatException e) {
-             response.sendRedirect("/admin/products?error=Precio inválido");
+            response.sendRedirect("/admin/products?error=Precio inválido");
         }
     }
 
     @PostMapping("/admin/products/{productId}/images/{imageId}/delete")
-    public void deleteProductImage(@PathVariable Long productId, @PathVariable Long imageId, HttpServletResponse response) throws IOException {
+    public void deleteProductImage(@PathVariable Long productId, @PathVariable Long imageId,
+            HttpServletResponse response) throws IOException {
         productService.findById(productId).ifPresent(product -> {
-             product.getImages().removeIf(img -> img.getId().equals(imageId));
-             productService.save(product);
+            product.getImages().removeIf(img -> img.getId().equals(imageId));
+            productService.save(product);
         });
         response.sendRedirect("/admin/products?success=true");
     }
@@ -427,7 +431,8 @@ public class AdminController {
     }
 
     @PostMapping("/admin/categories/create")
-    public void createCategory(@RequestParam String name, @RequestParam(required = false) String icon, HttpServletResponse response) throws IOException {
+    public void createCategory(@RequestParam String name, @RequestParam(required = false) String icon,
+            HttpServletResponse response) throws IOException {
         String slug = name.toLowerCase().replace(" ", "-").replaceAll("[^a-z0-9-]", "");
         es.urjc.daw04.model.Category category = new es.urjc.daw04.model.Category(name, slug, icon);
         categoryService.save(category);
@@ -435,15 +440,16 @@ public class AdminController {
     }
 
     @PostMapping("/admin/categories/{id}/update")
-    public void updateCategory(@PathVariable Long id, @RequestParam String name, @RequestParam(required = false) String icon, HttpServletResponse response) throws IOException {
-         categoryService.findById(id).ifPresent(category -> {
-             category.setName(name);
-             // Opcional: actualizar slug si cambia el nombre
-             category.setSlug(name.toLowerCase().replace(" ", "-").replaceAll("[^a-z0-9-]", ""));
-             category.setIcon(icon);
-             categoryService.save(category);
-         });
-         response.sendRedirect("/admin/products?catSuccess=true");
+    public void updateCategory(@PathVariable Long id, @RequestParam String name,
+            @RequestParam(required = false) String icon, HttpServletResponse response) throws IOException {
+        categoryService.findById(id).ifPresent(category -> {
+            category.setName(name);
+            // Opcional: actualizar slug si cambia el nombre
+            category.setSlug(name.toLowerCase().replace(" ", "-").replaceAll("[^a-z0-9-]", ""));
+            category.setIcon(icon);
+            categoryService.save(category);
+        });
+        response.sendRedirect("/admin/products?catSuccess=true");
     }
 
     @PostMapping("/admin/categories/{id}/delete")
@@ -452,8 +458,8 @@ public class AdminController {
             categoryService.deleteById(id);
             response.sendRedirect("/admin/products?catSuccess=true");
         } catch (Exception e) {
-             String error = "No se puede eliminar la categoría porque tiene productos asociados o ocurrió un error.";
-             response.sendRedirect("/admin/products?catError=" + URLEncoder.encode(error, StandardCharsets.UTF_8));
+            String error = "No se puede eliminar la categoría porque tiene productos asociados o ocurrió un error.";
+            response.sendRedirect("/admin/products?catError=" + URLEncoder.encode(error, StandardCharsets.UTF_8));
         }
     }
 

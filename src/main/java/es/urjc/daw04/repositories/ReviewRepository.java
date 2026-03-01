@@ -13,8 +13,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByProductId(long productId);
     Page<Review> findByProductId(long productId, Pageable pageable);
     Optional<Review> findFirstByProductIdAndUserId(Long productId, Long userId);
+    List<Review> findByUserId(long userId);
 
     @Query("SELECT FUNCTION('MONTH', r.date) as month, COUNT(r) FROM Review r WHERE FUNCTION('YEAR', r.date) = FUNCTION('YEAR', CURRENT_DATE) GROUP BY FUNCTION('MONTH', r.date) ORDER BY month")
     List<Object[]> findReviewCountByMonth();
-
 }

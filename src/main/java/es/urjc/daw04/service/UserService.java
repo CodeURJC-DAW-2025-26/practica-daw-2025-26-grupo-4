@@ -7,13 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import es.urjc.daw04.model.User;
+import es.urjc.daw04.model.Review;
 import es.urjc.daw04.repositories.UserRepository;
+import es.urjc.daw04.repositories.ReviewRepository;
 
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     public List<User> findAll() {
         return repository.findAll();
@@ -36,6 +41,11 @@ public class UserService {
     }
 
     public void deleteById(Long id) {
+        List<Review> reviews = reviewRepository.findByUserId(id);
+        for (Review review : reviews) {
+            review.setUser(null);
+            reviewRepository.save(review);
+        }
         repository.deleteById(id);
     }
 }
