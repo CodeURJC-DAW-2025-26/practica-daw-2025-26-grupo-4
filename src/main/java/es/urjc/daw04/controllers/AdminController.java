@@ -65,7 +65,7 @@ public class AdminController {
         model.addAttribute("users", usersData);
         model.addAttribute("hasMore", firstPage.hasNext());
 
-        // Añadir token CSRF
+        // Add CSRF token
         org.springframework.security.web.csrf.CsrfToken csrf = (org.springframework.security.web.csrf.CsrfToken) request
                 .getAttribute("_csrf");
         if (csrf != null) {

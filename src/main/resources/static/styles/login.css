@@ -88,7 +88,7 @@ body {
     margin-top: 5px;
 }
 
-/* Pestañas de navegacion */
+/* Navigation tabs */
 .tabs {
     display: flex;
     position: relative;
@@ -131,12 +131,12 @@ body {
     font-weight: bold;
 }
 
-/* Adaptar altura de la tarjeta según el modo */
+/* Adapt card height based on mode */
 .login-card.mode-register {
     max-height: 950px;
 }
 
-/* Ocultar lo que se salga del contenedor */
+/* Hide overflow from container */
 .forms-wrapper {
     overflow: hidden;
     padding: 10px;
@@ -216,7 +216,7 @@ button:hover, .btn-link:hover {
     background-color: #333;
 }
 
-/* Botón flotante para regresar al inicio */
+/* Floating button to return to home */
 .back-home-btn {
     position: absolute;
     top: 20px;

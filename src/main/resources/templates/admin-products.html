@@ -269,7 +269,7 @@
         const MAX_IMAGE_MB = 5;
         const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
 
-        // --- Gestión de productos CRUD ---
+        // --- Product CRUD management ---
         function editProduct(btn) {
             const id = btn.dataset.id;
             const name = btn.dataset.name;
@@ -280,7 +280,7 @@
             const imagesStr = btn.dataset.images || ''; 
             // Format: id|url,id|url,...
 
-            // 1. Rellenar campos simples
+            // 1. Fill simple fields
             document.getElementById('name').value = name;
             document.getElementById('price').value = price;
             document.getElementById('description').value = desc;
@@ -288,7 +288,7 @@
             document.getElementById('categoryId').value = catId;
             updateCounter();
 
-            // 2. Cambiar estado del formulario
+            // 2. Change form state
             const form = document.getElementById('createProductForm');
             form.action = '/admin/products/' + id + '/update';
             
@@ -299,7 +299,7 @@
             document.getElementById('productCancelBtn').style.display = 'inline-block';
             document.getElementById('productResetBtn').style.display = 'none';
 
-            // 3. Renderizar imágenes actuales
+            // 3. Render current images
             const container = document.getElementById('current-images-container');
             container.innerHTML = '';
 
@@ -324,7 +324,7 @@
                     img.style.objectFit = 'cover';
                     img.style.borderRadius = '4px';
                     
-                    // Botón de borrar (X)
+                    // Delete button (X)
                     const delBtn = document.createElement('button');
                     delBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
                     delBtn.className = 'image-delete-btn';
@@ -380,7 +380,7 @@
         }
 
         function deleteProductImage(productId, imageId) {
-            // Se crea un formulario dinámico para enviar la petición POST
+            // Create dynamic form to send POST request
             const form = document.createElement('form');
             form.method = 'post';
             form.action = '/admin/products/' + productId + '/images/' + imageId + '/delete';
@@ -395,20 +395,20 @@
             form.submit();
         }
 
-        // --- Gestión de categorías CRUD ---
+        // --- Category CRUD management ---
         function editCategory(id, name, icon) {
-            // Cambiar título
+            // Change title
             document.getElementById('categoryFormTitle').innerText = 'Editar categoría: ' + name;
-            // Rellenar datos
+            // Fill data
             document.getElementById('catName').value = name;
             document.getElementById('catIcon').value = icon;
-            // Cambiar acción del form
+            // Change form action
             const form = document.getElementById('categoryForm');
             form.action = '/admin/categories/' + id + '/update';
-            // Cambiar botón submit
+            // Change submit button
             const btn = document.getElementById('categorySubmitBtn');
-            btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Guardar Cambios';
-            // Mostrar botón cancelar
+            btn.innerHTML = '<i class="fa-solid fa-floppy-disk"><\/i> Guardar Cambios';
+            // Show cancel button
             document.getElementById('categoryCancelBtn').style.display = 'inline-block';
             
             // Scroll hacia el formulario (opcional, por usabilidad)
@@ -416,20 +416,20 @@
         }
 
         function cancelEditCategory() {
-            // Resetear form (limpia inputs)
+            // Reset form (clear inputs)
             const form = document.getElementById('categoryForm');
             form.reset();
-            // Restaurar acción
+            // Restore action
             form.action = '/admin/categories/create';
-            // Restaurar título
+            // Restore title
             document.getElementById('categoryFormTitle').innerText = 'Añadir nueva categoría';
-            // Restaurar botón submit
-            document.getElementById('categorySubmitBtn').innerHTML = '<i class="fa-solid fa-plus"></i> Añadir Categoría';
-            // Ocultar botón cancelar
+            // Restore submit button
+            document.getElementById('categorySubmitBtn').innerHTML = '<i class="fa-solid fa-plus"><\/i> Añadir Categoría';
+            // Hide cancel button
             document.getElementById('categoryCancelBtn').style.display = 'none';
         }
 
-        // --- Validación frontend ---
+        // --- Frontend validation ---
         document.getElementById('createProductForm').addEventListener('submit', function(e) {
             if (!validateForm()) {
                 e.preventDefault();
@@ -439,7 +439,7 @@
         function validateForm() {
             let valid = true;
 
-            // Nombre
+            // Name
             const name = document.getElementById('name').value.trim();
             if (!name) {
                 setError('name', 'El nombre es obligatorio.');
@@ -454,7 +454,7 @@
                 clearError('name');
             }
 
-            // Precio
+            // Price
             const priceRaw = document.getElementById('price').value.trim();
             const price = parseFloat(priceRaw);
             if (!priceRaw) {
@@ -470,7 +470,7 @@
                 clearError('price');
             }
 
-            // Descripción
+            // Description
             const desc = document.getElementById('description').value;
             if (desc.length > 500) {
                 setError('description', 'Máximo 500 caracteres.');
@@ -479,7 +479,7 @@
                 clearError('description');
             }
 
-            // Imagen (solo obligatoria al crear, no al editar)
+            // Image (only required when creating, not when editing)
             const imageInput = document.getElementById('images');
             const isEditing = document.getElementById('createProductForm').action.includes('/update');
             if (!isEditing && (!imageInput.files || imageInput.files.length === 0)) {
@@ -522,7 +522,7 @@
             if (input) input.classList.remove('form-input--error');
         }
 
-        // --- Vista previa múltiple ---
+        // --- Multiple image preview ---
         function previewImages(event) {
             const files = Array.from(event.target.files);
             const container = document.getElementById('image-preview-container');
@@ -562,7 +562,7 @@
             if (!hasError) container.style.display = 'flex';
         }
 
-        // --- Contador descripción ---
+        // --- Description counter ---
         function updateCounter() {
             const len = document.getElementById('description').value.length;
             const counter = document.getElementById('desc-counter');

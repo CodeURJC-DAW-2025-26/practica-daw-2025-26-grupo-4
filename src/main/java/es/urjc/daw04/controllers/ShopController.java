@@ -156,7 +156,6 @@ public class ShopController {
             Principal principal) {
         Review review = reviewService.findById(reviewId).orElse(null);
 
-
         if (review != null && principal != null) {
             Long userId = Long.parseLong(principal.getName());
             User user = userService.findById(userId).orElse(null);
@@ -173,7 +172,6 @@ public class ShopController {
     @PostMapping("/review/{reviewId}/delete")
     public String deleteReview(@PathVariable Long reviewId, Principal principal) {
         Review review = reviewService.findById(reviewId).orElse(null);
-
 
         if (review != null && principal != null) {
             Long userId = Long.parseLong(principal.getName());
@@ -234,10 +232,8 @@ public class ShopController {
             @RequestParam(defaultValue = "1") int quantity,
             HttpServletResponse response) throws IOException {
 
-
         // Start with empty cart to buy only this item
         String newContent = "";
-
 
         // Add the product quantity times
         for (int i = 0; i < quantity; i++) {
@@ -332,7 +328,6 @@ public class ShopController {
             @RequestParam String content,
             Principal principal) {
 
-
         if (principal == null) {
             return "redirect:/login";
         }
@@ -341,11 +336,9 @@ public class ShopController {
         User user = userService.findById(userId).orElse(null);
         Product product = productService.findById(productId).orElse(null);
 
-
         if (user != null && product != null) {
             // Check if a review already exists for this user and product
             Optional<Review> existingReview = reviewService.findByProductIdAndUserId(productId, user.getId());
-
 
             if (existingReview.isPresent()) {
                 // Update existing review
@@ -360,22 +353,19 @@ public class ShopController {
             }
         }
 
-
         return "redirect:/order";
     }
 
     private List<Map<String, Object>> toOrdersData(List<Order> allOrders, Principal principal) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("d 'de' MMMM 'de' yyyy");
 
-
-        // Obtener el usuario actual
+        // Get current user
         User currentUser = null;
         if (principal != null) {
             Long userId = Long.parseLong(principal.getName());
             currentUser = userService.findById(userId).orElse(null);
         }
         final User user = currentUser;
-
 
         return allOrders.stream().map(order -> {
             Map<String, Object> orderMap = new HashMap<>();
@@ -408,7 +398,6 @@ public class ShopController {
                     hasReview = existingReview.isPresent();
                 }
                 itemMap.put("hasReview", hasReview);
-
 
                 return itemMap;
             }).collect(Collectors.toList());

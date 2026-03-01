@@ -10,7 +10,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.web.csrf.CsrfToken;
 
-
 @ControllerAdvice
 public class GlobalModelAdvice {
 
@@ -19,7 +18,7 @@ public class GlobalModelAdvice {
 
     @ModelAttribute
     public void addGlobalAttributes(Model model, HttpServletRequest request) {
-        // Cart desde la cookie
+        // Cart from cookie
         String cartContent = "";
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -32,10 +31,10 @@ public class GlobalModelAdvice {
         }
         model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
 
-        // Rol admin para el header
+        // Admin role for header
         model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
 
-        // Usuario autenticado para el header
+        // Authenticated user for header
         model.addAttribute("isLogged", request.getUserPrincipal() != null);
 
         // CSRF Token

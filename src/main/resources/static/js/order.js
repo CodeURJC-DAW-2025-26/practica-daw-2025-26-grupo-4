@@ -52,7 +52,7 @@ function closeReviewModal() {
 closeReviewModalBtn.addEventListener('click', closeReviewModal);
 cancelReviewBtn.addEventListener('click', closeReviewModal);
 
-// Cerrar modal al hacer clic fuera de él
+// Close modal when clicking outside it
 window.addEventListener('click', (event) => {
     if (event.target === reviewModal) {
         closeReviewModal();

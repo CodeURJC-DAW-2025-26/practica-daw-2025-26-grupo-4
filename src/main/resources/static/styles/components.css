@@ -40,7 +40,7 @@ img {
   box-shadow: var(--shadow-sm);
 }
 
-/* Tipografía */
+/* Typography */
 .h1 { font-size: var(--font-size-3xl); line-height: var(--line-height-tight); font-weight: var(--font-weight-bold); }
 .h2 { font-size: var(--font-size-2xl); line-height: var(--line-height-tight); font-weight: var(--font-weight-semibold); }
 .h3 { font-size: var(--font-size-xl); line-height: var(--line-height-tight); font-weight: var(--font-weight-semibold); }
@@ -164,7 +164,7 @@ img {
 .badge--warning { background: color-mix(in srgb, var(--color-warning) 12%, transparent); color: var(--color-warning); border-color: color-mix(in srgb, var(--color-warning) 30%, transparent); }
 .badge--danger { background: color-mix(in srgb, var(--color-danger) 12%, transparent); color: var(--color-danger); border-color: color-mix(in srgb, var(--color-danger) 30%, transparent); }
 
-/* Utilidades rápidas */
+/* Quick utilities */
 .mt-1 { margin-top: var(--space-1); }
 .mt-2 { margin-top: var(--space-2); }
 .mt-3 { margin-top: var(--space-3); }

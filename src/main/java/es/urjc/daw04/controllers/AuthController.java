@@ -293,9 +293,9 @@ public class AuthController {
             return "redirect:/login";
         }
 
-        // Validar y actualizar username si es diferente
+        // Validate and update username if different
         if (username != null && !username.isEmpty() && !username.equals(user.getName())) {
-            // Verificar si el nuevo username ya está en uso
+            // Check if new username is already in use
             if (userRepository.findByName(username).isPresent()) {
                 addUserAttributesToModel(model, user, cartContent, request, "El nombre de usuario ya está en uso");
                 return "user";
@@ -313,7 +313,7 @@ public class AuthController {
             try {
                 user.setBirthDate(java.time.LocalDate.parse(birthDate));
             } catch (Exception e) {
-                // Ignorar si el formato es inválido
+                // Ignore if format is invalid
             }
         }
 
