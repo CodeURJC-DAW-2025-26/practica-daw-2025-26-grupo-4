@@ -84,7 +84,8 @@ public class ShopController {
 
             // Current user's review, if it exists
             if (principal != null) {
-                User user = userService.findByName(principal.getName()).orElse(null);
+                Long userId = Long.parseLong(principal.getName());
+                User user = userService.findById(userId).orElse(null);
                 if (user != null) {
                     Optional<Review> userReview = reviewService.findByProductIdAndUserId(id, user.getId());
                     userReview.ifPresent(review -> model.addAttribute("userReview", review));
@@ -117,11 +118,13 @@ public class ShopController {
             @RequestParam String content,
             @RequestParam double rating,
             HttpServletRequest request) {
-        Product product = productService.findById(id).orElse(null);
+
         var principal = request.getUserPrincipal();
+        Product product = productService.findById(id).orElse(null);
 
         if (product != null && principal != null) {
-            User user = userService.findByName(principal.getName()).orElse(null);
+            Long userId = Long.parseLong(principal.getName());
+            User user = userService.findById(userId).orElse(null);
 
             if (user != null) {
                 // Check if a review already exists for this user and product
@@ -153,8 +156,10 @@ public class ShopController {
             Principal principal) {
         Review review = reviewService.findById(reviewId).orElse(null);
 
+
         if (review != null && principal != null) {
-            User user = userService.findByName(principal.getName()).orElse(null);
+            Long userId = Long.parseLong(principal.getName());
+            User user = userService.findById(userId).orElse(null);
             if (user != null && review.getUser().getId().equals(user.getId())) {
                 review.setContent(content);
                 review.setRating(rating);
@@ -169,8 +174,10 @@ public class ShopController {
     public String deleteReview(@PathVariable Long reviewId, Principal principal) {
         Review review = reviewService.findById(reviewId).orElse(null);
 
+
         if (review != null && principal != null) {
-            User user = userService.findByName(principal.getName()).orElse(null);
+            Long userId = Long.parseLong(principal.getName());
+            User user = userService.findById(userId).orElse(null);
             if (user != null && review.getUser().getId().equals(user.getId())) {
                 Long productId = review.getProduct().getId();
                 reviewService.delete(reviewId);
@@ -227,8 +234,10 @@ public class ShopController {
             @RequestParam(defaultValue = "1") int quantity,
             HttpServletResponse response) throws IOException {
 
+
         // Start with empty cart to buy only this item
         String newContent = "";
+
 
         // Add the product quantity times
         for (int i = 0; i < quantity; i++) {
@@ -252,7 +261,8 @@ public class ShopController {
         var principal = request.getUserPrincipal(); // Logged user check
 
         if (principal != null && !cartContent.isEmpty()) {
-            User user = userService.findByName(principal.getName()).orElse(null);
+            Long userId = Long.parseLong(principal.getName());
+            User user = userService.findById(userId).orElse(null);
 
             if (user != null) {
                 Cart cart = cartService.getCartFromCookie(cartContent);
@@ -284,7 +294,8 @@ public class ShopController {
             return "redirect:/login";
         }
 
-        User user = userService.findByName(principal.getName()).orElse(null);
+        Long userId = Long.parseLong(principal.getName());
+        User user = userService.findById(userId).orElse(null);
         if (user == null) {
             return "redirect:/login";
         }
@@ -302,7 +313,8 @@ public class ShopController {
             return "fragments/orders";
         }
 
-        User user = userService.findByName(principal.getName()).orElse(null);
+        Long userId = Long.parseLong(principal.getName());
+        User user = userService.findById(userId).orElse(null);
         if (user == null) {
             model.addAttribute("orders", List.of());
             return "fragments/orders";
@@ -320,17 +332,20 @@ public class ShopController {
             @RequestParam String content,
             Principal principal) {
 
+
         if (principal == null) {
             return "redirect:/login";
         }
 
-        String userName = principal.getName();
-        User user = userService.findByName(userName).orElse(null);
+        Long userId = Long.parseLong(principal.getName());
+        User user = userService.findById(userId).orElse(null);
         Product product = productService.findById(productId).orElse(null);
+
 
         if (user != null && product != null) {
             // Check if a review already exists for this user and product
             Optional<Review> existingReview = reviewService.findByProductIdAndUserId(productId, user.getId());
+
 
             if (existingReview.isPresent()) {
                 // Update existing review
@@ -345,18 +360,22 @@ public class ShopController {
             }
         }
 
+
         return "redirect:/order";
     }
 
     private List<Map<String, Object>> toOrdersData(List<Order> allOrders, Principal principal) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("d 'de' MMMM 'de' yyyy");
 
+
         // Obtener el usuario actual
         User currentUser = null;
         if (principal != null) {
-            currentUser = userService.findByName(principal.getName()).orElse(null);
+            Long userId = Long.parseLong(principal.getName());
+            currentUser = userService.findById(userId).orElse(null);
         }
         final User user = currentUser;
+
 
         return allOrders.stream().map(order -> {
             Map<String, Object> orderMap = new HashMap<>();
@@ -389,6 +408,7 @@ public class ShopController {
                     hasReview = existingReview.isPresent();
                 }
                 itemMap.put("hasReview", hasReview);
+
 
                 return itemMap;
             }).collect(Collectors.toList());
