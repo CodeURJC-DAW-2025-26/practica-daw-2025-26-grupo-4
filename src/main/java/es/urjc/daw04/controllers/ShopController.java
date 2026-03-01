@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,10 +70,28 @@ public class ShopController {
             int quantity = Math.max(1, qty);
             model.addAttribute("quantity", quantity);
 
-            Product recommended = productService.findAll().stream()
+                List<Product> sameCategoryProducts = (p.getCategory() != null)
+                    ? productService.findByCategoryId(p.getCategory().getId()).stream()
+                        .filter(anyProduct -> !anyProduct.getId().equals(id))
+                        .collect(Collectors.toList())
+                    : List.of();
+
+                Product recommended = null;
+                if (!sameCategoryProducts.isEmpty()) {
+                int randomIndex = ThreadLocalRandom.current().nextInt(sameCategoryProducts.size());
+                recommended = sameCategoryProducts.get(randomIndex);
+                }
+
+                if (recommended == null) {
+                List<Product> fallbackProducts = productService.findAll().stream()
                     .filter(anyProduct -> !anyProduct.getId().equals(id))
-                    .findFirst()
-                    .orElse(null);
+                    .collect(Collectors.toList());
+
+                if (!fallbackProducts.isEmpty()) {
+                    int randomIndex = ThreadLocalRandom.current().nextInt(fallbackProducts.size());
+                    recommended = fallbackProducts.get(randomIndex);
+                }
+                }
 
             model.addAttribute("recommendedProduct", recommended);
 
