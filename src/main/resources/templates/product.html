@@ -458,10 +458,8 @@
         }
 
         function changeImage(thumbnail, imageUrl) {
-            // Cambiar la imagen principal
             document.getElementById('mainProductImage').src = imageUrl;
 
-            // Actualizar el estado activo de los thumbnails
             document.querySelectorAll('.thumbnail').forEach(thumb => {
                 thumb.classList.remove('active');
             });
