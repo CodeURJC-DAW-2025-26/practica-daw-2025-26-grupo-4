@@ -77,11 +77,7 @@ public class Order {
     }
 
     public double getTotalPrice() {
-        double total = shippingCost;
-        for (CartItem item : items) {
-            total += item.getAmount();
-        }
-        return total;
+        return this.totalPrice;
     }
 
     public void setTotalPrice(double totalPrice) {

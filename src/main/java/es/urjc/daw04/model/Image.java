@@ -33,7 +33,7 @@ public class Image {
         this.imageFile = imageFile;
     }
 
-    /** URL lista para usar en plantillas Mustache: /images/{id} */
+    /** URL ready for using it in Mustache templates: /images/{id} */
     public String getUrl() {
         return "/images/" + id;
     }
