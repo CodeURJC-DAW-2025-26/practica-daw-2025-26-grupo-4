@@ -17,11 +17,11 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.CookieValue;
 
-
 import es.urjc.daw04.model.User;
 import es.urjc.daw04.repositories.UserRepository;
 import es.urjc.daw04.security.RepositoryUserDetailsService;
 import es.urjc.daw04.service.CartService;
+import es.urjc.daw04.service.EmailService;
 import jakarta.transaction.Transactional;
 
 @Controller
@@ -38,6 +38,9 @@ public class AuthController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/login")
     public String login() {
@@ -115,6 +118,9 @@ public class AuthController {
         newUser.setRoles(java.util.List.of("USER"));
 
         userRepository.save(newUser);
+
+        // Enviar correo de bienvenida
+        emailService.enviarCorreoBienvenida(email, name);
 
         // Autologuear al usuario
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
