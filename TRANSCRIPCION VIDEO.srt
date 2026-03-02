@@ -1,0 +1,87 @@
+1
+00:00:00,000 --> 00:00:15,120
+Funcionalidades de un usuario no registrado
+
+2
+00:00:15,120 --> 00:00:24,040
+Página principal
+
+3
+00:00:24,040 --> 00:00:51,000
+Detalles de un producto
+
+4
+00:00:51,000 --> 00:01:10,800
+Página de carrito
+
+5
+00:01:10,800 --> 00:01:25,160
+Página login
+
+6
+00:01:25,160 --> 00:01:39,440
+Página user
+
+7
+00:01:39,440 --> 00:02:12,000
+Añadir y eliminar dirección de usuario
+
+8
+00:02:12,000 --> 00:02:24,060
+Añadir datos de usuario
+
+9
+00:02:24,060 --> 00:02:30,880
+Página de pedidos y tramitar pedido
+
+10
+00:02:30,880 --> 00:03:13,000
+Funcionalidad de reseña
+
+11
+00:03:13,000 --> 00:03:28,000
+Página de error
+
+12
+00:03:28,000 --> 00:03:44,380
+Administrador
+
+13
+00:03:44,380 --> 00:03:54,620
+Panel de administración
+
+14
+00:03:54,620 --> 00:04:58,580
+Gestión de usuarios (bloqueo y desbloqueo de usuario)
+
+15
+00:04:58,580 --> 00:05:06,340
+Gestor de productos
+
+16
+00:05:06,340 --> 00:05:43,940
+Añadir producto
+
+17
+00:05:43,940 --> 00:06:15,380
+Modificar producto
+
+18
+00:06:15,380 --> 00:06:29,020
+Eliminar producto
+
+19
+00:06:29,020 --> 00:06:55,620
+Registrar nuevo usuario
+
+20
+00:06:55,620 --> 00:07:23,520
+Cambiar contraseña
+
+21
+00:07:23,520 --> 00:07:50,620
+Eliminar cuenta desde admin
+
+22
+00:07:50,620 --> 00:08:10,550
+Correo de confirmación de creación de cuenta
