@@ -210,29 +210,29 @@ Diagrama de clases de la aplicación con diferenciación por colores o secciones
 
 #### Alumno 1 - Álvaro Fuente Gonzalez
 
-Responsable de las funcionalidades de administración de productos, sistema de recomendaciones, correcciones de idioma y actualización de fragmentos AJAX.
+Responsable de las funcionalidades de administración de productos y categorías, sistema de recomendaciones e implementación total de AJAX.
 
 | Nº | Commits | Files |
 |----|---------|-------|
 |1| [Recommendations page and algorithm implemented](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/7f1e8d1) | RecommendationController.java, RecommendationPack.java, CartItemRepository.java, OrderRepository.java‎, RecommendationService.java |‎
-|2| [Edit product fix](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/49458bc) | AdminController.java |
-|3| [Updated ajax fragments](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/32d93eb) | admin-users.html, reviews.html |‎
-|4| [Language fix](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/d403b59) | AdminController.java, AuthController.java, CustomErrorController.java, ShopController.java, ‎ProductRepository.java, RepositoryUserDetailsService.java‎, CartService.java, EmailService.java, ImageService.java‎, login.js, pagination.js, user.js |
-|5| [Translations fix](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/d6c2c00) | Order.java‎, Product.java, Review.java, User.java |
+|2| [AJAX completly implemented](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/5459719) | AdminController.java, HomeController.java, ShopController.java, ProductRepository.java, ReviewRepository.java, ProductService.java, ReviewService.java, UserService.java, pagination.js, fragments/home-products.html, fragments/orders.html, fragments/reviews.html, fragments/admin-users.html, fragments/admin-products-rows.html |
+|3| [Admin page: GlobalModelAdvice, Image entity, admin-products page, UserService](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/662561a) | AdminController.java, GlobalModelAdvice.java, ImageController.java, Image.java, ImageService.java, UserService.java, SampleDataService.java, WebSecurityConfig.java, admin-products.html, admin.css |
+|4| [Category CRUD operations](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/97c6635) | AdminController.java, CategoryService.java, admin-products.html |
+|5| [Fixed Security](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/486063e) | AuthController.java, User.java, UserRepository.java, WebSecurityConfig.java, RepositoryUserDetailsService.java, CSRFHandlerConfiguration.java |
 
 ---
 
 #### Alumno 2 - Darío García Gómez
 
-Responsable del servicio de pedidos, integración con Stripe, gráficas del admin, traducciones y gestión de reseñas con usuarios eliminados.
+Responsable del servicio de pedidos, gráficas del admin, carrito con cookies, gestión de reseñas con usuarios eliminados y modelos de carrito.
 
 | Nº | Commits | Files |
 |----|---------|-------|
-|1| [Order service & Stripe integration](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/b118159) | pom.xml, AdminController.java, AuthController.java, ShopController.java, CartItem.java, Order.java, OrderRepository.java, OrderService.java, SampleDataService.java, StripeService.java, application.properties |
+|1| [Cookies implemented in cart](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/acf8a0f) | AdminController.java, AuthController.java, HomeController.java, ShopController.java, Cart.java, CartItem.java, CartService.java, cart.html |
 |2| [Graphics and charts](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/e627acb) | AdminController.java, Review.java, OrderRepository.java, ReviewRepository.java, OrderService.java, ReviewService.java, admin.html |
 |3| [Reviews in database and user samples](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/eb66420) | ShopController.java, Product.java, Review.java, SampleDataService.java, UserService.java, application.properties, product.html |
-|4| [Review redirection fix](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/b4704eb) | AuthController.java, GlobalModelAdvice.java, ShopController.java, WebSecurityConfig.java, login.css, header.html, login.html |
-|5| [Translations](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/66ce1e0) | login.html, order.html, product.html |
+|4| [Delete user and review continues](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/e447b56) | AdminController.java, Review.java, User.java, ReviewRepository.java, SampleDataService.java, UserService.java |
+|5| [Cart models and services](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/188daea) | Cart.java, CartItem.java, CartService.java, ShopController.java, ProductRepository.java, application.properties |
 
 ---
 
