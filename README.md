@@ -217,8 +217,7 @@ Responsable de las funcionalidades de administración de productos, sistema de r
 |1| [Recommendations page and algorithm implemented](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/7f1e8d1) | RecommendationController.java, RecommendationPack.java, CartItemRepository.java, OrderRepository.java‎, RecommendationService.java |‎
 |2| [Edit product fix](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/49458bc) | AdminController.java |
 |3| [Updated ajax fragments](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/32d93eb) | admin-users.html, reviews.html |‎
-|4| [Language fix](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/d403b59) | AdminController.java, AuthController.java, CustomErrorController.java, ShopController.java‎
-, ProductRepository.java, RepositoryUserDetailsService.java‎, CartService.java, EmailService.java, ImageService.java‎, login.js, pagination.js, user.js |
+|4| [Language fix](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/d403b59) | AdminController.java, AuthController.java, CustomErrorController.java, ShopController.java, ‎ProductRepository.java, RepositoryUserDetailsService.java‎, CartService.java, EmailService.java, ImageService.java‎, login.js, pagination.js, user.js |
 |5| [Translations fix](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/d6c2c00) | Order.java‎, Product.java, Review.java, User.java |
 
 ---
