@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import es.urjc.daw04.model.Cart;
 import es.urjc.daw04.model.CartItem;
+import es.urjc.daw04.model.Product;
+
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,10 +76,11 @@ public class CartService {
         Map<Long, Integer> map = decodeCookie(content);
 
         for (Map.Entry<Long, Integer> entry : map.entrySet()) {
-            productService.findById(entry.getKey()).ifPresent(p -> {
+            Product product = productService.findById(entry.getKey());
+            if (product != null) {
                 // Add items to the temporary cart
-                cart.addItem(new CartItem(p, entry.getValue()));
-            });
+                cart.addItem(new CartItem(product, entry.getValue()));
+            }
         }
         return cart;
     }

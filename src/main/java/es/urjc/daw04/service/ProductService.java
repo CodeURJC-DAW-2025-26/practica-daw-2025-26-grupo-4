@@ -1,7 +1,6 @@
 package es.urjc.daw04.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,8 +29,8 @@ public class ProductService {
         return repository.findAll(PageRequest.of(page, size));
     }
 
-    public Optional<Product> findById(long id) {
-        return repository.findById(id);
+    public Product findById(long id) {
+        return repository.findById(id).orElseThrow();
     }
 
     public List<Product> findByCategoryId(long categoryId) {
@@ -50,8 +49,13 @@ public class ProductService {
         return repository.searchByCategoryIdPaged(categoryId, query, PageRequest.of(page, size));
     }
 
-    public void save(Product product) {
-        repository.save(product);
+    public Product save(Product product) {
+        return repository.save(product);
+    }
+
+    public Product update(long id, Product product) {
+        product.setId(id);
+        return repository.save(product);
     }
 
     @Transactional

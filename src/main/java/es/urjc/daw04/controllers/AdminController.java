@@ -378,7 +378,7 @@ public class AdminController {
             @RequestParam(value = "images", required = false) List<MultipartFile> images,
             HttpServletResponse response) throws IOException {
 
-        es.urjc.daw04.model.Product product = productService.findById(id).orElse(null);
+        es.urjc.daw04.model.Product product = productService.findById(id);
         if (product == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -426,10 +426,11 @@ public class AdminController {
     @PostMapping("/admin/products/{productId}/images/{imageId}/delete")
     public void deleteProductImage(@PathVariable Long productId, @PathVariable Long imageId,
             HttpServletResponse response) throws IOException {
-        productService.findById(productId).ifPresent(product -> {
+        Product product = productService.findById(productId);
+        if (product != null) {
             product.getImages().removeIf(img -> img.getId().equals(imageId));
             productService.save(product);
-        });
+        }
         response.sendRedirect("/admin/products?success=true");
     }
 

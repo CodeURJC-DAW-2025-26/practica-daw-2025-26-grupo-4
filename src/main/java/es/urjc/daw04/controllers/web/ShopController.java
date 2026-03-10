@@ -1,4 +1,4 @@
-package es.urjc.daw04.controllers;
+package es.urjc.daw04.controllers.web;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -62,7 +62,7 @@ public class ShopController {
     public String viewProduct(Model model, @PathVariable Long id,
             @RequestParam(defaultValue = "1") int qty, Principal principal,
             HttpServletRequest request) {
-        Product p = productService.findById(id).orElse(null);
+        Product p = productService.findById(id);
 
         if (p != null) {
             model.addAttribute("product", p);
@@ -139,7 +139,7 @@ public class ShopController {
             HttpServletRequest request) {
 
         var principal = request.getUserPrincipal();
-        Product product = productService.findById(id).orElse(null);
+        Product product = productService.findById(id);
 
         if (product != null && principal != null) {
             Long userId = Long.parseLong(principal.getName());
@@ -353,7 +353,7 @@ public class ShopController {
 
         Long userId = Long.parseLong(principal.getName());
         User user = userService.findById(userId).orElse(null);
-        Product product = productService.findById(productId).orElse(null);
+        Product product = productService.findById(productId);
 
         if (user != null && product != null) {
             // Check if a review already exists for this user and product
