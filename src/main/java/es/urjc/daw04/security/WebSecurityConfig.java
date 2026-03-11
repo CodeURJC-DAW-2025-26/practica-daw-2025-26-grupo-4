@@ -66,17 +66,16 @@ public class WebSecurityConfig {
 		http
 				.authorizeHttpRequests(authorize -> authorize
 						// PRIVATE ENDPOINTS
-						// Images
-						.requestMatchers(HttpMethod.PUT, "/api/images/*/media").hasRole("USER")
-						.requestMatchers(HttpMethod.DELETE, "/api/books/*/images/*").hasRole("USER")
-						// Books
-						.requestMatchers(HttpMethod.POST, "/api/books/**").hasRole("USER")
-						.requestMatchers(HttpMethod.PUT, "/api/books/**").hasRole("USER")
-						.requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
-						// Shops
-						.requestMatchers(HttpMethod.PUT, "/api/shops/**").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.PUT, "/api/shops/**").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.DELETE, "/api/shops/**").hasRole("ADMIN")
+						// Products
+						.requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
+						// Reviews
+						.requestMatchers(HttpMethod.POST, "/api/reviews/**").hasRole("USER")
+						.requestMatchers(HttpMethod.PUT, "/api/reviews/**").hasRole("USER")
+						.requestMatchers(HttpMethod.DELETE, "/api/reviews/**").hasAnyRole("USER", "ADMIN")
+                        // Cart
+                        .requestMatchers("/api/cart/**").hasRole("USER")
 						// PUBLIC ENDPOINTS
 						.anyRequest().permitAll());
 

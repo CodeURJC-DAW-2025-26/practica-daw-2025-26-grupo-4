@@ -34,6 +34,9 @@ public class User {
 
     private boolean banned = false;
 
+    @Column(length = 2000)
+    private String cartContent = "";
+
     @OneToMany(mappedBy = "user")
     private List<Review> reviews;
 
@@ -137,6 +140,14 @@ public class User {
 
     public void setBanned(boolean banned) {
         this.banned = banned;
+    }
+
+    public String getCartContent() {
+        return cartContent != null ? cartContent : "";
+    }
+
+    public void setCartContent(String cartContent) {
+        this.cartContent = cartContent != null ? cartContent : "";
     }
 
     public boolean isAdmin() {

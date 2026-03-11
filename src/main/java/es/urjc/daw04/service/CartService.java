@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import es.urjc.daw04.model.Cart;
 import es.urjc.daw04.model.CartItem;
 import es.urjc.daw04.model.Product;
+import es.urjc.daw04.model.User;
+import es.urjc.daw04.repositories.UserRepository;
 
 import java.util.Map;
 import java.util.ArrayList;
@@ -16,6 +18,9 @@ public class CartService {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     // --- PRIVATE HELPER METHODS ---
 
@@ -83,5 +88,28 @@ public class CartService {
             }
         }
         return cart;
+    }
+
+    // --- USER CART METHODS (for REST API, no cookies) ---
+
+    public Cart getUserCart(User user) {
+        return getCartFromCookie(user.getCartContent());
+    }
+
+    public void addProductToUserCart(User user, Long productId) {
+        String updated = addProduct(user.getCartContent(), productId);
+        user.setCartContent(updated);
+        userRepository.save(user);
+    }
+
+    public void removeProductFromUserCart(User user, Long productId) {
+        String updated = removeProduct(user.getCartContent(), productId);
+        user.setCartContent(updated);
+        userRepository.save(user);
+    }
+
+    public void clearUserCart(User user) {
+        user.setCartContent("");
+        userRepository.save(user);
     }
 }

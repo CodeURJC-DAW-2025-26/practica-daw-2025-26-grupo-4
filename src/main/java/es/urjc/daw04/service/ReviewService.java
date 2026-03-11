@@ -1,7 +1,6 @@
 package es.urjc.daw04.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,12 +25,17 @@ public class ReviewService {
     }
 
 
-    public Optional<Review> findById(long id) {
-        return repository.findById(id);
+    public Review findById(long id) {
+        return repository.findById(id).orElseThrow();
     }
 
-    public void save(Review review) {
-        repository.save(review);
+    public Review save(Review review) {
+        return repository.save(review);
+    }
+
+    public Review update(Long id, Review review) {
+        review.setId(id);
+        return repository.save(review);
     }
 
     public void delete(Long id) {
@@ -42,7 +46,7 @@ public class ReviewService {
         return repository.findByProductId(productId, PageRequest.of(page, size));
     }
 
-    public Optional<Review> findByProductIdAndUserId(Long productId, Long userId) {
-        return repository.findFirstByProductIdAndUserId(productId, userId);
+    public Review findByProductIdAndUserId(Long productId, Long userId) {
+        return repository.findFirstByProductIdAndUserId(productId, userId).orElseThrow();
     }
 }

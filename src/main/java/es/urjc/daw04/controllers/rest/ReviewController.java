@@ -3,8 +3,8 @@ package es.urjc.daw04.controllers.rest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.urjc.daw04.model.Product;
-import es.urjc.daw04.service.ProductService;
+import es.urjc.daw04.model.Review;
+import es.urjc.daw04.service.ReviewService;
 
 import java.net.URI;
 import java.util.Collection;
@@ -22,42 +22,39 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
-@RequestMapping("/api/products")
-public class RestProductController {
+@RequestMapping("/api/reviews")
+public class ReviewController {
 
     @Autowired
-    private ProductService productService;
+    private ReviewService reviewService;
 
     //! TODO: 
     //! 1. DTOs
-    //! 2. Params
-    //! 3. AJAX
-    //! 4. Images
     @GetMapping("/")
-    public Collection<Product> getProducts() {
-        return productService.findAll();
+    public Collection<Review> getReviews() {
+        return reviewService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable long id) {
-        return productService.findById(id);
+    public Review getReviewById(@PathVariable long id) {
+        return reviewService.findById(id);
     }
     
     @PostMapping("/")
-    public ResponseEntity<Product> postProduct(@RequestBody Product product) {
-        product = productService.save(product);
-        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(product.getId()).toUri();
-        return ResponseEntity.created(location).body(product);
+    public ResponseEntity<Review> postReview(@RequestBody Review review) {
+        review = reviewService.save(review);
+        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(review.getId()).toUri();
+        return ResponseEntity.created(location).body(review);
     }
     
     @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable long id, @RequestBody Product product) {
-        product = productService.update(id, product);
-        return product;
+    public Review updateReview(@PathVariable long id, @RequestBody Review review) {
+        review = reviewService.update(id, review);
+        return review;
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable long id) {
-        productService.deleteById(id);
+    public void deleteReview(@PathVariable long id) {
+        reviewService.delete(id);
     }
 }
