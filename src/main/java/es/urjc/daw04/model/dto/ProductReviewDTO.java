@@ -2,9 +2,8 @@ package es.urjc.daw04.model.dto;
 
 import java.time.LocalDate;
 
-public record ReviewDTO(
+public record ProductReviewDTO(
         long id,
-        Long productId,
         String content,
         double rating,
         LocalDate date,

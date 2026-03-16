@@ -7,8 +7,10 @@ import es.urjc.daw04.model.Review;
 import es.urjc.daw04.model.User;
 import es.urjc.daw04.model.dto.ReviewDTO;
 import es.urjc.daw04.model.mapper.ReviewMapper;
+import es.urjc.daw04.service.ProductService;
 import es.urjc.daw04.service.ReviewService;
 import es.urjc.daw04.service.UserService;
+import es.urjc.daw04.model.Product;
 
 import java.net.URI;
 import java.security.Principal;
@@ -38,6 +40,9 @@ public class ReviewController {
     private UserService userService;
 
     @Autowired
+    private ProductService productService;
+
+    @Autowired
     private ReviewMapper reviewMapper;
 
     @GetMapping("/")
@@ -56,11 +61,17 @@ public class ReviewController {
         if (principal == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
+        if (reviewRequest.productId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "productId is required");
+        }
+
         Long userId = Long.parseLong(principal.getName());
         User user = userService.findById(userId).orElseThrow();
+        Product product = productService.findById(reviewRequest.productId());
         
         Review review = reviewMapper.toDomain(reviewRequest);
         review.setUser(user);
+        review.setProduct(product);
         review = reviewService.save(review);
         ReviewDTO reviewDTO = reviewMapper.toDTO(review);
         
