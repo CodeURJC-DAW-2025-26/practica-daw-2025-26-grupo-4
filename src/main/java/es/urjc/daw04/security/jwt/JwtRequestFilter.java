@@ -45,7 +45,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		} catch (Exception ex) {
 			//Avoid logging when no token is found
-			if(!ex.getMessage().equals("No access token cookie found in request")) {
+			if(!ex.getMessage().equals("No cookies found in request")) {
 				log.error("Exception processing JWT Token: ", ex);
 			}			
 		}

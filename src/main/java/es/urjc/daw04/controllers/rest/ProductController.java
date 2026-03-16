@@ -19,8 +19,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 import org.springframework.web.bind.annotation.PutMapping;
+
+import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
 
 @RestController
@@ -43,40 +44,31 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable long id) {
+    public ProductDTO getProductById(@PathVariable long id) {
         Product product = productService.findById(id);
-        if (product != null) {
-            return ResponseEntity.ok(productMapper.toDTO(product));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return productMapper.toDTO(product);
     }
     
     @PostMapping("/")
     public ResponseEntity<ProductDTO> postProduct(@RequestBody Product product) {
         product = productService.save(product);
-        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(product.getId()).toUri();
-        return ResponseEntity.created(location).body(productMapper.toDTO(product));
+        ProductDTO productDTO = productMapper.toDTO(product);
+        
+        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(productDTO.id()).toUri();
+        
+        return ResponseEntity.created(location).body(productDTO);
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable long id, @RequestBody Product product) {
+    public ProductDTO updateProduct(@PathVariable long id, @RequestBody Product product) {
         Product updatedProduct = productService.update(id, product);
-        if (updatedProduct != null) {
-            return ResponseEntity.ok(productMapper.toDTO(updatedProduct));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return productMapper.toDTO(updatedProduct);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable long id) {
+    public ProductDTO deleteProduct(@PathVariable long id) {
         Product product = productService.findById(id);
-        if (product != null) {
-            productService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        productService.deleteById(id);
+        return productMapper.toDTO(product);
     }
 }
