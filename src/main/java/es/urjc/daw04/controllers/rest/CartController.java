@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.urjc.daw04.model.Cart;
 import es.urjc.daw04.model.User;
+import es.urjc.daw04.model.dto.CartDTO;
+import es.urjc.daw04.model.mapper.CartMapper;
 import es.urjc.daw04.service.CartService;
 import es.urjc.daw04.service.OrderService;
 import es.urjc.daw04.service.UserService;
@@ -33,14 +35,17 @@ public class CartController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private CartMapper cartMapper;
+
     @GetMapping("/")
-    public Cart getCart(Principal principal) {
+    public CartDTO getCart(Principal principal) {
         User user = resolveUser(principal);
-        return cartService.getUserCart(user);
+        return cartMapper.toDTO(cartService.getUserCart(user));
     }
 
     @PostMapping("/items/{productId}")
-    public Cart addItem(@PathVariable Long productId,
+    public CartDTO addItem(@PathVariable Long productId,
             @RequestParam(defaultValue = "1") int quantity,
             Principal principal) {
         User user = resolveUser(principal);
@@ -49,15 +54,15 @@ public class CartController {
             cartService.addProductToUserCart(user, productId);
         }
 
-        return cartService.getUserCart(user);
+        return cartMapper.toDTO(cartService.getUserCart(user));
     }
 
     @DeleteMapping("/items/{productId}")
-    public Cart removeItem(@PathVariable Long productId, Principal principal) {
+    public CartDTO removeItem(@PathVariable Long productId, Principal principal) {
         User user = resolveUser(principal);
 
         cartService.removeProductFromUserCart(user, productId);
-        return cartService.getUserCart(user);
+        return cartMapper.toDTO(cartService.getUserCart(user));
     }
 
     @DeleteMapping("/")
