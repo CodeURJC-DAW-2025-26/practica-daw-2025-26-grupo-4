@@ -14,7 +14,6 @@ import es.urjc.daw04.service.ProductService;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
@@ -47,13 +48,9 @@ public class ProductController {
     @Autowired
     private ImageMapper imageMapper;
 
-    //! TODO: 
-    //! 2. Params
-    //! 3. AJAX
-    //! 4. Images
     @GetMapping("/")
-    public Collection<ProductDTO> getProducts() {
-        return productMapper.toDTOs(productService.findAll());
+    public Page<ProductDTO> getProducts(Pageable pageable) {
+        return productService.findAll(pageable).map(productMapper::toDTO);
     }
 
     @GetMapping("/{id}")

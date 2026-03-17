@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import es.urjc.daw04.model.Review;
@@ -18,6 +19,10 @@ public class ReviewService {
 
     public List<Review> findAll() {
         return repository.findAll();
+    }
+    
+    public Page<Review> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
     }
     
     public List<Object[]> getReviewCountByMonth() {

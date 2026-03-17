@@ -14,7 +14,6 @@ import es.urjc.daw04.model.Product;
 
 import java.net.URI;
 import java.security.Principal;
-import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +25,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
@@ -46,8 +47,8 @@ public class ReviewController {
     private ReviewMapper reviewMapper;
 
     @GetMapping("/")
-    public Collection<ReviewDTO> getReviews() {
-        return reviewMapper.toDTOs(reviewService.findAll());
+    public Page<ReviewDTO> getReviews(Pageable pageable) {
+        return reviewService.findAll(pageable).map(reviewMapper::toDTO);
     }
 
     @GetMapping("/{id}")
