@@ -1,4 +1,4 @@
-package es.urjc.daw04.controllers;
+package es.urjc.daw04.controllers.web;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -62,7 +61,7 @@ public class ShopController {
     public String viewProduct(Model model, @PathVariable Long id,
             @RequestParam(defaultValue = "1") int qty, Principal principal,
             HttpServletRequest request) {
-        Product p = productService.findById(id).orElse(null);
+        Product p = productService.findById(id);
 
         if (p != null) {
             model.addAttribute("product", p);
@@ -106,8 +105,8 @@ public class ShopController {
                 Long userId = Long.parseLong(principal.getName());
                 User user = userService.findById(userId).orElse(null);
                 if (user != null) {
-                    Optional<Review> userReview = reviewService.findByProductIdAndUserId(id, user.getId());
-                    userReview.ifPresent(review -> model.addAttribute("userReview", review));
+                    Review userReview = reviewService.findByProductIdAndUserId(id, user.getId());
+                    model.addAttribute("userReview", userReview);
                 }
             }
 
@@ -139,7 +138,7 @@ public class ShopController {
             HttpServletRequest request) {
 
         var principal = request.getUserPrincipal();
-        Product product = productService.findById(id).orElse(null);
+        Product product = productService.findById(id);
 
         if (product != null && principal != null) {
             Long userId = Long.parseLong(principal.getName());
@@ -147,14 +146,13 @@ public class ShopController {
 
             if (user != null) {
                 // Check if a review already exists for this user and product
-                Optional<Review> existingReview = reviewService.findByProductIdAndUserId(id, user.getId());
+                Review existingReview = reviewService.findByProductIdAndUserId(id, user.getId());
 
-                if (existingReview.isPresent()) {
+                if (existingReview != null) {
                     // Update existing review
-                    Review review = existingReview.get();
-                    review.setContent(content);
-                    review.setRating(rating);
-                    reviewService.save(review);
+                    existingReview.setContent(content);
+                    existingReview.setRating(rating);
+                    reviewService.save(existingReview);
                 } else {
                     // Create new review
                     Review review = new Review(product, user, content, rating);
@@ -173,7 +171,7 @@ public class ShopController {
             @RequestParam String content,
             @RequestParam double rating,
             Principal principal) {
-        Review review = reviewService.findById(reviewId).orElse(null);
+        Review review = reviewService.findById(reviewId);
 
         if (review != null && principal != null) {
             Long userId = Long.parseLong(principal.getName());
@@ -190,7 +188,7 @@ public class ShopController {
 
     @PostMapping("/review/{reviewId}/delete")
     public String deleteReview(@PathVariable Long reviewId, Principal principal) {
-        Review review = reviewService.findById(reviewId).orElse(null);
+        Review review = reviewService.findById(reviewId);
 
         if (review != null && principal != null) {
             Long userId = Long.parseLong(principal.getName());
@@ -353,18 +351,17 @@ public class ShopController {
 
         Long userId = Long.parseLong(principal.getName());
         User user = userService.findById(userId).orElse(null);
-        Product product = productService.findById(productId).orElse(null);
+        Product product = productService.findById(productId);
 
         if (user != null && product != null) {
             // Check if a review already exists for this user and product
-            Optional<Review> existingReview = reviewService.findByProductIdAndUserId(productId, user.getId());
+            Review existingReview = reviewService.findByProductIdAndUserId(productId, user.getId());
 
-            if (existingReview.isPresent()) {
+            if (existingReview != null) {
                 // Update existing review
-                Review review = existingReview.get();
-                review.setContent(content);
-                review.setRating(rating);
-                reviewService.save(review);
+                existingReview.setContent(content);
+                existingReview.setRating(rating);
+                reviewService.save(existingReview);
             } else {
                 // Create new review
                 Review review = new Review(product, user, content, rating);
@@ -412,9 +409,9 @@ public class ShopController {
                 // Check if the user already left a review for this product
                 boolean hasReview = false;
                 if (user != null) {
-                    Optional<Review> existingReview = reviewService.findByProductIdAndUserId(
+                    Review existingReview = reviewService.findByProductIdAndUserId(
                             item.getProduct().getId(), user.getId());
-                    hasReview = existingReview.isPresent();
+                    hasReview = existingReview != null;
                 }
                 itemMap.put("hasReview", hasReview);
 

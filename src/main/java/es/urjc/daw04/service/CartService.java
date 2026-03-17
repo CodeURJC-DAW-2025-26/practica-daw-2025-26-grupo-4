@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import es.urjc.daw04.model.Cart;
 import es.urjc.daw04.model.CartItem;
+import es.urjc.daw04.model.Product;
+import es.urjc.daw04.model.User;
+import es.urjc.daw04.repositories.UserRepository;
+
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +18,9 @@ public class CartService {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     // --- PRIVATE HELPER METHODS ---
 
@@ -74,11 +81,35 @@ public class CartService {
         Map<Long, Integer> map = decodeCookie(content);
 
         for (Map.Entry<Long, Integer> entry : map.entrySet()) {
-            productService.findById(entry.getKey()).ifPresent(p -> {
+            Product product = productService.findById(entry.getKey());
+            if (product != null) {
                 // Add items to the temporary cart
-                cart.addItem(new CartItem(p, entry.getValue()));
-            });
+                cart.addItem(new CartItem(product, entry.getValue()));
+            }
         }
         return cart;
+    }
+
+    // --- USER CART METHODS (for REST API, no cookies) ---
+
+    public Cart getUserCart(User user) {
+        return getCartFromCookie(user.getCartContent());
+    }
+
+    public void addProductToUserCart(User user, Long productId) {
+        String updated = addProduct(user.getCartContent(), productId);
+        user.setCartContent(updated);
+        userRepository.save(user);
+    }
+
+    public void removeProductFromUserCart(User user, Long productId) {
+        String updated = removeProduct(user.getCartContent(), productId);
+        user.setCartContent(updated);
+        userRepository.save(user);
+    }
+
+    public void clearUserCart(User user) {
+        user.setCartContent("");
+        userRepository.save(user);
     }
 }
