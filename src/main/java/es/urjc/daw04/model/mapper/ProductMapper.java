@@ -9,7 +9,7 @@ import es.urjc.daw04.model.Product;
 import es.urjc.daw04.model.dto.ProductDTO;
 import es.urjc.daw04.model.dto.ProductSummaryDTO;
 
-@Mapper(componentModel = "spring", uses = {ReviewMapper.class, CategoryMapper.class}, unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", uses = {ReviewMapper.class, CategoryMapper.class, ImageMapper.class}, unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface ProductMapper {
 
     ProductDTO toDTO(Product product);

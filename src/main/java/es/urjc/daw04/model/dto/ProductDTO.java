@@ -10,6 +10,7 @@ public record ProductDTO(
         List<String> tags,
         double averageRating,
         CategoryDTO category,
+        List<ImageDTO> images,
         List<ProductReviewDTO> reviews
 ) {
 }

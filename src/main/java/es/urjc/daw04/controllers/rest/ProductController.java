@@ -3,11 +3,16 @@ package es.urjc.daw04.controllers.rest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.urjc.daw04.model.Image;
 import es.urjc.daw04.model.Product;
+import es.urjc.daw04.model.dto.ImageDTO;
 import es.urjc.daw04.model.dto.ProductDTO;
+import es.urjc.daw04.model.mapper.ImageMapper;
 import es.urjc.daw04.model.mapper.ProductMapper;
+import es.urjc.daw04.service.ImageService;
 import es.urjc.daw04.service.ProductService;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 
@@ -18,9 +23,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.multipart.MultipartFile;
 
+import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
 
@@ -32,7 +39,13 @@ public class ProductController {
     private ProductService productService;
 
     @Autowired
+    private ImageService imageService;
+
+    @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private ImageMapper imageMapper;
 
     //! TODO: 
     //! 2. Params
@@ -70,5 +83,39 @@ public class ProductController {
         Product product = productService.findById(id);
         productService.deleteById(id);
         return productMapper.toDTO(product);
+    }
+
+    @PostMapping("/{id}/images/")
+    public ResponseEntity<ImageDTO> createProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
+            throws IOException {
+
+        if (imageFile.isEmpty()) {
+            throw new IllegalArgumentException("Image file cannot be empty");
+        }
+
+        Image image = imageService.createImage(imageFile);
+        productService.addImageToProduct(id, image);
+
+        // Get the latest persisted image with an ID from the product
+        Product product = productService.findById(id);
+        Image persistedImage = product.getImages().get(product.getImages().size() - 1);
+
+        URI location = fromCurrentContextPath()
+                .path("/api/images/{imageId}/media")
+                .buildAndExpand(persistedImage.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(imageMapper.toDTO(persistedImage));
+    }
+
+    @DeleteMapping("/{productId}/images/{imageId}")
+    public ImageDTO deleteProductImage(@PathVariable long productId, @PathVariable long imageId)
+            throws IOException {
+
+        Image image = imageService.getImage(imageId);
+        productService.removeImageFromProduct(productId, imageId);
+        imageService.deleteImage(imageId);
+
+        return imageMapper.toDTO(image);
     }
 }

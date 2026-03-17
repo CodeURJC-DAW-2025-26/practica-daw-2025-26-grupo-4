@@ -63,4 +63,16 @@ public class ProductService {
         cartItemRepository.deleteByProductId(id);
         repository.deleteById(id);
     }
+
+    public void addImageToProduct(long id, es.urjc.daw04.model.Image image) {
+        Product product = findById(id);
+        product.getImages().add(image);
+        save(product);
+    }
+
+    public void removeImageFromProduct(long productId, long imageId) {
+        Product product = findById(productId);
+        product.getImages().removeIf(image -> image.getId().equals(imageId));
+        save(product);
+    }
 }

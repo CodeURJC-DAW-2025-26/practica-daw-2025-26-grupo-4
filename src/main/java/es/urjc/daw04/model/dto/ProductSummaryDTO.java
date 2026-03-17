@@ -9,5 +9,6 @@ public record ProductSummaryDTO(
         String description,
         List<String> tags,
         double averageRating,
-        CategoryDTO category
+        CategoryDTO category,
+        List<ImageDTO> images
 ) {}
