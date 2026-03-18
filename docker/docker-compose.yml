@@ -4,7 +4,7 @@ services:
     ports:
       - 8443:8443
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db/plantazon_db
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db/plantazon_db?createDatabaseIfNotExist=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=Admin1234
     depends_on:
@@ -19,7 +19,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p$MYSQL_ROOT_PASSWORD"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD"]
       interval: 5s
       timeout: 5s
       start_period: 10s

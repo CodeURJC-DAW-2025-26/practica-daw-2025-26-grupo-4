@@ -1,4 +1,4 @@
-# Imagen base para el contenedor de complicación
+# Imagen base para el contenedor de compilación
 FROM maven:3.9-eclipse-temurin-21 AS builder
 
 # Directorio de trabajo dentro del contenedor
