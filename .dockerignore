@@ -1,0 +1,4 @@
+# Carpetas y archivos que no queremos en la imagen
+target/
+
+mysql/
