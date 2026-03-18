@@ -1,11 +1,11 @@
 package es.urjc.daw04.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,12 +26,16 @@ public class ProductService {
         return repository.findAll();
     }
 
+    public Page<Product> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
     public Page<Product> findAllPaged(int page, int size) {
         return repository.findAll(PageRequest.of(page, size));
     }
 
-    public Optional<Product> findById(long id) {
-        return repository.findById(id);
+    public Product findById(long id) {
+        return repository.findById(id).orElseThrow();
     }
 
     public List<Product> findByCategoryId(long categoryId) {
@@ -50,13 +54,30 @@ public class ProductService {
         return repository.searchByCategoryIdPaged(categoryId, query, PageRequest.of(page, size));
     }
 
-    public void save(Product product) {
-        repository.save(product);
+    public Product save(Product product) {
+        return repository.save(product);
+    }
+
+    public Product update(long id, Product product) {
+        product.setId(id);
+        return repository.save(product);
     }
 
     @Transactional
     public void deleteById(Long id) {
         cartItemRepository.deleteByProductId(id);
         repository.deleteById(id);
+    }
+
+    public void addImageToProduct(long id, es.urjc.daw04.model.Image image) {
+        Product product = findById(id);
+        product.getImages().add(image);
+        save(product);
+    }
+
+    public void removeImageFromProduct(long productId, long imageId) {
+        Product product = findById(productId);
+        product.getImages().removeIf(image -> image.getId().equals(imageId));
+        save(product);
     }
 }

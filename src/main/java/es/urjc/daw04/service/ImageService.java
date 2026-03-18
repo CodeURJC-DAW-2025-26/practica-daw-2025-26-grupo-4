@@ -43,12 +43,29 @@ public class ImageService {
         return image;
     }
 
+    public Image getImage(long id) {
+        return imageRepository.findById(id).orElseThrow();
+    }
+
     public Resource getImageFile(long id) throws SQLException {
-        Image image = imageRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Image not found: " + id));
+        Image image = getImage(id);
         if (image.getImageFile() != null) {
             return new InputStreamResource(image.getImageFile().getBinaryStream());
         }
         throw new RuntimeException("Empty image data for id: " + id);
+    }
+
+    public void replaceImageFile(long id, java.io.InputStream inputStream) throws IOException {
+        Image image = getImage(id);
+        try {
+            image.setImageFile(new SerialBlob(inputStream.readAllBytes()));
+            imageRepository.save(image);
+        } catch (SQLException e) {
+            throw new IOException("Error replacing image file", e);
+        }
+    }
+
+    public void deleteImage(long id) {
+        imageRepository.deleteById(id);
     }
 }
