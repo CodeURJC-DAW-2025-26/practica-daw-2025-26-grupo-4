@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import es.urjc.daw04.model.Cart;
 import es.urjc.daw04.model.CartItem;
+import es.urjc.daw04.model.EnumStatus;
 import es.urjc.daw04.model.Order;
 import es.urjc.daw04.model.User;
 import es.urjc.daw04.repositories.OrderRepository;
@@ -36,10 +37,11 @@ public class OrderService {
         repository.save(order);
     }
 
-    public void saveOrderFromCart(Cart cart, User user) {
+    public Order saveOrderFromCart(Cart cart, User user) {
         Order order = new Order();
         order.setUser(user);
         order.setShippingCost(cart.getShippingCost());
+        order.setStatus(EnumStatus.PENDING);
 
         for (CartItem item : cart.getItems()) {
             CartItem dbItem = new CartItem(item.getProduct(), item.getQuantity());
@@ -52,7 +54,7 @@ public class OrderService {
             .sum();
         order.setTotalPrice(itemsTotal + order.getShippingCost());
         
-        repository.save(order);
+        return repository.save(order);
     }
 
     public List<Object[]> getSalesByCategory() {
