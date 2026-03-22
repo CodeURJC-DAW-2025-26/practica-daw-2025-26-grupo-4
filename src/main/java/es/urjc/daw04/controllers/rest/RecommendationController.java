@@ -2,8 +2,6 @@ package es.urjc.daw04.controllers.rest;
 
 import java.security.Principal;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;

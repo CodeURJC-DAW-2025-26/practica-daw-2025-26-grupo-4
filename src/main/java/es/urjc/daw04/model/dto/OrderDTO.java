@@ -1,6 +1,5 @@
 package es.urjc.daw04.model.dto;
 
-import java.util.Date;
 import java.util.List;
 
 public record OrderDTO (

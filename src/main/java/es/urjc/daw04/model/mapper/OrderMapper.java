@@ -1,9 +1,7 @@
 package es.urjc.daw04.model.mapper;
 
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import es.urjc.daw04.model.Order;

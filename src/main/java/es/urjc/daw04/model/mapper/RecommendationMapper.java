@@ -10,6 +10,7 @@ import es.urjc.daw04.model.dto.RecommendationPackDTO;
 
 @Mapper(componentModel = "spring", uses = {ProductMapper.class})
 public interface RecommendationMapper {
+    @Mapping(source = "combo", target = "isCombo")
     @Mapping(source = "formattedTotalPrice", target = "totalPrice")
     RecommendationPackDTO toDTO(RecommendationPack recommendationPack);
     
