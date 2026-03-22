@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import es.urjc.daw04.model.User;
 import es.urjc.daw04.repositories.UserRepository;
 import es.urjc.daw04.security.RepositoryUserDetailsService;
+import es.urjc.daw04.service.AuthRegistrationService;
 import es.urjc.daw04.service.CartService;
 import es.urjc.daw04.service.EmailService;
 import jakarta.transaction.Transactional;
@@ -41,6 +42,9 @@ public class AuthController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private AuthRegistrationService authRegistrationService;
 
     @GetMapping("/login")
     public String login(Model model, @RequestParam(required = false) String register) {
@@ -65,8 +69,7 @@ public class AuthController {
     public String user(Model model, @CookieValue(value = "cart", defaultValue = "") String cartContent,
             Principal principal, HttpServletRequest request) {
 
-        Long userId = Long.parseLong(principal.getName());
-        User user = userRepository.findById(userId).orElse(null);
+        User user = resolveCurrentUser(principal);
 
         if (user != null) {
             model.addAttribute("userName", user.getName() != null ? user.getName() : "Establecer nombre de usuario");
@@ -94,37 +97,12 @@ public class AuthController {
     public String register(@RequestParam String name, @RequestParam String username, @RequestParam String email,
             @RequestParam String password, @RequestParam(name = "confirm-password") String confirmPassword,
             Model model, HttpServletRequest request) {
-
-        // Validate that passwords match
-        if (!password.equals(confirmPassword)) {
-            model.addAttribute("error", "Las contraseñas no coinciden");
+        try {
+            authRegistrationService.registerUser(name, username, email, password, confirmPassword);
+        } catch (IllegalArgumentException ex) {
+            model.addAttribute("error", ex.getMessage());
             return "login";
         }
-
-        // Validate that the username is not already taken
-        if (userRepository.findByName(username).isPresent()) {
-            model.addAttribute("error", "El nombre de usuario ya está en uso");
-            return "login";
-        }
-
-        // Validate that the email is not already registered
-        if (userRepository.findByEmail(email).isPresent()) {
-            model.addAttribute("error", "El email ya está registrado");
-            return "login";
-        }
-
-        // Create new user
-        User newUser = new User();
-        newUser.setName(username);
-        newUser.setEmail(email);
-        newUser.setFullName(name);
-        newUser.setEncodedPassword(passwordEncoder.encode(password));
-        newUser.setRoles(java.util.List.of("USER"));
-
-        userRepository.save(newUser);
-
-        // Send welcome email
-        emailService.sendWelcomeEmail(email, name);
 
         // Auto-login the user
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -162,10 +140,8 @@ public class AuthController {
             return "redirect:/login";
         }
 
-        Long userId = Long.parseLong(principal.getName());
-        System.out.println("User ID: " + userId);
-
-        User user = userRepository.findById(userId).orElse(null);
+        User user = resolveCurrentUser(principal);
+        System.out.println("User resolved: " + (user != null ? user.getName() : "null"));
 
         if (user != null && street != null && !street.isEmpty()) {
 
@@ -201,8 +177,7 @@ public class AuthController {
     @Transactional
     @PostMapping("/user/address/delete")
     public String deleteAddress(Principal principal) {
-        Long userId = Long.parseLong(principal.getName());
-        User user = userRepository.findById(userId).orElse(null);
+        User user = resolveCurrentUser(principal);
 
         if (user != null) {
             user.setShippingAddress(null);
@@ -223,8 +198,7 @@ public class AuthController {
             @CookieValue(value = "cart", defaultValue = "") String cartContent,
             HttpServletRequest request) {
 
-        Long userId = Long.parseLong(principal.getName());
-        User user = userRepository.findById(userId).orElse(null);
+        User user = resolveCurrentUser(principal);
 
         // Validate that the old password is correct
         if (!passwordEncoder.matches(oldPassword, user.getEncodedPassword())) {
@@ -286,8 +260,7 @@ public class AuthController {
             return "redirect:/login";
         }
 
-        Long userId = Long.parseLong(principal.getName());
-        User user = userRepository.findById(userId).orElse(null);
+        User user = resolveCurrentUser(principal);
 
         if (user == null) {
             return "redirect:/login";
@@ -320,6 +293,25 @@ public class AuthController {
         userRepository.save(user);
 
         return "redirect:/user";
+    }
+
+    private User resolveCurrentUser(Principal principal) {
+        if (principal == null || principal.getName() == null || principal.getName().isBlank()) {
+            return null;
+        }
+
+        String principalName = principal.getName();
+        User user = userRepository.findByName(principalName).orElse(null);
+        if (user != null) {
+            return user;
+        }
+
+        try {
+            Long userId = Long.parseLong(principalName);
+            return userRepository.findById(userId).orElse(null);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
     }
 
 }

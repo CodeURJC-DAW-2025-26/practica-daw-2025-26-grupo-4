@@ -102,8 +102,7 @@ public class ShopController {
 
             // Current user's review, if it exists
             if (principal != null) {
-                Long userId = Long.parseLong(principal.getName());
-                User user = userService.findById(userId).orElse(null);
+                User user = resolveCurrentUser(principal);
                 if (user != null) {
                     Review userReview = reviewService.findByProductIdAndUserId(id, user.getId());
                     model.addAttribute("userReview", userReview);
@@ -141,8 +140,7 @@ public class ShopController {
         Product product = productService.findById(id);
 
         if (product != null && principal != null) {
-            Long userId = Long.parseLong(principal.getName());
-            User user = userService.findById(userId).orElse(null);
+            User user = resolveCurrentUser(principal);
 
             if (user != null) {
                 // Check if a review already exists for this user and product
@@ -174,8 +172,7 @@ public class ShopController {
         Review review = reviewService.findById(reviewId);
 
         if (review != null && principal != null) {
-            Long userId = Long.parseLong(principal.getName());
-            User user = userService.findById(userId).orElse(null);
+            User user = resolveCurrentUser(principal);
             if (user != null && review.getUser().getId().equals(user.getId())) {
                 review.setContent(content);
                 review.setRating(rating);
@@ -191,8 +188,7 @@ public class ShopController {
         Review review = reviewService.findById(reviewId);
 
         if (review != null && principal != null) {
-            Long userId = Long.parseLong(principal.getName());
-            User user = userService.findById(userId).orElse(null);
+            User user = resolveCurrentUser(principal);
             if (user != null && review.getUser().getId().equals(user.getId())) {
                 Long productId = review.getProduct().getId();
                 reviewService.delete(reviewId);
@@ -274,8 +270,7 @@ public class ShopController {
         var principal = request.getUserPrincipal(); // Logged user check
 
         if (principal != null && !cartContent.isEmpty()) {
-            Long userId = Long.parseLong(principal.getName());
-            User user = userService.findById(userId).orElse(null);
+            User user = resolveCurrentUser(principal);
 
             if (user != null) {
                 Cart cart = cartService.getCartFromCookie(cartContent);
@@ -307,8 +302,7 @@ public class ShopController {
             return "redirect:/login";
         }
 
-        Long userId = Long.parseLong(principal.getName());
-        User user = userService.findById(userId).orElse(null);
+        User user = resolveCurrentUser(principal);
         if (user == null) {
             return "redirect:/login";
         }
@@ -326,8 +320,7 @@ public class ShopController {
             return "fragments/orders";
         }
 
-        Long userId = Long.parseLong(principal.getName());
-        User user = userService.findById(userId).orElse(null);
+        User user = resolveCurrentUser(principal);
         if (user == null) {
             model.addAttribute("orders", List.of());
             return "fragments/orders";
@@ -349,8 +342,7 @@ public class ShopController {
             return "redirect:/login";
         }
 
-        Long userId = Long.parseLong(principal.getName());
-        User user = userService.findById(userId).orElse(null);
+        User user = resolveCurrentUser(principal);
         Product product = productService.findById(productId);
 
         if (user != null && product != null) {
@@ -376,12 +368,7 @@ public class ShopController {
         SimpleDateFormat dateFormat = new SimpleDateFormat("d 'de' MMMM 'de' yyyy");
 
         // Get current user
-        User currentUser = null;
-        if (principal != null) {
-            Long userId = Long.parseLong(principal.getName());
-            currentUser = userService.findById(userId).orElse(null);
-        }
-        final User user = currentUser;
+        final User user = resolveCurrentUser(principal);
 
         return allOrders.stream().map(order -> {
             Map<String, Object> orderMap = new HashMap<>();
@@ -433,6 +420,25 @@ public class ShopController {
                 return "transit";
             default:
                 return "pending";
+        }
+    }
+
+    private User resolveCurrentUser(Principal principal) {
+        if (principal == null || principal.getName() == null || principal.getName().isBlank()) {
+            return null;
+        }
+
+        String principalName = principal.getName();
+        User user = userService.findByName(principalName).orElse(null);
+        if (user != null) {
+            return user;
+        }
+
+        try {
+            Long userId = Long.parseLong(principalName);
+            return userService.findById(userId).orElse(null);
+        } catch (NumberFormatException ex) {
+            return null;
         }
     }
 }
