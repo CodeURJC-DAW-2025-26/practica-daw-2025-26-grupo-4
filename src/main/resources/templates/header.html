@@ -18,7 +18,12 @@
             </div>
             <div class="user-menu-container">
                 <button class="user-menu-btn" id="userMenuBtn">
+                    {{#headerProfileImageUrl}}
+                    <img src="{{headerProfileImageUrl}}" alt="Foto de perfil" class="header-profile-img">
+                    {{/headerProfileImageUrl}}
+                    {{^headerProfileImageUrl}}
                     <i class="fa-regular fa-circle-user profile-icon"></i>
+                    {{/headerProfileImageUrl}}
                 </button>
                 <div class="user-menu-dropdown" id="userMenuDropdown">
                     {{#isAdmin}}

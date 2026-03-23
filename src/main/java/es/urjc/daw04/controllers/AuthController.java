@@ -1,12 +1,15 @@
 package es.urjc.daw04.controllers;
 
+import java.io.IOException;
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.ui.Model;
-import java.security.Principal;
+import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -70,6 +73,9 @@ public class AuthController {
                     user.getFullName() != null ? user.getFullName() : "Establecer nombre completo");
             model.addAttribute("birthDate", user.getBirthDate() != null ? user.getBirthDate() : "");
             model.addAttribute("shippingAddress", user.getShippingAddress());
+            if (user.getProfileImage() != null) {
+                model.addAttribute("profileImageUrl", user.getProfileImage().getUrl());
+            }
         }
 
         model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
@@ -197,6 +203,9 @@ public class AuthController {
         model.addAttribute("fullName", user.getFullName() != null ? user.getFullName() : "Establecer nombre completo");
         model.addAttribute("birthDate", user.getBirthDate() != null ? user.getBirthDate() : "");
         model.addAttribute("shippingAddress", user.getShippingAddress());
+        if (user.getProfileImage() != null) {
+            model.addAttribute("profileImageUrl", user.getProfileImage().getUrl());
+        }
         model.addAttribute("cart", cartService.getCartFromCookie(cartContent));
         model.addAttribute("error", errorMessage);
 
@@ -241,6 +250,43 @@ public class AuthController {
 
     private boolean isUnauthenticated(String message) {
         return "Usuario no autenticado".equals(message);
+    }
+
+    @PostMapping("/user/profile-image/save")
+    @Transactional
+    public String saveProfileImage(
+            @RequestParam(required = false) MultipartFile profileImage,
+            Principal principal,
+            Model model,
+            @CookieValue(value = "cart", defaultValue = "") String cartContent,
+            HttpServletRequest request) {
+
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        try {
+            userAccountService.updateProfileImage(principal, profileImage);
+        } catch (IllegalArgumentException ex) {
+            if (isUnauthenticated(ex.getMessage())) {
+                return "redirect:/login";
+            }
+            User user = userAccountService.findCurrentUser(principal);
+            if (user == null) {
+                return "redirect:/login";
+            }
+            addUserAttributesToModel(model, user, cartContent, request, ex.getMessage());
+            return "user";
+        } catch (IOException ex) {
+            User user = userAccountService.findCurrentUser(principal);
+            if (user == null) {
+                return "redirect:/login";
+            }
+            addUserAttributesToModel(model, user, cartContent, request, "Error al guardar la imagen");
+            return "user";
+        }
+
+        return "redirect:/user";
     }
 
 }

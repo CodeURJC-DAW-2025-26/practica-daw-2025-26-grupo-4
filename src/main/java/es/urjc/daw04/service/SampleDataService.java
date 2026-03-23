@@ -46,11 +46,12 @@ public class SampleDataService {
     @Autowired
     private ResourceLoader resourceLoader;
 
-    private static final String IMG_BASE = "classpath:static/images/products/";
+    private static final String IMG_BASE_PRODUCT = "classpath:static/images/products/";
+    private static final String IMG_BASE_USER = "classpath:static/images/users/";
 
     private void addImage(Product product, String relativePath) {
         try {
-            Resource resource = resourceLoader.getResource(IMG_BASE + relativePath);
+            Resource resource = resourceLoader.getResource(IMG_BASE_PRODUCT + relativePath);
             if (!resource.exists()) {
                 System.err.println("Imagen no encontrada: " + relativePath);
                 return;
@@ -58,6 +59,19 @@ public class SampleDataService {
             product.getImages().add(imageService.createImageFromResource(resource));
         } catch (Exception e) {
             System.err.println("Error cargando imagen " + relativePath + ": " + e.getMessage());
+        }
+    }
+
+    private void addProfileImage(User user, String relativePath) {
+        try {
+            Resource resource = resourceLoader.getResource(IMG_BASE_USER + relativePath);
+            if (!resource.exists()) {
+                System.err.println("Imagen de perfil no encontrada: " + relativePath);
+                return;
+            }
+            user.setProfileImage(imageService.createImageFromResource(resource));
+        } catch (Exception e) {
+            System.err.println("Error cargando imagen de perfil " + relativePath + ": " + e.getMessage());
         }
     }
 
@@ -70,6 +84,7 @@ public class SampleDataService {
             userNormal.setEmail("pruebas@gmail.com");
             userNormal.setEncodedPassword(passwordEncoder.encode("user"));
             userNormal.setRoles(List.of("USER"));
+            addProfileImage(userNormal, "profile_sample.jpeg");
             userRepository.save(userNormal);
         }
 

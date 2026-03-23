@@ -20,6 +20,38 @@
             <div class="content-body">
                 <h1 class="greeting-title">¡Hola {{userName}}!</h1>
 
+                <!-- Profile Photo Section -->
+                <section class="settings-card">
+                    <h2>Foto de perfil</h2>
+                    <div class="profile-photo-container">
+                        <div class="profile-photo-wrapper">
+                            {{#profileImageUrl}}
+                            <img src="{{profileImageUrl}}" alt="Foto de perfil" class="profile-photo" id="profile-photo-preview">
+                            {{/profileImageUrl}}
+                            {{^profileImageUrl}}
+                            <div class="profile-photo-placeholder" id="profile-photo-placeholder">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <img src="" alt="Foto de perfil" class="profile-photo" id="profile-photo-preview" style="display:none;">
+                            {{/profileImageUrl}}
+                        </div>
+                        <div class="profile-photo-actions">
+                            <form id="profile-image-form" action="/user/profile-image/save" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="_csrf" value="{{token}}"/>
+                                <label for="profileImageInput" class="save-btn profile-photo-label">
+                                    <i class="fa-solid fa-camera"></i> Cambiar foto
+                                </label>
+                                <input type="file" id="profileImageInput" name="profileImage"
+                                       accept="image/jpeg,image/png,image/webp" style="display:none;">
+                                <button type="submit" id="save-photo-btn" class="save-btn" style="display:none;">
+                                    Guardar foto
+                                </button>
+                            </form>
+                            <p class="profile-photo-hint">JPEG, PNG o WebP · máx. 5 MB</p>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Account Data Section -->
                 <section class="settings-card">
                     <h2>Datos de mi cuenta</h2>

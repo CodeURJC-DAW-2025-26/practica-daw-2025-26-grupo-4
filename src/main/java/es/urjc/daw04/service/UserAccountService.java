@@ -1,13 +1,17 @@
 package es.urjc.daw04.service;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import es.urjc.daw04.model.Image;
 import es.urjc.daw04.model.User;
 import es.urjc.daw04.repositories.UserRepository;
 
@@ -19,6 +23,13 @@ public class UserAccountService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ImageService imageService;
+
+    private static final long MAX_PROFILE_IMAGE_SIZE = 5 * 1024 * 1024;
+    private static final List<String> ALLOWED_IMAGE_TYPES = List.of(
+            "image/jpeg", "image/png", "image/webp");
 
     public User findCurrentUser(Principal principal) {
         if (principal == null || principal.getName() == null || principal.getName().isBlank()) {
@@ -115,8 +126,7 @@ public class UserAccountService {
     }
 
     @Transactional
-    public void changePassword(Principal principal, String oldPassword, String newPassword, String confirmPassword) {
-        User user = requireCurrentUser(principal);
+    public void changePassword(Principal principal, String oldPassword, String newPassword, String confirmPassword) {        User user = requireCurrentUser(principal);
 
         if (oldPassword == null || newPassword == null || confirmPassword == null) {
             throw new IllegalArgumentException("Todos los campos de contraseña son obligatorios");
@@ -144,5 +154,27 @@ public class UserAccountService {
             throw new IllegalArgumentException("Usuario no autenticado");
         }
         return user;
+    }
+
+    @Transactional
+    public User updateProfileImage(Principal principal, MultipartFile imageFile) throws IOException {
+        User user = requireCurrentUser(principal);
+
+        if (imageFile == null || imageFile.isEmpty()) {
+            throw new IllegalArgumentException("La imagen no puede estar vacía");
+        }
+
+        String contentType = imageFile.getContentType();
+        if (contentType == null || !ALLOWED_IMAGE_TYPES.contains(contentType)) {
+            throw new IllegalArgumentException("Formato de imagen no permitido. Usa JPEG, PNG o WebP");
+        }
+
+        if (imageFile.getSize() > MAX_PROFILE_IMAGE_SIZE) {
+            throw new IllegalArgumentException("La imagen no puede superar los 5 MB");
+        }
+
+        Image newImage = imageService.createImage(imageFile);
+        user.setProfileImage(newImage);
+        return userRepository.save(user);
     }
 }

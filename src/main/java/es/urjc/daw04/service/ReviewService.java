@@ -52,6 +52,6 @@ public class ReviewService {
     }
 
     public Review findByProductIdAndUserId(Long productId, Long userId) {
-        return repository.findFirstByProductIdAndUserId(productId, userId).orElseThrow();
+        return repository.findFirstByProductIdAndUserId(productId, userId).orElse(null);
     }
 }

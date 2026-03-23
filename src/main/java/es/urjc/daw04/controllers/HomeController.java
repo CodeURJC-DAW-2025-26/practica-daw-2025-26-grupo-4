@@ -90,7 +90,7 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping("/api/products/fragment")
+    @GetMapping("/products/fragment")
     public String productsFragment(
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String q,

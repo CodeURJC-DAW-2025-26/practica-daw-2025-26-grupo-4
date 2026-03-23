@@ -138,7 +138,7 @@ public class AdminController {
         model.addAttribute(dataKey, values);
     }
 
-    @GetMapping("/api/admin/users/fragment")
+    @GetMapping("/admin/users/fragment")
     public String adminUsersFragment(@RequestParam(defaultValue = "1") int page, Model model) {
         Page<User> p = userService.findAllPaged(page, ADMIN_USERS_PAGE_SIZE);
         model.addAttribute("users", toUsersData(p.getContent()));
@@ -247,7 +247,7 @@ public class AdminController {
         return "admin-products";
     }
 
-    @GetMapping("/api/admin/products/fragment")
+    @GetMapping("/admin/products/fragment")
     public String adminProductsFragment(@RequestParam(defaultValue = "1") int page, Model model) {
         Page<Product> p = productService.findAllPaged(page, ADMIN_PRODUCTS_PAGE_SIZE);
         model.addAttribute("products", toProductsData(p.getContent()));

@@ -10,6 +10,7 @@ public record UserProfileResponseDTO(
         String email,
         LocalDate birthDate,
         String shippingAddress,
-        List<String> roles
+        List<String> roles,
+        String profileImageUrl
 ) {
 }

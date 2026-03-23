@@ -130,10 +130,10 @@ public class WebSecurityConfig {
                         // ERROR PAGE
                         .requestMatchers("/error").permitAll()
                         // PUBLIC API FRAGMENTS
-                        .requestMatchers("/api/products/**").permitAll()
+                        .requestMatchers("/products/**").permitAll()
                         // PRIVATE API FRAGMENTS
-                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
-                        .requestMatchers("/api/orders/**").hasAnyRole("USER")
+                        .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/orders/**").hasAnyRole("USER")
                         // PRIVATE PAGES
                         .requestMatchers("/user").hasAnyRole("USER")
                         .requestMatchers("/user/**").hasAnyRole("USER")

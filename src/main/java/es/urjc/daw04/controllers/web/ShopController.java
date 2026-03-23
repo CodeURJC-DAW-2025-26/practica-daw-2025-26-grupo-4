@@ -121,7 +121,7 @@ public class ShopController {
         return "redirect:/";
     }
 
-    @GetMapping("/api/products/{id}/reviews/fragment")
+    @GetMapping("/products/{id}/reviews/fragment")
     public String reviewsFragment(@PathVariable Long id,
             @RequestParam(defaultValue = "1") int page,
             Model model) {
@@ -313,7 +313,7 @@ public class ShopController {
         return "order";
     }
 
-    @GetMapping("/api/orders/fragment")
+    @GetMapping("/orders/fragment")
     public String ordersFragment(@RequestParam(defaultValue = "1") int page, Model model, Principal principal) {
         if (principal == null) {
             model.addAttribute("orders", List.of());

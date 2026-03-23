@@ -49,3 +49,27 @@ togglePassIcons.forEach(icon => {
         this.classList.toggle('fa-eye');
     });
 });
+
+// Profile photo preview
+const profileImageInput = document.getElementById('profileImageInput');
+const savePhotoBtn = document.getElementById('save-photo-btn');
+const profilePhotoPreview = document.getElementById('profile-photo-preview');
+const profilePhotoPlaceholder = document.getElementById('profile-photo-placeholder');
+
+if (profileImageInput) {
+    profileImageInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            if (profilePhotoPlaceholder) {
+                profilePhotoPlaceholder.style.display = 'none';
+            }
+            profilePhotoPreview.src = e.target.result;
+            profilePhotoPreview.style.display = 'block';
+            savePhotoBtn.style.display = 'inline-flex';
+        };
+        reader.readAsDataURL(file);
+    });
+}
