@@ -71,8 +71,13 @@ public class ProductRestController {
             request.name(),
             request.price() != null ? request.price() : 0.0,
             request.description() != null ? request.description() : "",
-            request.tags() != null ? request.tags() : java.util.List.of());
-        applyProductRequest(product, request.name(), request.price(), request.description(), request.tags(), request.categoryId());
+            request.tags() != null ? request.tags() : java.util.List.of()
+        );
+        
+        if (request.categoryId() != null) {
+            categoryService.findById(request.categoryId()).ifPresent(product::setCategory);
+        }
+
         product = productService.save(product);
         ProductDTO productDTO = productMapper.toDTO(product);
         
@@ -84,8 +89,19 @@ public class ProductRestController {
     @PutMapping("/{id}")
     public ProductDTO updateProduct(@PathVariable long id, @RequestBody ProductUpdateRequestDTO request) {
         Product existingProduct = productService.findById(id);
-        applyProductRequest(existingProduct, request.name(), request.price(), request.description(), request.tags(), request.categoryId());
-        Product updatedProduct = productService.save(existingProduct);
+        
+        existingProduct.setName(request.name());
+        existingProduct.setPrice(request.price() != null ? request.price() : 0.0);
+        existingProduct.setDescription(request.description() != null ? request.description() : "");
+        existingProduct.setTags(request.tags() != null ? request.tags() : java.util.List.of());
+
+        if (request.categoryId() == null) {
+            existingProduct.setCategory(null);
+        } else {
+            categoryService.findById(request.categoryId()).ifPresent(existingProduct::setCategory);
+        }
+
+        Product updatedProduct = productService.update(id, existingProduct);
         return productMapper.toDTO(updatedProduct);
     }
 
@@ -128,20 +144,5 @@ public class ProductRestController {
         imageService.deleteImage(imageId);
 
         return imageMapper.toDTO(image);
-    }
-
-    private void applyProductRequest(Product product, String name, Double price, String description, java.util.List<String> tags,
-            Long categoryId) {
-        product.setName(name);
-        product.setPrice(price != null ? price : 0.0);
-        product.setDescription(description != null ? description : "");
-        product.setTags(tags != null ? tags : java.util.List.of());
-
-        if (categoryId == null) {
-            product.setCategory(null);
-            return;
-        }
-
-        categoryService.findById(categoryId).ifPresent(product::setCategory);
     }
 }
