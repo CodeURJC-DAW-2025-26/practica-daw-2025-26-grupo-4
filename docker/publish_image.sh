@@ -6,7 +6,7 @@
 
 if [ $# -lt 3 ]; then
     echo "Uso: $0 <usuario_dockerhub> <nombre_imagen> <tag>"
-    echo "Ejemplo: $0 eduamongus spring-webapp-compose 0.1.0"
+    echo "Ejemplo: $0 eduamongus spring-webapp 0.1.0"
     exit 1
 fi
 
