@@ -283,7 +283,7 @@ Responsable de seguridad, autenticación, usuarios y control de acceso.
 
 Diagrama actualizado incluyendo los @RestController y su relación con los @Service compartidos:
 
-![Diagrama de Clases Actualizado](images/complete-classes-diagram.png)
+![Diagrama de Clases Actualizado](images/p2/diagrama-clases.drawio.svg)
 
 ### **Instrucciones de Ejecución con Docker**
 
@@ -350,59 +350,60 @@ Diagrama actualizado incluyendo los @RestController y su relación con los @Serv
 
 ### **Participación de Miembros en la Práctica 2**
 
-#### **Alumno 1 - [Nombre Completo]**
+#### **Alumno 1 - Álvaro Fuente González**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+Responsable de la creación de múltiples endpoints REST (productos, carritos, reviews, imágenes) y sus respectivos DTOs, creación de REST Controllers base, así como la configuración inicial de Spring Security con JWT.
 
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
-|1| [Descripción commit 1](URL_commit_1)  | [Archivo1](URL_archivo_1)   |
-|2| [Descripción commit 2](URL_commit_2)  | [Archivo2](URL_archivo_2)   |
-|3| [Descripción commit 3](URL_commit_3)  | [Archivo3](URL_archivo_3)   |
-|4| [Descripción commit 4](URL_commit_4)  | [Archivo4](URL_archivo_4)   |
-|5| [Descripción commit 5](URL_commit_5)  | [Archivo5](URL_archivo_5)   |
+|1| [Practice 2 v1.2 Added rest controller to product, review, cart and image](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/ba535bfa9144c8bb2480bf7d2f86c52f2a21268b)  | ProductRestController.java, ReviewRestController.java, CartRestController.java   |
+|2| [Added DTO to all entities](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/e7480ab)  | ProductDTO.java, CartDTO.java, ReviewDTO.java, UserDTO.java   |
+|3| [Image controller and DTO added to Products](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/e59c742)  | ImageController.java, ProductDTO.java   |
+|4| [Pageable Products and Reviews](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/8480e0d)  | ProductService.java, ReviewService.java, ProductRestController.java   |
+|5| [Practice 2 v 1.1 Completed Security](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/de8a1f8)  | LoginController.java, WebSecurityConfig.java   |
 
 ---
 
-#### **Alumno 2 - [Nombre Completo]**
+#### **Alumno 2 - Darío García Gómez**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+Responsable del refactoring de REST Controllers, del desarrollo de la API REST de pedidos y recomendaciones, y de la integración de las imágenes para los usuarios y productos.
 
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
-|1| [Descripción commit 1](URL_commit_1)  | [Archivo1](URL_archivo_1)   |
-|2| [Descripción commit 2](URL_commit_2)  | [Archivo2](URL_archivo_2)   |
-|3| [Descripción commit 3](URL_commit_3)  | [Archivo3](URL_archivo_3)   |
-|4| [Descripción commit 4](URL_commit_4)  | [Archivo4](URL_archivo_4)   |
-|5| [Descripción commit 5](URL_commit_5)  | [Archivo5](URL_archivo_5)   |
+|1| [Practice  2 v1.5 Order API REST finished](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/6d035c5f241f11997b97657a831ae6e10ad3bdfb)  | OrderRestController.java, OrderDTO.java, OrderMapper.java   |
+|2| [Practice 2 v1.3 Added rest controller to recommendation](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/ff37ce839078168712ade7ccc6d7c79bd79844d2)  | RecommendationController.java, RecommendationPackDTO.java   |
+|3| [Practice 2 v1.15 Images problem solved. User image implemented](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/28870ce)  | AdminController.java, AuthController.java, UserRestController.java   |
+|4| [Practice 2 v1.11 Rest refactoring](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/5696e8d)  | CartRestController.java, HomeRestController.java, LoginRestController.java   |
+|5| [Practice 2 v1.18 two new requestMatchers](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/454ef5e)  | WebSecurityConfig.java   |
 
 ---
 
-#### **Alumno 3 - [Nombre Completo]**
+#### **Alumno 3 - Eduardo Fernández Sanz**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+Responsable de la parte de Recomendaciones, configuración para el despliegue con Docker y de asegurar consistencia en vistas.
 
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
-|1| [Descripción commit 1](URL_commit_1)  | [Archivo1](URL_archivo_1)   |
-|2| [Descripción commit 2](URL_commit_2)  | [Archivo2](URL_archivo_2)   |
-|3| [Descripción commit 3](URL_commit_3)  | [Archivo3](URL_archivo_3)   |
-|4| [Descripción commit 4](URL_commit_4)  | [Archivo4](URL_archivo_4)   |
-|5| [Descripción commit 5](URL_commit_5)  | [Archivo5](URL_archivo_5)   |
+|1| [Practice 2 v1.19 Updated recommendation algorithm](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/e0d1d6670f2ad366bb2edee5567b2903353b0596)  | RecommendationController.java, RecommendationService.java   |
+|2| [Practice 2 v1.16 Fixed infinte scroll not working correctly](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/bcf840e8a07c933969ab06db7b386ef958f54ea4)  | admin-products.html, admin.html, home.html   |
+|3| [Practice 2 v1.6 Created REST HomeController](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/6d974dc09bc301dd4e5358162eacc6dc993c8e71)  | HomeController.java, RecommendationController.java   |
+|4| [Practice 2 v1.4 Moved Docker files to Docker folder](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/c5020a26c09461850a6e760c7511c355f5cc9122)  | docker/Dockerfile, create_image.sh, docker-compose.yml   |
+|5| [Practice 2 v.1.4 Added dockerfile and docker-compose](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/d2f9a723a5489f3b9f2589f9783a5327e8cc8c0a)  | Dockerfile, docker-compose.yml, application.properties   |
 
 ---
 
-#### **Alumno 4 - [Nombre Completo]**
+#### **Alumno 4 - Arturo Vinuesa Domínguez**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+Responsable de la API REST para el control de cuentas de usuario, perfil, direcciones y aspectos de seguridad y versionado.
 
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
-|1| [Descripción commit 1](URL_commit_1)  | [Archivo1](URL_archivo_1)   |
-|2| [Descripción commit 2](URL_commit_2)  | [Archivo2](URL_archivo_2)   |
-|3| [Descripción commit 3](URL_commit_3)  | [Archivo3](URL_archivo_3)   |
-|4| [Descripción commit 4](URL_commit_4)  | [Archivo4](URL_archivo_4)   |
-|5| [Descripción commit 5](URL_commit_5)  | [Archivo5](URL_archivo_5)   |
+|1| [P2-v1.7: Refactor and stabilize REST API migration with /api/v1 versioning...](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/c7449e6)  | AuthController.java, LoginController.java, CartController.java   |
+|2| [Practice 2 v1.7 Add user account REST API with DTOs](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/5d2366b)  | UserRestController.java, UserAccountUpdateRequestDTO.java   |
+|3| [Practice 2 v1.8](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/015641e)  | AdminRestController.java, AdminCategoryRequestDTO.java   |
+|4| [Practice 2 v 1.10 Admin-&-auth-controller](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/d021dcc)  | AdminRestController.java, LoginRestController.java   |
+|5| [Practice 2 v1.17](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/24477bf)  | AdminRestController.java, ReviewController.java   |
+
 
 ---
 
