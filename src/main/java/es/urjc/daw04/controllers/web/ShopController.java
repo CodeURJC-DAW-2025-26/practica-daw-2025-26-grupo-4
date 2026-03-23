@@ -121,82 +121,7 @@ public class ShopController {
         return "redirect:/";
     }
 
-    @GetMapping("/products/{id}/reviews/fragment")
-    public String reviewsFragment(@PathVariable Long id,
-            @RequestParam(defaultValue = "1") int page,
-            Model model) {
-        Page<Review> p = reviewService.findByProductIdPaged(id, page, REVIEWS_PAGE_SIZE);
-        model.addAttribute("reviews", p.getContent());
-        return "fragments/reviews";
-    }
-
-    @PostMapping("/product/{id}/review")
-    public String addReview(@PathVariable Long id,
-            @RequestParam String content,
-            @RequestParam double rating,
-            HttpServletRequest request) {
-
-        var principal = request.getUserPrincipal();
-        Product product = productService.findById(id);
-
-        if (product != null && principal != null) {
-            User user = resolveCurrentUser(principal);
-
-            if (user != null) {
-                // Check if a review already exists for this user and product
-                Review existingReview = reviewService.findByProductIdAndUserId(id, user.getId());
-
-                if (existingReview != null) {
-                    // Update existing review
-                    existingReview.setContent(content);
-                    existingReview.setRating(rating);
-                    reviewService.save(existingReview);
-                } else {
-                    // Create new review
-                    Review review = new Review(product, user, content, rating);
-                    reviewService.save(review);
-                }
-            }
-        }
-
-        return "redirect:/product/" + id;
-    }
-
     // -- CART --
-
-    @PostMapping("/review/{reviewId}/edit")
-    public String editReview(@PathVariable Long reviewId,
-            @RequestParam String content,
-            @RequestParam double rating,
-            Principal principal) {
-        Review review = reviewService.findById(reviewId);
-
-        if (review != null && principal != null) {
-            User user = resolveCurrentUser(principal);
-            if (user != null && review.getUser().getId().equals(user.getId())) {
-                review.setContent(content);
-                review.setRating(rating);
-                reviewService.save(review);
-                return "redirect:/product/" + review.getProduct().getId();
-            }
-        }
-        return "redirect:/";
-    }
-
-    @PostMapping("/review/{reviewId}/delete")
-    public String deleteReview(@PathVariable Long reviewId, Principal principal) {
-        Review review = reviewService.findById(reviewId);
-
-        if (review != null && principal != null) {
-            User user = resolveCurrentUser(principal);
-            if (user != null && review.getUser().getId().equals(user.getId())) {
-                Long productId = review.getProduct().getId();
-                reviewService.delete(reviewId);
-                return "redirect:/product/" + productId;
-            }
-        }
-        return "redirect:/";
-    }
 
     @GetMapping("/cart")
     public String cart() {
@@ -329,39 +254,6 @@ public class ShopController {
         Page<Order> p = orderService.findByUserPaged(user, page, ORDERS_PAGE_SIZE);
         model.addAttribute("orders", toOrdersData(p.getContent(), principal));
         return "fragments/orders";
-    }
-
-    @PostMapping("/review/add")
-    public String addReview(
-            @RequestParam Long productId,
-            @RequestParam double rating,
-            @RequestParam String content,
-            Principal principal) {
-
-        if (principal == null) {
-            return "redirect:/login";
-        }
-
-        User user = resolveCurrentUser(principal);
-        Product product = productService.findById(productId);
-
-        if (user != null && product != null) {
-            // Check if a review already exists for this user and product
-            Review existingReview = reviewService.findByProductIdAndUserId(productId, user.getId());
-
-            if (existingReview != null) {
-                // Update existing review
-                existingReview.setContent(content);
-                existingReview.setRating(rating);
-                reviewService.save(existingReview);
-            } else {
-                // Create new review
-                Review review = new Review(product, user, content, rating);
-                reviewService.save(review);
-            }
-        }
-
-        return "redirect:/order";
     }
 
     private List<Map<String, Object>> toOrdersData(List<Order> allOrders, Principal principal) {
