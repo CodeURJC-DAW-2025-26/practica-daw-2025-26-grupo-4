@@ -49,19 +49,15 @@ public class RecommendationController {
 
         // Recommendations + title
         if (principal != null) {
-            try {
-                Long userId = Long.parseLong(principal.getName());
-                var userOpt = userService.findById(userId);
-                if (userOpt.isPresent()) {
-                    model.addAttribute("recommendations",
-                            recommendationService.getRecommendations(userOpt.get(), RECOMMENDATION_LIMIT));
-                    model.addAttribute("recommendationTitle", "Recomendado para ti");
-                    model.addAttribute("recommendationSubtitle",
-                            "Basado en tus compras anteriores y tus preferencias");
-                } else {
-                    addBestsellers(model);
-                }
-            } catch (NumberFormatException e) {
+            var userOpt = userService.findByName(principal.getName());
+
+            if (userOpt.isPresent()) {
+                model.addAttribute("recommendations",
+                        recommendationService.getRecommendations(userOpt.get(), RECOMMENDATION_LIMIT));
+                model.addAttribute("recommendationTitle", "Recomendado para ti");
+                model.addAttribute("recommendationSubtitle",
+                        "Basado en tus compras anteriores y tus preferencias");
+            } else {
                 addBestsellers(model);
             }
         } else {

@@ -63,22 +63,52 @@ public class RecommendationService {
                 if (p == null) continue;
                 boughtIds.add(p.getId());
                 int qty = item.getQuantity();
-                for (String tag : p.getTags()) {
-                    tagFreq.merge(tag.toLowerCase(), qty, Integer::sum);
+                if (p.getTags() != null) {
+                    for (String tag : p.getTags()) {
+                        if (tag != null && !tag.isBlank()) {
+                            String normalizedTag = tag.toLowerCase();
+                            tagFreq.put(normalizedTag, tagFreq.getOrDefault(normalizedTag, 0) + qty);
+                        }
+                    }
                 }
                 if (p.getCategory() != null) {
-                    catFreq.merge(p.getCategory().getId(), qty, Integer::sum);
+                    Long categoryId = p.getCategory().getId();
+                    if (categoryId != null) {
+                        catFreq.put(categoryId, catFreq.getOrDefault(categoryId, 0) + qty);
+                    }
                 }
             }
         }
 
+        List<Long> preferredCategoryIds = new ArrayList<>(catFreq.keySet());
+        List<String> preferredTags = new ArrayList<>(tagFreq.keySet());
+        if (preferredCategoryIds.isEmpty() && preferredTags.isEmpty()) {
+            return getBestsellers(limit);
+        }
+
+        int candidatePoolSize = Math.max(limit * 10, 50);
+        List<Product> candidates = boughtIds.isEmpty()
+                ? productRepository.findRecommendationCandidatesWithoutExclusions(
+                        preferredCategoryIds,
+                        preferredTags,
+                        PageRequest.of(0, candidatePoolSize))
+                : productRepository.findRecommendationCandidates(
+                        new ArrayList<>(boughtIds),
+                        preferredCategoryIds,
+                        preferredTags,
+                        PageRequest.of(0, candidatePoolSize));
+
         // --- Step 2: score un-bought products ---
         Map<Product, Double> scores = new LinkedHashMap<>();
-        for (Product p : productRepository.findAll()) {
+        for (Product p : candidates) {
             if (boughtIds.contains(p.getId())) continue;
             double score = 0;
-            for (String tag : p.getTags()) {
-                score += tagFreq.getOrDefault(tag.toLowerCase(), 0) * 3.0;
+            if (p.getTags() != null) {
+                for (String tag : p.getTags()) {
+                    if (tag != null) {
+                        score += tagFreq.getOrDefault(tag.toLowerCase(), 0) * 3.0;
+                    }
+                }
             }
             if (p.getCategory() != null) {
                 score += catFreq.getOrDefault(p.getCategory().getId(), 0) * 2.0;
@@ -112,11 +142,18 @@ public class RecommendationService {
 
         // Pad with any products if bestsellers list is smaller than requested
         if (products.size() < limit) {
-            Set<Long> existing = products.stream().map(Product::getId).collect(Collectors.toSet());
-            productRepository.findAll().stream()
-                    .filter(p -> !existing.contains(p.getId()))
-                    .limit((long) limit - products.size())
-                    .forEach(products::add);
+            Set<Long> existing = products.stream()
+                    .map(Product::getId)
+                    .filter(java.util.Objects::nonNull)
+                    .collect(Collectors.toSet());
+            int missing = limit - products.size();
+            if (existing.isEmpty()) {
+                products.addAll(productRepository.findAllByOrderByIdAsc(PageRequest.of(0, missing)).getContent());
+            } else {
+                products.addAll(productRepository
+                        .findByIdNotInOrderByIdAsc(new ArrayList<>(existing), PageRequest.of(0, missing))
+                        .getContent());
+            }
         }
 
         return buildPacks(products);
@@ -140,7 +177,10 @@ public class RecommendationService {
         // Group by category id (use -1 for products without category)
         Map<Long, List<Product>> byCategory = new LinkedHashMap<>();
         for (Product p : products) {
-            Long catId = p.getCategory() != null ? p.getCategory().getId() : -1L;
+            Long catId = -1L;
+            if (p.getCategory() != null && p.getCategory().getId() != null) {
+                catId = p.getCategory().getId();
+            }
             byCategory.computeIfAbsent(catId, k -> new ArrayList<>()).add(p);
         }
 
