@@ -66,6 +66,8 @@ public class WebSecurityConfig {
 		http
 				.authorizeHttpRequests(authorize -> authorize
 						// PRIVATE ENDPOINTS
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/user/**").hasAnyRole("USER", "ADMIN")
 						// Products
                         .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasRole("ADMIN")
