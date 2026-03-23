@@ -16,7 +16,7 @@ import es.urjc.daw04.service.RecommendationService;
 import es.urjc.daw04.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 
-@Controller
+@Controller("webRecommendationController")
 public class RecommendationController {
 
     private static final int RECOMMENDATION_LIMIT = 6;

@@ -1,6 +1,8 @@
 services:
   web:
-    image: eduamongus/spring-webapp-compose:0.1.0
+    # image: eduamongus/spring-webapp-compose:0.1.0
+    # image: dariogarciagomez/spring-webapp:1.0
+    image: alvarosource/spring-webapp:1.0
     ports:
       - 8443:8443
     environment:
@@ -13,6 +15,8 @@ services:
 
   db:
     image: mysql:8.0
+    ports:
+      - 3307:3306
     environment:
       - MYSQL_ROOT_PASSWORD=Admin1234
       - MYSQL_DATABASE=plantazon_db

@@ -20,6 +20,10 @@ public class RecommendationPack {
         this.label = label;
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
+
     /** True when this pack contains more than one product (combo card). */
     public boolean isCombo() {
         return products.size() > 1;
