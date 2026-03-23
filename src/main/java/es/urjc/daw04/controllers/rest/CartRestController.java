@@ -24,7 +24,7 @@ import es.urjc.daw04.service.UserService;
 
 @RestController
 @RequestMapping("/api/v1/cart")
-public class CartController {
+public class CartRestController {
 
     @Autowired
     private CartService cartService;

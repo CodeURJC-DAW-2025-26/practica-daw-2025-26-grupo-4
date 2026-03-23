@@ -20,9 +20,9 @@ import es.urjc.daw04.model.dto.RecommendationResponseDTO;
 import es.urjc.daw04.model.RecommendationPack;
 import es.urjc.daw04.model.mapper.RecommendationMapper;
 
-@RestController("restRecommendationController")
+@RestController
 @RequestMapping("/api/v1/recommendations")
-public class RecommendationController {
+public class RecommendationRestController {
     private static final int RECOMMENDATION_LIMIT = 6;
 
     @Autowired

@@ -20,9 +20,9 @@ import es.urjc.daw04.model.mapper.ProductMapper;
 import es.urjc.daw04.service.CategoryService;
 import es.urjc.daw04.service.ProductService;
 
-@RestController("restHomeController")
-@RequestMapping({ "/api/home", "/api/home/" })
-public class HomeController {
+@RestController
+@RequestMapping({ "/api/v1/home"})
+public class HomeRestController {
 
 	private static final int HOME_PAGE_SIZE = 6;
 

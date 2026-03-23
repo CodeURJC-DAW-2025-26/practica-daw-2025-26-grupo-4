@@ -1,4 +1,4 @@
-package es.urjc.daw04.controllers;
+package es.urjc.daw04.controllers.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/v1/auth")
-public class LoginController {
+public class LoginRestController {
 	
 	@Autowired
 	private UserLoginService userService;

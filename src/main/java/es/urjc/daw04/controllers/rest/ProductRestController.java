@@ -37,7 +37,7 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 
 @RestController
 @RequestMapping("/api/v1/products")
-public class ProductController {
+public class ProductRestController {
 
     @Autowired
     private ProductService productService;

@@ -32,7 +32,7 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 
 @RestController
 @RequestMapping("/api/v1/reviews")
-public class ReviewController {
+public class ReviewRestController {
 
     @Autowired
     private ReviewService reviewService;
