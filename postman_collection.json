@@ -7,10 +7,201 @@
   "variable": [
     {
       "key": "base_url",
-      "value": "http://localhost:8080/api"
+      "value": "https://localhost:8443/api/v1"
     }
   ],
   "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"user\",\n  \"password\": \"pass\"\n}"
+            },
+            "url": "{{base_url}}/auth/login"
+          },
+          "response": []
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Test User\",\n  \"username\": \"testuser\",\n  \"email\": \"test@user.com\",\n  \"password\": \"pass\",\n  \"confirmPassword\": \"pass\"\n}"
+            },
+            "url": "{{base_url}}/auth/register"
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{base_url}}/auth/refresh"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{base_url}}/auth/logout"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/user"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Account",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newusername\",\n  \"fullName\": \"New Full Name\",\n  \"birthDate\": \"1990-01-01\"\n}"
+            },
+            "url": "{{base_url}}/user/account"
+          },
+          "response": []
+        },
+        {
+          "name": "Save Address",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"street\": \"Test Street\",\n  \"additional\": \"1A\",\n  \"city\": \"Test City\",\n  \"province\": \"Test Province\",\n  \"postalCode\": \"12345\",\n  \"country\": \"Test Country\",\n  \"phone\": \"123456789\"\n}"
+            },
+            "url": "{{base_url}}/user/address"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Address",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/user/address"
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"pass\",\n  \"newPassword\": \"newpass\",\n  \"confirmPassword\": \"newpass\"\n}"
+            },
+            "url": "{{base_url}}/user/password"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Home",
+      "item": [
+        {
+          "name": "Get Home",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/home?categoryId=1&q=test",
+              "host": ["{{base_url}}"],
+              "path": ["home"],
+              "query": [
+                {
+                  "key": "categoryId",
+                  "value": "1"
+                },
+                {
+                  "key": "q",
+                  "value": "test"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Home Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/home/products?categoryId=1&q=test&page=1",
+              "host": ["{{base_url}}"],
+              "path": ["home", "products"],
+              "query": [
+                {
+                  "key": "categoryId",
+                  "value": "1"
+                },
+                {
+                  "key": "q",
+                  "value": "test"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
     {
       "name": "Products",
       "item": [
@@ -48,7 +239,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Nuevo Producto\",\n  \"description\": \"Descripcion del producto\"\n}"
+              "raw": "{\n  \"name\": \"Nuevo Producto\",\n  \"price\": 10.5,\n  \"description\": \"Descripcion del producto\",\n  \"tags\": [\"tag1\", \"tag2\"],\n  \"categoryId\": 1\n}"
             },
             "url": "{{base_url}}/products/"
           },
@@ -66,7 +257,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Producto Actualizado\",\n  \"description\": \"Descripcion actualizada\"\n}"
+              "raw": "{\n  \"name\": \"Producto Actualizado\",\n  \"price\": 12.5,\n  \"description\": \"Descripcion actualizada\",\n  \"tags\": [\"tag2\"],\n  \"categoryId\": 1\n}"
             },
             "url": {
               "raw": "{{base_url}}/products/1",
@@ -85,6 +276,96 @@
               "raw": "{{base_url}}/products/1",
               "host": ["{{base_url}}"],
               "path": ["products", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "imageFile",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/products/1/images/",
+              "host": ["{{base_url}}"],
+              "path": ["products", "1", "images", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product Image",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/1/images/1",
+              "host": ["{{base_url}}"],
+              "path": ["products", "1", "images", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Images",
+      "item": [
+        {
+          "name": "Get Image DTO",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/images/1",
+              "host": ["{{base_url}}"],
+              "path": ["images", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Image Media",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/images/1/media",
+              "host": ["{{base_url}}"],
+              "path": ["images", "1", "media"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Replace Image Media",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "imageFile",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/images/1/media",
+              "host": ["{{base_url}}"],
+              "path": ["images", "1", "media"]
             }
           },
           "response": []
@@ -128,7 +409,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"content\": \"Excelente producto\",\n  \"rating\": 5\n}"
+              "raw": "{\n  \"content\": \"Excelente producto\",\n  \"rating\": 5,\n  \"productId\": 1\n}"
             },
             "url": "{{base_url}}/reviews/"
           },
@@ -230,6 +511,216 @@
             "method": "POST",
             "header": [],
             "url": "{{base_url}}/cart/checkout"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Get Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/orders"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/orders/1",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{base_url}}/orders"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Recommendations",
+      "item": [
+        {
+          "name": "Get Recommendations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/recommendations"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/users?page=0&size=5",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@test.com\",\n  \"fullName\": \"Test User\",\n  \"birthDate\": \"2000-01-01\",\n  \"shippingAddress\": \"Av test 123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/users/1",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ban User",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/users/1/ban",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users", "1", "ban"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unban User",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/users/1/unban",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users", "1", "unban"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/users/1",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/admin/categories"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nueva Categoria\",\n  \"icon\": \"icon-class\"\n}"
+            },
+            "url": "{{base_url}}/admin/categories"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Categoria Editada\",\n  \"icon\": \"new-icon-class\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/categories/1",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "categories", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/categories/1",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "categories", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/admin/stats"
           },
           "response": []
         }
