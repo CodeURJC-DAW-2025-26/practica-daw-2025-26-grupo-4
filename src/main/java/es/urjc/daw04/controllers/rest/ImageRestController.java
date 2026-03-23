@@ -21,7 +21,7 @@ import es.urjc.daw04.model.mapper.ImageMapper;
 import es.urjc.daw04.service.ImageService;
 
 @RestController
-@RequestMapping("/api/images")
+@RequestMapping("/api/v1/images")
 public class ImageRestController {
 
     @Autowired

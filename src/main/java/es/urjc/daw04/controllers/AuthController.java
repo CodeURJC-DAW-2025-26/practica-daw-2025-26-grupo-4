@@ -12,26 +12,22 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.CookieValue;
 
 import es.urjc.daw04.model.User;
-import es.urjc.daw04.repositories.UserRepository;
 import es.urjc.daw04.security.RepositoryUserDetailsService;
+import es.urjc.daw04.service.AuthRegistrationService;
 import es.urjc.daw04.service.CartService;
-import es.urjc.daw04.service.EmailService;
+import es.urjc.daw04.service.UserAccountService;
 import jakarta.transaction.Transactional;
 
 @Controller
 public class AuthController {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private UserAccountService userAccountService;
 
     @Autowired
     private RepositoryUserDetailsService userDetailsService;
@@ -40,7 +36,7 @@ public class AuthController {
     private CartService cartService;
 
     @Autowired
-    private EmailService emailService;
+    private AuthRegistrationService authRegistrationService;
 
     @GetMapping("/login")
     public String login(Model model, @RequestParam(required = false) String register) {
@@ -65,8 +61,7 @@ public class AuthController {
     public String user(Model model, @CookieValue(value = "cart", defaultValue = "") String cartContent,
             Principal principal, HttpServletRequest request) {
 
-        Long userId = Long.parseLong(principal.getName());
-        User user = userRepository.findById(userId).orElse(null);
+        User user = userAccountService.findCurrentUser(principal);
 
         if (user != null) {
             model.addAttribute("userName", user.getName() != null ? user.getName() : "Establecer nombre de usuario");
@@ -94,37 +89,12 @@ public class AuthController {
     public String register(@RequestParam String name, @RequestParam String username, @RequestParam String email,
             @RequestParam String password, @RequestParam(name = "confirm-password") String confirmPassword,
             Model model, HttpServletRequest request) {
-
-        // Validate that passwords match
-        if (!password.equals(confirmPassword)) {
-            model.addAttribute("error", "Las contraseñas no coinciden");
+        try {
+            authRegistrationService.registerUser(name, username, email, password, confirmPassword);
+        } catch (IllegalArgumentException ex) {
+            model.addAttribute("error", ex.getMessage());
             return "login";
         }
-
-        // Validate that the username is not already taken
-        if (userRepository.findByName(username).isPresent()) {
-            model.addAttribute("error", "El nombre de usuario ya está en uso");
-            return "login";
-        }
-
-        // Validate that the email is not already registered
-        if (userRepository.findByEmail(email).isPresent()) {
-            model.addAttribute("error", "El email ya está registrado");
-            return "login";
-        }
-
-        // Create new user
-        User newUser = new User();
-        newUser.setName(username);
-        newUser.setEmail(email);
-        newUser.setFullName(name);
-        newUser.setEncodedPassword(passwordEncoder.encode(password));
-        newUser.setRoles(java.util.List.of("USER"));
-
-        userRepository.save(newUser);
-
-        // Send welcome email
-        emailService.sendWelcomeEmail(email, name);
 
         // Auto-login the user
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -162,35 +132,13 @@ public class AuthController {
             return "redirect:/login";
         }
 
-        Long userId = Long.parseLong(principal.getName());
-        System.out.println("User ID: " + userId);
-
-        User user = userRepository.findById(userId).orElse(null);
-
-        if (user != null && street != null && !street.isEmpty()) {
-
-            // Build the address as plain text
-            StringBuilder addressBuilder = new StringBuilder();
-            addressBuilder.append(street);
-            if (additional != null && !additional.isEmpty()) {
-                addressBuilder.append("\n").append(additional);
-            }
-            if (city != null && province != null && postalCode != null) {
-                addressBuilder.append("\n").append(city).append(", ")
-                        .append(province).append(" ")
-                        .append(postalCode);
-            }
-            if (country != null) {
-                addressBuilder.append("\n").append(country);
-            }
-            if (phone != null) {
-                addressBuilder.append("\nTeléfono: ").append(phone);
-            }
-
-            user.setShippingAddress(addressBuilder.toString());
-            userRepository.save(user);
+        try {
+            userAccountService.saveAddress(principal, street, additional, city, province, postalCode, country, phone, false);
             System.out.println("Address saved successfully");
-        } else {
+        } catch (IllegalArgumentException ex) {
+            if (isUnauthenticated(ex.getMessage())) {
+                return "redirect:/login";
+            }
             System.out.println("User is null or street is empty");
         }
 
@@ -201,12 +149,12 @@ public class AuthController {
     @Transactional
     @PostMapping("/user/address/delete")
     public String deleteAddress(Principal principal) {
-        Long userId = Long.parseLong(principal.getName());
-        User user = userRepository.findById(userId).orElse(null);
-
-        if (user != null) {
-            user.setShippingAddress(null);
-            userRepository.save(user);
+        try {
+            userAccountService.deleteAddress(principal);
+        } catch (IllegalArgumentException ex) {
+            if (isUnauthenticated(ex.getMessage())) {
+                return "redirect:/login";
+            }
         }
 
         return "redirect:/user";
@@ -223,31 +171,19 @@ public class AuthController {
             @CookieValue(value = "cart", defaultValue = "") String cartContent,
             HttpServletRequest request) {
 
-        Long userId = Long.parseLong(principal.getName());
-        User user = userRepository.findById(userId).orElse(null);
-
-        // Validate that the old password is correct
-        if (!passwordEncoder.matches(oldPassword, user.getEncodedPassword())) {
-            addUserAttributesToModel(model, user, cartContent, request, "La contraseña antigua es incorrecta");
+        try {
+            userAccountService.changePassword(principal, oldPassword, newPassword, confirmPassword);
+        } catch (IllegalArgumentException ex) {
+            if (isUnauthenticated(ex.getMessage())) {
+                return "redirect:/login";
+            }
+            User user = userAccountService.findCurrentUser(principal);
+            if (user == null) {
+                return "redirect:/login";
+            }
+            addUserAttributesToModel(model, user, cartContent, request, ex.getMessage());
             return "user";
         }
-
-        // Validate that the new password and confirmation match
-        if (!newPassword.equals(confirmPassword)) {
-            addUserAttributesToModel(model, user, cartContent, request, "Las nuevas contraseñas no coinciden");
-            return "user";
-        }
-
-        // Validate that the new password differs from the old one
-        if (oldPassword.equals(newPassword)) {
-            addUserAttributesToModel(model, user, cartContent, request,
-                    "La nueva contraseña debe ser diferente a la antigua");
-            return "user";
-        }
-
-        // Encrypt and save the new password
-        user.setEncodedPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
 
         // Redirect on success
         return "redirect:/user?passwordSuccess=true";
@@ -286,40 +222,25 @@ public class AuthController {
             return "redirect:/login";
         }
 
-        Long userId = Long.parseLong(principal.getName());
-        User user = userRepository.findById(userId).orElse(null);
-
-        if (user == null) {
-            return "redirect:/login";
-        }
-
-        // Validate and update username if different
-        if (username != null && !username.isEmpty() && !username.equals(user.getName())) {
-            // Check if new username is already in use
-            if (userRepository.findByName(username).isPresent()) {
-                addUserAttributesToModel(model, user, cartContent, request, "El nombre de usuario ya está en uso");
-                return "user";
+        try {
+            userAccountService.updateAccount(principal, username, fullName, birthDate, false);
+        } catch (IllegalArgumentException ex) {
+            if (isUnauthenticated(ex.getMessage())) {
+                return "redirect:/login";
             }
-            user.setName(username);
-        }
-
-        // Update full name if it doesn't contain "Establecer"
-        if (fullName != null && !fullName.isEmpty() && !fullName.startsWith("Establecer")) {
-            user.setFullName(fullName);
-        }
-
-        // Update birth date if not empty
-        if (birthDate != null && !birthDate.isEmpty()) {
-            try {
-                user.setBirthDate(java.time.LocalDate.parse(birthDate));
-            } catch (Exception e) {
-                // Ignore if format is invalid
+            User user = userAccountService.findCurrentUser(principal);
+            if (user == null) {
+                return "redirect:/login";
             }
+            addUserAttributesToModel(model, user, cartContent, request, ex.getMessage());
+            return "user";
         }
-
-        userRepository.save(user);
 
         return "redirect:/user";
+    }
+
+    private boolean isUnauthenticated(String message) {
+        return "Usuario no autenticado".equals(message);
     }
 
 }

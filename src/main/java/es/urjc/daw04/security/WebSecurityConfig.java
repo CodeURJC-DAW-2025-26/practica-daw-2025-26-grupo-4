@@ -60,22 +60,24 @@ public class WebSecurityConfig {
 		http.authenticationProvider(authenticationProvider());
 
 		http
-				.securityMatcher("/api/**")
+                .securityMatcher("/api/v1/**")
 				.exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandlerJwt));
 
 		http
 				.authorizeHttpRequests(authorize -> authorize
 						// PRIVATE ENDPOINTS
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/user/**").hasAnyRole("USER", "ADMIN")
 						// Products
-						.requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasRole("ADMIN")
 						// Reviews
-						.requestMatchers(HttpMethod.POST, "/api/reviews/**").hasRole("USER")
-						.requestMatchers(HttpMethod.PUT, "/api/reviews/**").hasRole("USER")
-						.requestMatchers(HttpMethod.DELETE, "/api/reviews/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/reviews/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/reviews/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/reviews/**").hasAnyRole("USER", "ADMIN")
                         // Cart
-                        .requestMatchers("/api/cart/**").hasRole("USER")
+                        .requestMatchers("/api/v1/cart/**").hasRole("USER")
 						// PUBLIC ENDPOINTS
 						.anyRequest().permitAll());
 

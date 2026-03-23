@@ -6,9 +6,12 @@ import org.springframework.web.bind.annotation.RestController;
 import es.urjc.daw04.model.Image;
 import es.urjc.daw04.model.Product;
 import es.urjc.daw04.model.dto.ImageDTO;
+import es.urjc.daw04.model.dto.ProductCreateRequestDTO;
 import es.urjc.daw04.model.dto.ProductDTO;
+import es.urjc.daw04.model.dto.ProductUpdateRequestDTO;
 import es.urjc.daw04.model.mapper.ImageMapper;
 import es.urjc.daw04.model.mapper.ProductMapper;
+import es.urjc.daw04.service.CategoryService;
 import es.urjc.daw04.service.ImageService;
 import es.urjc.daw04.service.ProductService;
 
@@ -33,7 +36,7 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
     @Autowired
@@ -48,6 +51,9 @@ public class ProductController {
     @Autowired
     private ImageMapper imageMapper;
 
+    @Autowired
+    private CategoryService categoryService;
+
     @GetMapping("/")
     public Page<ProductDTO> getProducts(Pageable pageable) {
         return productService.findAll(pageable).map(productMapper::toDTO);
@@ -60,7 +66,13 @@ public class ProductController {
     }
     
     @PostMapping("/")
-    public ResponseEntity<ProductDTO> postProduct(@RequestBody Product product) {
+    public ResponseEntity<ProductDTO> postProduct(@RequestBody ProductCreateRequestDTO request) {
+        Product product = new Product(
+            request.name(),
+            request.price() != null ? request.price() : 0.0,
+            request.description() != null ? request.description() : "",
+            request.tags() != null ? request.tags() : java.util.List.of());
+        applyProductRequest(product, request.name(), request.price(), request.description(), request.tags(), request.categoryId());
         product = productService.save(product);
         ProductDTO productDTO = productMapper.toDTO(product);
         
@@ -70,8 +82,10 @@ public class ProductController {
     }
     
     @PutMapping("/{id}")
-    public ProductDTO updateProduct(@PathVariable long id, @RequestBody Product product) {
-        Product updatedProduct = productService.update(id, product);
+    public ProductDTO updateProduct(@PathVariable long id, @RequestBody ProductUpdateRequestDTO request) {
+        Product existingProduct = productService.findById(id);
+        applyProductRequest(existingProduct, request.name(), request.price(), request.description(), request.tags(), request.categoryId());
+        Product updatedProduct = productService.save(existingProduct);
         return productMapper.toDTO(updatedProduct);
     }
 
@@ -98,7 +112,7 @@ public class ProductController {
         Image persistedImage = product.getImages().get(product.getImages().size() - 1);
 
         URI location = fromCurrentContextPath()
-                .path("/api/images/{imageId}/media")
+            .path("/api/v1/images/{imageId}/media")
                 .buildAndExpand(persistedImage.getId())
                 .toUri();
 
@@ -114,5 +128,20 @@ public class ProductController {
         imageService.deleteImage(imageId);
 
         return imageMapper.toDTO(image);
+    }
+
+    private void applyProductRequest(Product product, String name, Double price, String description, java.util.List<String> tags,
+            Long categoryId) {
+        product.setName(name);
+        product.setPrice(price != null ? price : 0.0);
+        product.setDescription(description != null ? description : "");
+        product.setTags(tags != null ? tags : java.util.List.of());
+
+        if (categoryId == null) {
+            product.setCategory(null);
+            return;
+        }
+
+        categoryService.findById(categoryId).ifPresent(product::setCategory);
     }
 }

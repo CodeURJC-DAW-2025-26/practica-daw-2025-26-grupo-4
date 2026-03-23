@@ -21,7 +21,7 @@ import es.urjc.daw04.model.RecommendationPack;
 import es.urjc.daw04.model.mapper.RecommendationMapper;
 
 @RestController("restRecommendationController")
-@RequestMapping("/api/recommendations")
+@RequestMapping("/api/v1/recommendations")
 public class RecommendationController {
     private static final int RECOMMENDATION_LIMIT = 6;
 

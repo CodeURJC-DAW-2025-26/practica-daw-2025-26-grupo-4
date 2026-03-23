@@ -23,7 +23,7 @@ import es.urjc.daw04.service.OrderService;
 import es.urjc.daw04.service.UserService;
 
 @RestController
-@RequestMapping("/api/cart")
+@RequestMapping("/api/v1/cart")
 public class CartController {
 
     @Autowired
