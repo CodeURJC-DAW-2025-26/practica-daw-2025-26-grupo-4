@@ -7,10 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -72,7 +70,6 @@ public class AdminRestController {
     }
 
     @PutMapping("/users/{id}")
-    @Transactional
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody AdminUserUpdateRequestDTO request) {
         User user = userService.findById(id).orElse(null);
         if (user == null) {
@@ -109,8 +106,7 @@ public class AdminRestController {
         return ResponseEntity.ok(toAdminUserDTO(user));
     }
 
-    @PatchMapping("/users/{id}/ban")
-    @Transactional
+    @PutMapping("/users/{id}/ban")
     public ResponseEntity<?> banUser(@PathVariable Long id) {
         User user = userService.findById(id).orElse(null);
         if (user == null) {
@@ -126,8 +122,7 @@ public class AdminRestController {
         return ResponseEntity.ok(toAdminUserDTO(user));
     }
 
-    @PatchMapping("/users/{id}/unban")
-    @Transactional
+    @PutMapping("/users/{id}/unban")
     public ResponseEntity<?> unbanUser(@PathVariable Long id) {
         User user = userService.findById(id).orElse(null);
         if (user == null) {
@@ -144,7 +139,6 @@ public class AdminRestController {
     }
 
     @DeleteMapping("/users/{id}")
-    @Transactional
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         User user = userService.findById(id).orElse(null);
         if (user == null) {
@@ -165,7 +159,6 @@ public class AdminRestController {
     }
 
     @PostMapping("/categories")
-    @Transactional
     public ResponseEntity<?> createCategory(@RequestBody AdminCategoryRequestDTO request) {
         if (request.name() == null || request.name().isBlank()) {
             return ResponseEntity.badRequest().body(new ErrorResponseDTO("El nombre de la categoría es obligatorio"));
@@ -180,7 +173,6 @@ public class AdminRestController {
     }
 
     @PutMapping("/categories/{id}")
-    @Transactional
     public ResponseEntity<?> updateCategory(@PathVariable Long id, @RequestBody AdminCategoryRequestDTO request) {
         Category category = categoryService.findById(id).orElse(null);
         if (category == null) {
@@ -201,7 +193,6 @@ public class AdminRestController {
     }
 
     @DeleteMapping("/categories/{id}")
-    @Transactional
     public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
         try {
             categoryService.deleteById(id);
