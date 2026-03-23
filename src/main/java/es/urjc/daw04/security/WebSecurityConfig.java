@@ -78,6 +78,10 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/reviews/**").hasAnyRole("USER", "ADMIN")
                         // Cart
                         .requestMatchers("/api/v1/cart/**").hasRole("USER")
+                        // Orders
+                        .requestMatchers("/api/v1/orders/**").hasRole("USER")
+                        // Recommendations
+                        .requestMatchers("/api/v1/recommendations/**").hasRole("USER")
 						// PUBLIC ENDPOINTS
 						.anyRequest().permitAll());
 
