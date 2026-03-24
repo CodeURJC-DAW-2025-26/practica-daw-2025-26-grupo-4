@@ -1,4 +1,4 @@
-package es.urjc.daw04.controllers;
+package es.urjc.daw04.controllers.web;
 
 import java.security.Principal;
 
