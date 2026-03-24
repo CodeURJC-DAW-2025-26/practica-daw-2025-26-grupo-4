@@ -266,7 +266,7 @@ Responsable de seguridad, autenticación, usuarios y control de acceso.
 ## 🛠 **Práctica 2: Incorporación de una API REST a la aplicación web, despliegue con Docker y despliegue remoto**
 
 ### **Vídeo de Demostración**
-📹 **[Enlace al vídeo en YouTube](https://www.youtube.com/watch?v=x91MPoITQ3I)**
+📹 **[Enlace al vídeo en YouTube]([https://www.youtube.com/watch?v=x91MPoITQ3I](https://youtu.be/Gs_mfhSoGpQ))**
 > Vídeo mostrando las principales funcionalidades de la aplicación web.
 
 ### **Documentación de la API REST**
@@ -359,19 +359,19 @@ Diagrama actualizado incluyendo los @RestController y su relación con los @Serv
 
 1. **Conectar a la máquina virtual**:
    ```bash
-   ssh -i [ruta/a/clave.key] [usuario]@[IP-o-dominio-VM]
+   ssh -i ssh-keys/appWeb04.key vmuser@10.100.139.52
    ```
    
    Ejemplo:
    ```bash
-   ssh -i ssh-keys/app.key vmuser@10.100.139.XXX
+   ssh -i ssh-keys/appWeb04.key vmuser@appWeb04.dawgis.etsii.urjc.es
    ```
 
 2. **AQUÍ LOS SIGUIENTES PASOS**:
 
 ### **URL de la Aplicación Desplegada**
 
-🌐 **URL de acceso**: `https://[nombre-app].etsii.urjc.es:8443`
+🌐 **URL de acceso**: `https://10.100.139.52:8443/`
 
 #### **Credenciales de Usuarios de Ejemplo**
 
