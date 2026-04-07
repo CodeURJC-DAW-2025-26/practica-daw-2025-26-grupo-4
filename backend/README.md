@@ -266,7 +266,7 @@ Responsable de seguridad, autenticación, usuarios y control de acceso.
 ## 🛠 **Práctica 2: Incorporación de una API REST a la aplicación web, despliegue con Docker y despliegue remoto**
 
 ### **Vídeo de Demostración**
-📹 **[Enlace al vídeo en YouTube](https://www.youtube.com/watch?v=x91MPoITQ3I)**
+📹 **[Enlace al vídeo en YouTube]([https://www.youtube.com/watch?v=x91MPoITQ3I](https://youtu.be/Gs_mfhSoGpQ))**
 > Vídeo mostrando las principales funcionalidades de la aplicación web.
 
 ### **Documentación de la API REST**
@@ -275,7 +275,7 @@ Responsable de seguridad, autenticación, usuarios y control de acceso.
 📄 **[Especificación OpenAPI (YAML)](/api-docs/api-docs.yaml)**
 
 #### **Documentación HTML**
-📖 **[Documentación API REST (HTML)](https://raw.githack.com/[usuario]/[repositorio]/main/api-docs/api-docs.html)**
+📖 **[Documentación API REST (HTML)](api-docs/api-docs.html)**
 
 > La documentación de la API REST se encuentra en la carpeta `/api-docs` del repositorio. Se ha generado automáticamente con SpringDoc a partir de las anotaciones en el código Java.
 
@@ -299,7 +299,22 @@ Diagrama actualizado incluyendo los @RestController y su relación con los @Serv
    cd [repositorio]
    ```
 
-2. **AQUÍ LOS SIGUIENTES PASOS**:
+2. **Ejecutar la aplicación con Docker Compose**:
+   ```bash
+   cd docker
+   docker compose pull
+   docker compose up -d
+   ```
+
+3. **Comprobar que los contenedores están levantados**:
+   ```bash
+   docker compose ps
+   ```
+
+4. **Parar y eliminar los contenedores al terminar**:
+   ```bash
+   docker compose down
+   ```
 
 ### **Construcción de la Imagen Docker**
 
@@ -313,7 +328,25 @@ Diagrama actualizado incluyendo los @RestController y su relación con los @Serv
    cd docker
    ```
 
-2. **AQUÍ LOS SIGUIENTES PASOS**
+2. **Iniciar sesión en DockerHub**:
+   ```bash
+   docker login -u [usuario_dockerhub]
+   ```
+
+3. **Construir la imagen local**:
+   ```bash
+   ./create_image.sh [nombre_imagen] [tag]
+   ```
+
+4. **Publicar la imagen en DockerHub**:
+   ```bash
+   ./publish_image.sh [usuario_dockerhub] [nombre_imagen] [tag]
+   ```
+
+5. **Publicar el docker-compose como OCI Artifact**:
+   ```bash
+   ./publish_docker-compose.sh [usuario_dockerhub] [nombre_repositorio_compose] [tag]
+   ```
 
 ### **Despliegue en Máquina Virtual**
 
@@ -326,27 +359,26 @@ Diagrama actualizado incluyendo los @RestController y su relación con los @Serv
 
 1. **Conectar a la máquina virtual**:
    ```bash
-   ssh -i [ruta/a/clave.key] [usuario]@[IP-o-dominio-VM]
+   ssh -i ssh-keys/appWeb04.key vmuser@10.100.139.52
    ```
    
    Ejemplo:
    ```bash
-   ssh -i ssh-keys/app.key vmuser@10.100.139.XXX
+   ssh -i ssh-keys/appWeb04.key vmuser@appWeb04.dawgis.etsii.urjc.es
    ```
 
 2. **AQUÍ LOS SIGUIENTES PASOS**:
 
 ### **URL de la Aplicación Desplegada**
 
-🌐 **URL de acceso**: `https://[nombre-app].etsii.urjc.es:8443`
+🌐 **URL de acceso**: `https://10.100.139.52:8443/`
 
 #### **Credenciales de Usuarios de Ejemplo**
 
 | Rol | Usuario | Contraseña |
 |:---|:---|:---|
-| Administrador | admin | admin123 |
-| Usuario Registrado | user1 | user123 |
-| Usuario Registrado | user2 | user123 |
+| Administrador | admin | admin |
+| Usuario Registrado | user | user |
 
 ### **Participación de Miembros en la Práctica 2**
 

@@ -1,0 +1,87 @@
+1
+00:00:00,000 --> 00:01:25,000
+crear imagen
+
+2
+00:01:25,000 --> 00:01:40,000
+publicar imagen
+
+3
+00:01:40,000 --> 00:03:20,000
+publicar oci
+
+4
+00:03:20,000 --> 00:04:45,000
+iniciar máquina virtual con SSH
+
+5
+00:04:45,000 --> 00:07:00,000
+descarga Docker en máquina
+
+6
+00:07:00,000 --> 00:08:52,000
+Docker en máquina virtual sin datos
+
+7
+00:08:52,000 --> 00:11:15,000
+Docker en máquina virtual con datos
+
+8
+00:11:15,000 --> 00:11:50,000
+variables de Postman
+
+9
+00:11:50,000 --> 00:12:20,000
+buscador y paginación
+
+10
+00:12:20,000 --> 00:12:50,000
+registro user
+
+11
+00:12:50,000 --> 00:13:30,000
+login user
+
+12
+00:13:30,000 --> 00:14:25,000
+cambio de imagen
+
+13
+00:14:25,000 --> 00:15:20,000
+añadir carrito y cantidad
+
+14
+00:15:20,000 --> 00:15:35,000
+buscar productos
+
+15
+00:15:35,000 --> 00:16:00,000
+añadir pedido (depende de carrito)
+
+16
+00:16:00,000 --> 00:16:30,000
+buscar carrito
+
+17
+00:16:30,000 --> 00:16:45,000
+buscar pedido tuyo (200 ok)
+
+18
+00:16:45,000 --> 00:17:00,000
+buscar pedido ajeno (503 forbidden)
+
+19
+00:17:00,000 --> 00:18:30,000
+eliminar producto no Admin (503 forbidden)
+
+20
+00:18:30,000 --> 00:19:20,000
+eliminar producto Admin (500 error)
+
+21
+00:19:20,000 --> 00:20:35,000
+estadísticas y gráficas
+
+22
+00:20:35,000 --> 00:21:00,000
+documentación API

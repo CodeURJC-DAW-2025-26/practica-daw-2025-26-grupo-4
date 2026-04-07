@@ -91,7 +91,8 @@ public class CartRestController {
         if (principal == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        Long userId = Long.parseLong(principal.getName());
-        return userService.findById(userId).orElseThrow();
+        
+        return userService.findByName(principal.getName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
     }
 }
