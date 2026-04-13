@@ -22,9 +22,30 @@ export async function getProducts(
     throw new Error("Failed to fetch products");
   }
   
-  // Spring Data returns a 'Page' object. Return the full object
-  // with the "content" (list of items) and "last" (boolean) properties for pagination.
-  return await res.json();
+  const data = await res.json();
+
+  // Depending on whether we hit a normal endpoint or a Spring Data pagination one:
+  // Spring Boot 3 returns pagination with the "page" object, not "last" natively.
+  if (data.page) {
+    return {
+      content: data.content || [],
+      last: data.page.number >= data.page.totalPages - 1
+    };
+  }
+
+  // If it returns the hasMore format (in case HomeProductsResponseDTO is used in the future)
+  if (data.hasMore !== undefined) {
+    return {
+      content: data.products || data.content || [],
+      last: !data.hasMore
+    };
+  }
+
+  // Fallback if it brings "last" directly or another scenario
+  return {
+    content: data.content || [],
+    last: data.last !== undefined ? data.last : true
+  };
 }
 
 export async function getProduct(id: number): Promise<ProductDTO> {

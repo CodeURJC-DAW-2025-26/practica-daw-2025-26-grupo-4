@@ -3,6 +3,8 @@ import { getProducts } from "~/services/products-service";
 import { Link, Form } from "react-router";
 import { useCallback } from "react";
 import { useInfiniteScroll } from "~/hooks/useInfiniteScroll";
+import { Header } from "~/components/header";
+import { Footer } from "~/components/footer";
 
 import "~/styles/tokens.css";
 import "~/styles/components.css";
@@ -48,6 +50,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="app-container">
+      <Header />
 
       <div className="content-row">
         <div className="sidebar-column">
@@ -128,6 +131,8 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           </div>
         </main>
       </div>
+
+      <Footer />
     </div>
   );
 }
