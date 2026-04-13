@@ -1,6 +1,8 @@
 import type { Route } from "./+types/home";
 import { getProducts } from "~/services/products-service";
 import { Link, Form } from "react-router";
+import { useCallback } from "react";
+import { useInfiniteScroll } from "~/hooks/useInfiniteScroll";
 
 import "~/styles/tokens.css";
 import "~/styles/components.css";
@@ -13,13 +15,36 @@ export function links(): Route.LinkDescriptors {
   ];
 }
 
-export async function clientLoader({}: Route.ClientLoaderArgs) {
-  const products = await getProducts();
-  return { products };
+export async function clientLoader({ request }: Route.ClientLoaderArgs) {
+  const url = new URL(request.url);
+  const q = url.searchParams.get("q");
+  const categoryId = url.searchParams.get("categoryId");
+
+  // Load the first page (0) with 9 items
+  const initialPage = await getProducts(0, 9, q, categoryId);
+  return { initialPage, q, categoryId };
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const products = loaderData?.products || [];
+  const { initialPage, q, categoryId } = loaderData;
+
+  // Encapsulate the dynamic product request in a callback
+  const fetchMoreProducts = useCallback(
+    (pageIdx: number) => getProducts(pageIdx, 9, q, categoryId),
+    [q, categoryId]
+  );
+
+  // Reuse the custom hook:
+  const {
+    items: products,
+    loading,
+    hasMore,
+    observerTarget
+  } = useInfiniteScroll(
+    fetchMoreProducts,
+    initialPage,
+    [initialPage, q, categoryId] // Reset when initialPage changes
+  );
 
   return (
     <div className="app-container">
@@ -60,7 +85,10 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                   <div className="product-card" key={product.id}>
                     <Link to={`/product/${product.id}`}>
                       <div className="image-container">
-                        <img src={product.mainImage} alt={product.name} />
+                        <img 
+                          src={product.images?.[0]?.url} 
+                          alt={product.name} 
+                        />
                       </div>
                       <div className="card-details">
                         <h3>{product.name}</h3>
@@ -88,10 +116,15 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               )}
             </div>
 
-            <div id="products-sentinel" className="scroll-sentinel"></div>
-            <div id="products-spinner" className="scroll-spinner">
-              <i className="fa-solid fa-spinner"></i> Cargando más productos...
-            </div>
+            <div id="products-sentinel" className="scroll-sentinel" ref={observerTarget}></div>
+            {loading && (
+              <div id="products-spinner" className="scroll-spinner" style={{ display: 'flex' }}>
+                <i className="fa-solid fa-spinner"></i> Cargando más productos...
+              </div>
+            )}
+            {!hasMore && products.length > 0 && (
+              <p style={{ textAlign: 'center', marginTop: '20px', color: 'gray' }}>No hay más productos.</p>
+            )}
           </div>
         </main>
       </div>

@@ -4,16 +4,27 @@ import type { ProductDTO } from "~/api/dtos";
 
 const API_URL = "/api/v1/products/";
 
-export async function getProducts(): Promise<ProductDTO[]> {
-  const res = await fetch(API_URL);
+export async function getProducts(
+  page: number = 0,
+  size: number = 9,
+  q?: string | null,
+  categoryId?: string | null
+): Promise<any> {
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    size: size.toString(),
+  });
+  if (q) queryParams.append("q", q);
+  if (categoryId) queryParams.append("categoryId", categoryId);
+
+  const res = await fetch(`${API_URL}?${queryParams.toString()}`);
   if (!res.ok) {
     throw new Error("Failed to fetch products");
   }
-  const data = await res.json();
-  if (data.content && Array.isArray(data.content)) {
-    return data.content;
-  }
-  return data;
+  
+  // Spring Data returns a 'Page' object. Return the full object
+  // with the "content" (list of items) and "last" (boolean) properties for pagination.
+  return await res.json();
 }
 
 export async function getProduct(id: number): Promise<ProductDTO> {
