@@ -9,6 +9,7 @@ import { Footer } from "~/components/footer";
 import "~/styles/tokens.css";
 import "~/styles/components.css";
 import "~/styles/home.css";
+import { getCategories } from "~/services/category-service";
 
 export function links(): Route.LinkDescriptors {
   return [
@@ -20,15 +21,21 @@ export function links(): Route.LinkDescriptors {
 export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
-  const categoryId = url.searchParams.get("categoryId");
+  let categoryId = url.searchParams.get("categoryId");
+
+  const categories = await getCategories();
+
+  if (!categoryId && categories && categories.length > 0) {
+    categoryId = String(categories[0].id);
+  }
 
   // Load the first page (0) with 9 items
   const initialPage = await getProducts(0, 9, q, categoryId);
-  return { initialPage, q, categoryId };
+  return { initialPage, q, categoryId, categories };
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { initialPage, q, categoryId } = loaderData;
+  const { initialPage, q, categoryId, categories } = loaderData;
 
   // Encapsulate the dynamic product request in a callback
   const fetchMoreProducts = useCallback(
@@ -57,16 +64,18 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           <aside className="sidebar">
             <h3 className="menu-title">Categorías</h3>
             <nav className="menu">
-              <Link to="/?categoryId=1" className="menu-item">
-                <i className="fa-solid fa-leaf"></i> Plantas de Interior
-              </Link>
-              <Link to="/?categoryId=2" className="menu-item">
-                <i className="fa-solid fa-tree"></i> Plantas de Exterior
-              </Link>
-              <hr className="menu-divider" />
-              <Link to="/recommendations" className="menu-item menu-item--rec">
-                <i className="fa-solid fa-wand-magic-sparkles"></i> Recomendaciones
-              </Link>
+              {categories.map((category: any) => {
+                const isActive = categoryId === String(category.id);
+                return (
+                  <Link 
+                    to={`/?categoryId=${category.id}`} 
+                    className={`menu-item ${isActive ? "active" : ""}`} 
+                    key={category.id}
+                  >
+                    <i className={`fa-solid ${category.icon}`}></i> {category.name}
+                  </Link>
+                );
+              })}
             </nav>
           </aside>
         </div>

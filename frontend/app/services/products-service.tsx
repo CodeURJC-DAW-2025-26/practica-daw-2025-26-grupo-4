@@ -12,12 +12,21 @@ export async function getProducts(
 ): Promise<any> {
   const queryParams = new URLSearchParams({
     page: page.toString(),
-    size: size.toString(),
   });
+
+  // Decide which endpoint to use. If filtering by category or query, 
+  // utilize the endpoint exposed by HomeRestController.
+  const isFiltering = Boolean(q) || Boolean(categoryId);
+  const endpoint = isFiltering ? "/api/v1/home/products" : API_URL;
+
+  if (!isFiltering) {
+    queryParams.append("size", size.toString());
+  }
+
   if (q) queryParams.append("q", q);
   if (categoryId) queryParams.append("categoryId", categoryId);
 
-  const res = await fetch(`${API_URL}?${queryParams.toString()}`);
+  const res = await fetch(`${endpoint}?${queryParams.toString()}`);
   if (!res.ok) {
     throw new Error("Failed to fetch products");
   }
