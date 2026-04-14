@@ -16,6 +16,6 @@ public interface ImageMapper {
     @Named("idToUrl")
     default String idToUrl(Long id) {
         if (id == null) return null;
-        return "/api/images/" + id + "/media";
+        return "/api/v1/images/" + id + "/media";
     }
 }
