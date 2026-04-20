@@ -1,9 +1,28 @@
+import { useEffect, useState } from "react";
 import { selectIsGlobalLoading, useGlobalLoadingStore } from "~/stores/global-loading-store";
+
+const SPINNER_DELAY_MS = 350;
 
 export function GlobalSpinner() {
   const isLoading = useGlobalLoadingStore(selectIsGlobalLoading);
+  const [isVisible, setIsVisible] = useState(false);
 
-  if (!isLoading) {
+  useEffect(() => {
+    if (!isLoading) {
+      setIsVisible(false);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setIsVisible(true);
+    }, SPINNER_DELAY_MS);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [isLoading]);
+
+  if (!isVisible) {
     return null;
   }
 
