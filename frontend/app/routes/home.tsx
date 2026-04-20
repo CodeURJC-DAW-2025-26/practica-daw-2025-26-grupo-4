@@ -10,6 +10,7 @@ import "~/styles/tokens.css";
 import "~/styles/components.css";
 import "~/styles/home.css";
 import { getCategories } from "~/services/category-service";
+import { getRecommendations } from "~/services/recommendation-service";
 
 export function links(): Route.LinkDescriptors {
   return [
@@ -31,11 +32,28 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 
   // Load the first page (0) with 9 items
   const initialPage = await getProducts(0, 9, q, categoryId);
-  return { initialPage, q, categoryId, categories };
+
+  // Recommendations logic matching backends logic for root page
+  let popularProducts = [];
+  if (!q && !url.searchParams.get("categoryId")) {
+    try {
+      const recRes = await getRecommendations();
+      // On the home page we only want singles (singleProduct == true) to simulate best-sellers in the top row
+      // We will map their singleProduct directly.
+      popularProducts = recRes.recommendations
+        .filter((item: any) => !item.isCombo && item.products?.length > 0)
+        .map((item: any) => item.products[0])
+        .slice(0, 3);
+    } catch (e) {
+      console.error("Failed to fetch recommendations", e);
+    }
+  }
+
+  return { initialPage, q, categoryId, categories, popularProducts };
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { initialPage, q, categoryId, categories } = loaderData;
+  const { initialPage, q, categoryId, categories, popularProducts } = loaderData;
 
   // Encapsulate the dynamic product request in a callback
   const fetchMoreProducts = useCallback(
@@ -69,13 +87,17 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                 return (
                   <Link 
                     to={`/?categoryId=${category.id}`} 
-                    className={`menu-item ${isActive ? "active" : ""}`} 
+                    className={`menu-item ${isActive ? "menu-item--active" : ""}`} 
                     key={category.id}
                   >
                     <i className={`fa-solid ${category.icon}`}></i> {category.name}
                   </Link>
                 );
               })}
+              <hr className="menu-divider" />
+              <Link to="/recommendations" className="menu-item menu-item--rec">
+                <i className="fa-solid fa-wand-magic-sparkles"></i> Recomendaciones
+              </Link>
             </nav>
           </aside>
         </div>
@@ -83,7 +105,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         <main className="main-content">
           <div className="content-body">
             <div className="page-title-row">
-              <h1 className="page-title">Todos los productos</h1>
+              <h1 className="page-title">
+                {categoryId 
+                  ? categories.find((c: any) => String(c.id) === categoryId)?.name || "Productos"
+                  : "Todos los productos"}
+              </h1>
               <Form className="search-bar search-bar--home" action="/" method="get">
                 <i className="fa-solid fa-magnifying-glass"></i>
                 <input type="text" name="q" placeholder="Buscar productos" />

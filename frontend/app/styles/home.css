@@ -22,7 +22,7 @@
 .sidebar {
     width: 250px;
     background-color: var(--color-primary-50);
-    padding: var(--space-1) var(--space-5) var(--space-6);
+    padding: var(--space-5) var(--space-5) var(--space-6);
     border-radius: var(--radius-lg);
     display: flex;
     flex-direction: column;

@@ -81,7 +81,7 @@ public class WebSecurityConfig {
                         // Orders
                         .requestMatchers("/api/v1/orders/**").hasRole("USER")
                         // Recommendations
-                        .requestMatchers("/api/v1/recommendations/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/recommendations/**").hasRole("USER")
 						// PUBLIC ENDPOINTS
 						.anyRequest().permitAll());
 
