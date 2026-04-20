@@ -5,7 +5,7 @@ import "~/styles/header.css";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isLogged, isAdmin, loading } = useAuth();
+  const { isLogged, isAdmin, user, loading } = useAuth();
 
   const handleLogout = async () => {
     try {
@@ -37,11 +37,19 @@ export function Header() {
               <span className="cart-badge">0</span>
             </Link>
           </div>
-          <div className="user-menu-container" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            <button className="user-menu-btn">
-              <i className="fa-regular fa-circle-user profile-icon"></i>
+          <div className="user-menu-container">
+            <button className="user-menu-btn" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isLogged && user?.profileImageUrl ? (
+                <img
+                  src={user.profileImageUrl}
+                  alt="Foto de perfil"
+                  className="header-profile-img"
+                />
+              ) : (
+                <i className="fa-regular fa-circle-user profile-icon"></i>
+              )}
             </button>
-            <div className={`user-menu-dropdown ${isMenuOpen ? "active" : ""}`}>
+            <div className={`user-menu-dropdown ${isMenuOpen ? "active" : ""}`} onClick={(event) => event.stopPropagation()}>
               {!loading && (
                 <>
                   {isAdmin && (

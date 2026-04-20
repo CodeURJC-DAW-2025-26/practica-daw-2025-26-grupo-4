@@ -5,11 +5,15 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useNavigation,
 } from "react-router";
+import { useEffect } from "react";
 
 import type { Route } from "./+types/root";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./app.css";
+import { GlobalSpinner } from "~/components/global-spinner";
+import { useGlobalLoadingStore } from "~/stores/global-loading-store";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -30,7 +34,48 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const navigation = useNavigation();
+  const setNavLoading = useGlobalLoadingStore((state) => state.setNavLoading);
+  const startRequest = useGlobalLoadingStore((state) => state.startRequest);
+  const finishRequest = useGlobalLoadingStore((state) => state.finishRequest);
+
+  useEffect(() => {
+    setNavLoading(navigation.state !== "idle");
+  }, [navigation.state, setNavLoading]);
+
+  useEffect(() => {
+    const originalFetch = window.fetch.bind(window);
+
+    window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+      const mergedHeaders = new Headers(
+        init?.headers ?? (input instanceof Request ? input.headers : undefined)
+      );
+      const skipSpinner = mergedHeaders.get("x-skip-global-spinner") === "true";
+
+      if (!skipSpinner) {
+        startRequest();
+      }
+
+      try {
+        return await originalFetch(input, init);
+      } finally {
+        if (!skipSpinner) {
+          finishRequest();
+        }
+      }
+    };
+
+    return () => {
+      window.fetch = originalFetch;
+    };
+  }, [finishRequest, startRequest]);
+
+  return (
+    <>
+      <GlobalSpinner />
+      <Outlet />
+    </>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

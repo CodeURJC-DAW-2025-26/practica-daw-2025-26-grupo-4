@@ -6,18 +6,6 @@ export interface RegisterRequestDTO {
   confirmPassword?: string;
 }
 
-export interface AdminUserDTO {
-  id: number;
-  username: string;
-  fullName: string;
-  email: string;
-  birthDate: string;
-  shippingAddress: string;
-  roles: string[];
-  banned: boolean;
-  admin: boolean;
-}
-
 export interface UserAccountUpdateRequestDTO {
   username: string;
   fullName: string;
