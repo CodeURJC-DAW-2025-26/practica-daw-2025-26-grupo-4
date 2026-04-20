@@ -1,0 +1,56 @@
+.register-page {
+  min-height: calc(100vh - 180px);
+  display: flex;
+  align-items: center;
+  padding: var(--space-6) 0;
+}
+
+.register-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.register-title-wrap {
+  margin-bottom: var(--space-4);
+  text-align: center;
+}
+
+.register-title {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  color: var(--color-primary-800);
+}
+
+.register-subtitle {
+  margin: var(--space-2) 0 0;
+  color: var(--color-muted);
+}
+
+.register-submit {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  background: var(--color-primary-700);
+  border: 1px solid var(--color-primary-700);
+  font-weight: var(--font-weight-semibold);
+}
+
+.register-submit:hover,
+.register-submit:focus-visible {
+  background: var(--color-primary-800);
+  border-color: var(--color-primary-800);
+}
+
+.register-login-hint {
+  text-align: center;
+  margin-top: var(--space-4);
+  margin-bottom: 0;
+  color: var(--color-muted);
+}
+
+.register-login-hint a {
+  color: var(--color-primary-800);
+  font-weight: var(--font-weight-semibold);
+}

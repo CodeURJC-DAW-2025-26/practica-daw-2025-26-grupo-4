@@ -1,0 +1,226 @@
+/* Based on previous server-rendered login/register style */
+.auth-page * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.auth-page {
+  font-family: "Roboto", sans-serif;
+  min-height: 100vh;
+  background: url("https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=2664&auto=format&fit=crop");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-page .alert {
+  padding: 12px 16px;
+  margin: 16px 24px 0;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.auth-page .alert-error {
+  background-color: #fee;
+  color: #c33;
+  border: 1px solid #fcc;
+}
+
+.auth-page .alert-success {
+  background-color: #efe;
+  color: #3c3;
+  border: 1px solid #cfc;
+}
+
+.auth-page .main-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.auth-page .login-card {
+  background: #fff;
+  width: 700px;
+  max-width: 90%;
+  padding: 30px;
+  border-radius: 60px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-height: 620px;
+  transition: max-height 0.4s ease-in-out;
+  overflow: hidden;
+}
+
+.auth-page .header {
+  margin-bottom: 20px;
+}
+
+.auth-page .logo-wrap,
+.auth-page .brand-logo-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.auth-page .logo,
+.auth-page .brand-logo {
+  width: min(185px, 65vw);
+  max-height: 125px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.auth-page .tabs {
+  display: flex;
+  position: relative;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 25px;
+}
+
+.auth-page .tab-btn {
+  flex: 1;
+  padding: 15px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #777;
+  text-align: center;
+  border: 0;
+  background: transparent;
+}
+
+.auth-page .tab-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  height: 3px;
+  background-color: #000;
+  transition: transform 0.3s;
+}
+
+.auth-page .login-card.mode-login .tabs .tab-indicator {
+  transform: translateX(0);
+}
+
+.auth-page .login-card.mode-register .tabs .tab-indicator {
+  transform: translateX(100%);
+}
+
+.auth-page .login-card.mode-login .tabs #tab-login,
+.auth-page .login-card.mode-register .tabs #tab-register {
+  color: #000;
+  font-weight: 700;
+}
+
+.auth-page .login-card.mode-register {
+  max-height: 950px;
+}
+
+.auth-page .forms-wrapper {
+  overflow: hidden;
+  padding: 10px;
+}
+
+.auth-page .forms-slider {
+  display: flex;
+  width: 200%;
+  transition: transform 0.4s ease-in-out;
+}
+
+.auth-page .auth-form {
+  width: 50%;
+  padding: 0 40px;
+  text-align: left;
+}
+
+.auth-page .login-card.mode-login .forms-wrapper .forms-slider {
+  transform: translateX(0);
+}
+
+.auth-page .login-card.mode-register .forms-wrapper .forms-slider {
+  transform: translateX(-50%);
+}
+
+.auth-page .input-group {
+  margin-bottom: 15px;
+}
+
+.auth-page .input-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.auth-page input[type="email"],
+.auth-page input[type="password"],
+.auth-page input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #f1f3f5;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.auth-page input:focus {
+  border-color: #333;
+  outline: none;
+}
+
+.auth-page button {
+  width: 100%;
+  padding: 15px;
+  background-color: #000;
+  color: #fff;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.auth-page button:not(.tab-btn):hover {
+  background-color: #333;
+}
+
+.auth-page button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-page .back-home-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: #333;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 1000;
+}
+
+.auth-page .back-home-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.auth-page .back-home-btn i {
+  font-size: 1rem;
+  color: #666;
+}
