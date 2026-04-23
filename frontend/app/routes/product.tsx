@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, Form, useActionData } from "react-router";
+import { Link, Form, useActionData, useNavigate } from "react-router";
+import { useCart } from "~/hooks/useCart";
 import type { Route } from "./+types/product";
 import { getProduct, getProducts } from "~/services/products-service";
 import { Header } from "~/components/header";
@@ -12,32 +13,49 @@ import "~/styles/product.css";
 
 export function links(): Route.LinkDescriptors {
   return [
-    { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" },
-    { rel: "stylesheet", href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" },
+    {
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap",
+    },
+    {
+      rel: "stylesheet",
+      href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+    },
   ];
 }
 
 export async function clientLoader({ params }: Route.LoaderArgs) {
   const productId = parseInt(params.id, 10);
   const product = await getProduct(productId);
-  
+
   let recommendedProduct: ProductDTO | null = null;
 
   if (product.category?.id) {
     // Try to get recommended from same category
-    const catProducts = await getProducts(0, 10, null, product.category.id.toString());
-    const candidates = catProducts.content.filter((p: ProductDTO) => p.id !== product.id);
+    const catProducts = await getProducts(
+      0,
+      10,
+      null,
+      product.category.id.toString(),
+    );
+    const candidates = catProducts.content.filter(
+      (p: ProductDTO) => p.id !== product.id,
+    );
     if (candidates.length > 0) {
-      recommendedProduct = candidates[Math.floor(Math.random() * candidates.length)];
+      recommendedProduct =
+        candidates[Math.floor(Math.random() * candidates.length)];
     }
   }
 
   if (!recommendedProduct) {
     // Fallback
     const allProducts = await getProducts(0, 10);
-    const candidates = allProducts.content.filter((p: ProductDTO) => p.id !== product.id);
+    const candidates = allProducts.content.filter(
+      (p: ProductDTO) => p.id !== product.id,
+    );
     if (candidates.length > 0) {
-      recommendedProduct = candidates[Math.floor(Math.random() * candidates.length)];
+      recommendedProduct =
+        candidates[Math.floor(Math.random() * candidates.length)];
     }
   }
 
@@ -46,24 +64,54 @@ export async function clientLoader({ params }: Route.LoaderArgs) {
 
 export default function Product({ loaderData }: Route.ComponentProps) {
   const { product, recommendedProduct } = loaderData as any;
+  const navigate = useNavigate();
+  const { addItem } = useCart();
+
+  const handleAddToCart = async (productId: number, qtyToAdd: number) => {
+    try {
+      await addItem(productId, qtyToAdd);
+    } catch (err: any) {
+      if (err.message.includes("UNAUTHORIZED")) {
+        navigate("/login");
+      } else {
+        alert("Error al añadir producto");
+      }
+    }
+  };
+
+  const completeOrder = async () => {
+    try {
+      await addItem(product.id, qty);
+      navigate("/order");
+      alert("¡Pedido realizado con éxito!");
+    } catch (err: any) {
+      if (err.message.includes("UNAUTHORIZED")) {
+        navigate("/login");
+      } else {
+        alert("Error al tramitar pedido");
+      }
+    }
+  };
 
   const [qty, setQty] = useState(1);
   const [mainImageUrl, setMainImageUrl] = useState(
-    product?.images && product.images.length > 0 ? product.images[0].url : ""
+    product?.images && product.images.length > 0 ? product.images[0].url : "",
   );
 
   useEffect(() => {
     // Reset state and image when navigating between products
     setQty(1);
-    setMainImageUrl(product?.images && product.images.length > 0 ? product.images[0].url : "");
+    setMainImageUrl(
+      product?.images && product.images.length > 0 ? product.images[0].url : "",
+    );
   }, [product]);
 
   // Basic simulation of userReview not present for UI rendering
-  const userReview = null; 
-  
+  const userReview = null;
+
   // Simulating reviews
   const reviews = product.reviews || [];
-  
+
   // Helper for averages
   const calcStars = (rating: number) => {
     const stars = [];
@@ -88,13 +136,13 @@ export default function Product({ loaderData }: Route.ComponentProps) {
       });
     }
     const total = reviews.length || 1;
-    return counts.map(c => (c / total) * 100);
+    return counts.map((c) => (c / total) * 100);
   };
-  
+
   const percents = processRatingBars(); // [percent1, percent2, percent3, percent4, percent5]
 
   const handleChangeQty = (delta: number) => {
-    setQty(prev => Math.max(1, prev + delta));
+    setQty((prev) => Math.max(1, prev + delta));
   };
 
   const formattedPrice = product.price.toFixed(2);
@@ -109,7 +157,6 @@ export default function Product({ loaderData }: Route.ComponentProps) {
 
       <main className="main-content">
         <div className="product-layout">
-          
           {/* Gallery */}
           <section className="gallery">
             <div className="main-image">
@@ -117,9 +164,9 @@ export default function Product({ loaderData }: Route.ComponentProps) {
             </div>
             <div className="thumbnails">
               {product.images?.map((img: any, i: number) => (
-                <div 
-                  key={img.id} 
-                  className={`thumbnail ${img.url === mainImageUrl ? 'active' : ''}`}
+                <div
+                  key={img.id}
+                  className={`thumbnail ${img.url === mainImageUrl ? "active" : ""}`}
                   onClick={() => setMainImageUrl(img.url)}
                 >
                   <img src={img.url} alt={`Miniatura ${i}`} />
@@ -135,60 +182,94 @@ export default function Product({ loaderData }: Route.ComponentProps) {
 
             <div className="tags">
               {product.tags?.map((tag: string, i: number) => (
-                <span key={i} className="tag">{tag}</span>
+                <span key={i} className="tag">
+                  {tag}
+                </span>
               ))}
             </div>
 
             <div className="price-row">
-              <span className="price">
-                €{(product.price * qty).toFixed(2)}
-              </span>
+              <span className="price">€{(product.price * qty).toFixed(2)}</span>
             </div>
 
             <div className="quantity">
-              <button type="button" onClick={() => handleChangeQty(-1)}>-</button>
+              <button type="button" onClick={() => handleChangeQty(-1)}>
+                -
+              </button>
               <span>{qty}</span>
-              <button type="button" onClick={() => handleChangeQty(1)}>+</button>
+              <button type="button" onClick={() => handleChangeQty(1)}>
+                +
+              </button>
             </div>
 
-            <Form action="/api/cart/buy" method="post" style={{ display: "inline" }}>
-              <input type="hidden" name="productId" value={product.id} />
-              <input type="hidden" name="quantity" value={qty} />
-              <button type="submit" className="btn-buy">Comprar ahora</button>
-            </Form>
-            
-            <Form action="/api/cart/add" method="post" style={{ display: "inline" }}>
-              <input type="hidden" name="productId" value={product.id} />
-              <input type="hidden" name="quantity" value={qty} />
-              <button type="submit" className="btn-cart">Añadir al carrito</button>
-            </Form>
+            <button
+              type="button"
+              className="btn-buy"
+              style={{ display: "inline" }}
+              onClick={completeOrder}
+            >
+              Comprar ahora
+            </button>
+
+            <button
+              type="button"
+              className="btn-cart"
+              onClick={() => handleAddToCart(product.id, qty)}
+            >
+              Añadir al carrito
+            </button>
 
             {recommendedProduct && (
               <div className="recommend">
                 <h3>Completa tu pedido con</h3>
                 <div className="recommend-card">
-                  <Link to={`/product/${recommendedProduct.id}`} style={{ display: "flex", alignItems: "center", textDecoration: "none", color: "inherit", flexGrow: 1 }}>
-                    <img 
-                      src={recommendedProduct.images?.[0]?.url || ""} 
-                      alt="Recomendado" 
+                  <Link
+                    to={`/product/${recommendedProduct.id}`}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      textDecoration: "none",
+                      color: "inherit",
+                      flexGrow: 1,
+                    }}
+                  >
+                    <img
+                      src={recommendedProduct.images?.[0]?.url || ""}
+                      alt="Recomendado"
                     />
                     <div style={{ marginLeft: "15px" }}>
                       <strong>{recommendedProduct.name}</strong>
-                      <div className="tags small" style={{ marginTop: "5px", marginBottom: "5px" }}>
-                        {recommendedProduct.tags?.slice(0,2).map((tag: string, i: number) => (
-                          <span key={i} className="tag" style={{ padding: "4px 8px", fontSize: "0.7rem"}}>{tag}</span>
-                        ))}
+                      <div
+                        className="tags small"
+                        style={{ marginTop: "5px", marginBottom: "5px" }}
+                      >
+                        {recommendedProduct.tags
+                          ?.slice(0, 2)
+                          .map((tag: string, i: number) => (
+                            <span
+                              key={i}
+                              className="tag"
+                              style={{ padding: "4px 8px", fontSize: "0.7rem" }}
+                            >
+                              {tag}
+                            </span>
+                          ))}
                       </div>
-                      <span className="rec-price">€{recommendedProduct.price.toFixed(2)}/u</span>
+                      <span className="rec-price">
+                        €{recommendedProduct.price.toFixed(2)}/u
+                      </span>
                     </div>
                   </Link>
                   <div className="rec-actions">
-                    <Form action="/api/cart/add" method="post" style={{ display: "inline" }}>
-                      <input type="hidden" name="productId" value={recommendedProduct.id} />
-                      <button type="submit">
-                        <i className="fa-solid fa-cart-plus"></i>
-                      </button>
-                    </Form>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleAddToCart(recommendedProduct.id, 1);
+                      }}
+                    >
+                      <i className="fa-solid fa-cart-plus"></i>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -199,7 +280,9 @@ export default function Product({ loaderData }: Route.ComponentProps) {
         {/* Reviews */}
         <section className="reviews">
           <div className="rating-summary">
-            <span className="score">{(product.averageRating || 0).toFixed(1)} / 5</span>
+            <span className="score">
+              {(product.averageRating || 0).toFixed(1)} / 5
+            </span>
             <div>
               <div className="stars">
                 {avgStars.map((s, i) => (
@@ -218,7 +301,10 @@ export default function Product({ loaderData }: Route.ComponentProps) {
                 <div key={star}>
                   <span>{star} ★</span>
                   <div className="bar">
-                    <div className="fill" style={{ width: `${percents[percentIdx]}%` }}></div>
+                    <div
+                      className="fill"
+                      style={{ width: `${percents[percentIdx]}%` }}
+                    ></div>
                   </div>
                 </div>
               );
@@ -228,34 +314,64 @@ export default function Product({ loaderData }: Route.ComponentProps) {
           {!userReview && (
             <div className="add-review-section">
               <h3>Escribe tu reseña</h3>
-              <Form method="post" id="add-review-form" action="/api/reviews/add" onSubmit={(e) => {
-                if (addRating === 0) {
-                  e.preventDefault();
-                  alert("Por favor, selecciona una puntuación para tu reseña.");
-                }
-              }}>
+              <Form
+                method="post"
+                id="add-review-form"
+                action="/api/reviews/add"
+                onSubmit={(e) => {
+                  if (addRating === 0) {
+                    e.preventDefault();
+                    alert(
+                      "Por favor, selecciona una puntuación para tu reseña.",
+                    );
+                  }
+                }}
+              >
                 <input type="hidden" name="productId" value={product.id} />
                 <div className="form-group">
                   <label>Puntuación</label>
-                  <div className="star-rating" onMouseLeave={() => setHoverRating(0)}>
+                  <div
+                    className="star-rating"
+                    onMouseLeave={() => setHoverRating(0)}
+                  >
                     {[1, 2, 3, 4, 5].map((star) => (
-                      <i 
+                      <i
                         key={star}
-                        className={star <= (hoverRating || addRating) ? "fa-solid fa-star" : "fa-regular fa-star"}
+                        className={
+                          star <= (hoverRating || addRating)
+                            ? "fa-solid fa-star"
+                            : "fa-regular fa-star"
+                        }
                         onMouseEnter={() => setHoverRating(star)}
                         onClick={() => setAddRating(star)}
                       ></i>
                     ))}
                   </div>
-                  <input type="hidden" name="rating" value={addRating} required />
+                  <input
+                    type="hidden"
+                    name="rating"
+                    value={addRating}
+                    required
+                  />
                 </div>
 
                 <div className="form-group">
                   <label>Comentario</label>
-                  <textarea name="content" rows={4} placeholder="Cuéntanos qué te ha parecido..." required></textarea>
+                  <textarea
+                    name="content"
+                    rows={4}
+                    placeholder="Cuéntanos qué te ha parecido..."
+                    required
+                  ></textarea>
                 </div>
 
-                <button type="submit" className="save-btn" style={{marginTop: "15px"}}>Publicar reseña</button>
+                <button
+                  type="submit"
+                  className="save-btn"
+                  style={{ marginTop: "15px" }}
+                >
+                  Publicar reseña
+                </button>
               </Form>
             </div>
           )}
@@ -274,14 +390,15 @@ export default function Product({ loaderData }: Route.ComponentProps) {
                 <div key={review.id} className="comment">
                   <strong>{review.authorName}</strong>
                   <div className="comment-stars">
-                    {rStars.map((s, i) => <i key={i} className={s}></i>)}
+                    {rStars.map((s, i) => (
+                      <i key={i} className={s}></i>
+                    ))}
                   </div>
                   <p>{review.content}</p>
                 </div>
               );
             })}
           </div>
-
         </section>
       </main>
 

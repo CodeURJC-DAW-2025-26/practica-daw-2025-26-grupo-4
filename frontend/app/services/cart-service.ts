@@ -6,7 +6,7 @@ export const cartService = {
   async getCart(): Promise<CartDTO | null> {
     const response = await fetch(`${API_URL}/`, {
       method: "GET",
-      credentials: "omit",
+      credentials: "include",
     });
 
     if (response.status === 401) {
@@ -22,12 +22,12 @@ export const cartService = {
       `${API_URL}/items/${productId}?quantity=${quantity}`,
       {
         method: "POST",
-        credentials: "omit",
+        credentials: "include",
       },
     );
 
     if (response.status === 401) {
-      throw new Error("Debes haber iniciado sesión como usuario.");
+      throw new Error("UNAUTHORIZED");
     }
 
     if (!response.ok) throw new Error("Error al añadir al carrito");
@@ -37,11 +37,11 @@ export const cartService = {
   async removeItem(productId: number) {
     const response = await fetch(`${API_URL}/items/${productId}`, {
       method: "DELETE",
-      credentials: "omit",
+      credentials: "include",
     });
 
     if (response.status === 401) {
-      throw new Error("Debes haber iniciado sesión como usuario.");
+      throw new Error("UNAUTHORIZED");
     }
 
     if (!response.ok) throw new Error("Error al eliminar del carrito");
@@ -51,11 +51,11 @@ export const cartService = {
   async clearCart() {
     const response = await fetch(API_URL, {
       method: "DELETE",
-      credentials: "omit",
+      credentials: "include",
     });
 
     if (response.status === 401) {
-      throw new Error("Debes haber iniciado sesión como usuario.");
+      throw new Error("UNAUTHORIZED");
     }
 
     if (!response.ok) throw new Error("Error al eliminar el carrito");
@@ -64,10 +64,10 @@ export const cartService = {
   async checkout() {
     const response = await fetch(`${API_URL}/checkout`, {
       method: "POST",
-      credentials: "omit",
+      credentials: "include",
     });
     if (response.status === 401) {
-      throw new Error("Debes haber iniciado sesión como usuario.");
+      throw new Error("UNAUTHORIZED");
     }
 
     if (!response.ok) throw new Error("Error al procesar el carrito");

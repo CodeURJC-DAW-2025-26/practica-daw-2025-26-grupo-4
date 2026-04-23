@@ -1,5 +1,15 @@
 /* Header Styles - Shared across all pages */
 
+@keyframes bump {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.bump {
+  animation: bump 0.3s ease-out;
+}
+
 .top-bar {
     display: grid;
     grid-template-columns: 320px 1fr;

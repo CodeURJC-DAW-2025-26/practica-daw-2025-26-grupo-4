@@ -1,17 +1,31 @@
 import { Link } from "react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "~/hooks/useAuth";
+import { useCart } from "~/hooks/useCart";
 import "~/styles/header.css";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isLogged, isAdmin, user, loading } = useAuth();
+  const { cart } = useCart();
+
+  const [animateCart, setAnimateCart] = useState(false);
+  const cartItemsCount =
+    cart?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
+
+  useEffect(() => {
+    if (cartItemsCount > 0) {
+      setAnimateCart(true);
+      const timer = setTimeout(() => setAnimateCart(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [cartItemsCount]);
 
   const handleLogout = async () => {
     try {
       await fetch("/api/v1/auth/logout", {
         method: "POST",
-        credentials: "include"
+        credentials: "include",
       });
       window.location.href = "/";
     } catch (error) {
@@ -24,21 +38,30 @@ export function Header() {
       <div className="top-bar__left">
         <Link to="/" className="logo-link">
           <div className="logo logo--header">
-            <img className="brand-logo" src="/images/logoDAW.png" alt="Logo PlantaZon" />
+            <img
+              className="brand-logo"
+              src="/images/logoDAW.png"
+              alt="Logo PlantaZon"
+            />
           </div>
         </Link>
       </div>
       <div className="top-bar__right">
         <div className="top-bar__spacer"></div>
         <div className="user-actions">
-          <div className="cart-icon-container">
+          <div className={`cart-icon-container ${animateCart ? "bump" : ""}`}>
             <Link to="/cart">
               <i className="fa-solid fa-cart-shopping"></i>
-              <span className="cart-badge">0</span>
+              {cartItemsCount > 0 && (
+                <span className="cart-badge">{cartItemsCount}</span>
+              )}
             </Link>
           </div>
           <div className="user-menu-container">
-            <button className="user-menu-btn" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <button
+              className="user-menu-btn"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
               {isLogged && user?.profileImageUrl ? (
                 <img
                   src={user.profileImageUrl}
@@ -49,16 +72,21 @@ export function Header() {
                 <i className="fa-regular fa-circle-user profile-icon"></i>
               )}
             </button>
-            <div className={`user-menu-dropdown ${isMenuOpen ? "active" : ""}`} onClick={(event) => event.stopPropagation()}>
+            <div
+              className={`user-menu-dropdown ${isMenuOpen ? "active" : ""}`}
+              onClick={(event) => event.stopPropagation()}
+            >
               {!loading && (
                 <>
                   {isAdmin && (
                     <>
                       <a href="/admin" className="dropdown-item">
-                        <i className="fa-solid fa-gauge"></i> Panel de administración
+                        <i className="fa-solid fa-gauge"></i> Panel de
+                        administración
                       </a>
                       <a href="/admin/products" className="dropdown-item">
-                        <i className="fa-solid fa-boxes-stacked"></i> Gestor de productos
+                        <i className="fa-solid fa-boxes-stacked"></i> Gestor de
+                        productos
                       </a>
                     </>
                   )}
@@ -68,14 +96,16 @@ export function Header() {
                         <i className="fa-solid fa-user"></i> Ver perfil
                       </Link>
                       <Link to="/order" className="dropdown-item">
-                        <i className="fa-solid fa-bag-shopping"></i> Ver mis pedidos
+                        <i className="fa-solid fa-bag-shopping"></i> Ver mis
+                        pedidos
                       </Link>
                     </>
                   )}
                   {!isLogged && (
                     <>
                       <Link to="/login" className="dropdown-item">
-                        <i className="fa-solid fa-right-to-bracket"></i> Iniciar sesión
+                        <i className="fa-solid fa-right-to-bracket"></i> Iniciar
+                        sesión
                       </Link>
                       <Link to="/register" className="dropdown-item">
                         <i className="fa-solid fa-user-plus"></i> Registrarse
@@ -86,7 +116,14 @@ export function Header() {
                     <button
                       onClick={handleLogout}
                       className="dropdown-item logout-btn"
-                      style={{ cursor: "pointer", background: "none", border: "none", padding: "inherit", width: "100%", textAlign: "left" }}
+                      style={{
+                        cursor: "pointer",
+                        background: "none",
+                        border: "none",
+                        padding: "inherit",
+                        width: "100%",
+                        textAlign: "left",
+                      }}
                     >
                       <i className="fa-solid fa-sign-out-alt"></i> Cerrar sesión
                     </button>
