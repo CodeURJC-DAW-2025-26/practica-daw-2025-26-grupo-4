@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { Header } from "~/components/header";
 import { Footer } from "~/components/footer";
 import { useAuth } from "~/hooks/useAuth";
+import { notifyError, notifySuccess } from "~/stores/global-notification-store";
 
 import "~/styles/tokens.css";
 import "~/styles/components.css";
@@ -210,8 +211,7 @@ export default function UserPage() {
       setProfilePreview(updatedUser.profileImageUrl ?? profilePreview);
       setSelectedPhoto(null);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "No se pudo guardar la foto de perfil";
-      window.alert(message);
+      console.error(error);
     }
   };
 
@@ -243,8 +243,7 @@ export default function UserPage() {
       setAddressForm(parseShippingAddress(updatedUser.shippingAddress ?? ""));
       setProfilePreview(updatedUser.profileImageUrl ?? null);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "No se pudieron guardar los datos de cuenta";
-      window.alert(message);
+      console.error(error);
     }
   };
 
@@ -252,7 +251,7 @@ export default function UserPage() {
     event.preventDefault();
 
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      window.alert("La nueva contraseña y su confirmación no coinciden.");
+      notifyError("La nueva contraseña y su confirmación no coinciden.");
       return;
     }
 
@@ -276,10 +275,9 @@ export default function UserPage() {
         newPassword: "",
         confirmPassword: ""
       });
-      window.alert("Contraseña actualizada correctamente");
+      notifySuccess("Contraseña actualizada correctamente");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "No se pudo actualizar la contraseña";
-      window.alert(message);
+      console.error(error);
     }
   };
 
@@ -317,8 +315,7 @@ export default function UserPage() {
       setAddressForm(parseShippingAddress(updatedAddress));
       setIsAddressModalOpen(false);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "No se pudo guardar la dirección";
-      window.alert(message);
+      console.error(error);
     }
   };
 
@@ -342,8 +339,7 @@ export default function UserPage() {
       setShippingAddress("");
       setAddressForm(EMPTY_ADDRESS);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "No se pudo eliminar la dirección";
-      window.alert(message);
+      console.error(error);
     }
   };
 

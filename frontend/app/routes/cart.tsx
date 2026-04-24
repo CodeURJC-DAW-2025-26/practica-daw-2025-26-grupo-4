@@ -32,8 +32,6 @@ export default function Cart() {
     } catch (err: any) {
       if (err.message.includes("UNAUTHORIZED")) {
         navigate("/login");
-      } else {
-        alert("Error al tramitar pedido");
       }
     }
   };

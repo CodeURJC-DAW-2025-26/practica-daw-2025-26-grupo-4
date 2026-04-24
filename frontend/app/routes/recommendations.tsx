@@ -40,8 +40,6 @@ export default function Recommendations({ loaderData }: Route.ComponentProps) {
     } catch (err: any) {
       if (err.message.includes("UNAUTHORIZED")) {
         navigate("/login");
-      } else {
-        alert("Error al añadir producto");
       }
     }
   };
@@ -55,8 +53,6 @@ export default function Recommendations({ loaderData }: Route.ComponentProps) {
     } catch (err: any) {
       if (err.message.includes("UNAUTHORIZED")) {
         navigate("/login");
-      } else {
-        alert("Error al añadir combo");
       }
     }
   };

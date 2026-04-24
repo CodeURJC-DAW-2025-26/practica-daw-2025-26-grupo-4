@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+.global-notifications-container {
+	z-index: 4000;
+	width: min(100vw - 2rem, 380px);
+}
+
+.global-notification-toast {
+	border-radius: 0.75rem;
+}
+
 .global-spinner-overlay {
 	position: fixed;
 	inset: 0;
@@ -34,4 +43,92 @@
 	to {
 		transform: rotate(360deg);
 	}
+}
+
+.spa-error-page {
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	background: linear-gradient(140deg, #f8faf8 0%, #eef5ec 100%);
+}
+
+.spa-error-card {
+	width: min(560px, 100%);
+	padding: 28px;
+	border-radius: 20px;
+	background: #ffffff;
+	box-shadow: 0 16px 36px rgba(26, 60, 28, 0.12);
+	text-align: center;
+}
+
+.spa-error-logo-wrap {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 14px;
+}
+
+.spa-error-logo {
+	height: 52px;
+	width: auto;
+}
+
+.spa-error-icon {
+	font-size: 52px;
+	line-height: 1;
+	color: #d13f2f;
+	margin-bottom: 10px;
+}
+
+.spa-error-code {
+	margin: 0;
+	font-size: 0.95rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: #6b7280;
+}
+
+.spa-error-title {
+	margin: 8px 0;
+	font-size: 1.7rem;
+	font-weight: 700;
+	color: #1f2937;
+}
+
+.spa-error-details {
+	margin: 0 auto 18px;
+	max-width: 44ch;
+	color: #4b5563;
+	line-height: 1.5;
+}
+
+.spa-error-cta {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 11px 16px;
+	border-radius: 10px;
+	font-weight: 600;
+	text-decoration: none;
+	background: #2e7d32;
+	color: #fff;
+}
+
+.spa-error-cta:hover {
+	background: #256729;
+	color: #fff;
+}
+
+.spa-error-stack {
+	margin-top: 16px;
+	padding: 12px;
+	text-align: left;
+	font-size: 0.78rem;
+	max-height: 220px;
+	overflow: auto;
+	border-radius: 10px;
+	background: #f3f4f6;
+	color: #111827;
 }

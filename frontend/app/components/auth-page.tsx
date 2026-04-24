@@ -44,7 +44,6 @@ export function AuthPage({ initialMode }: AuthPageProps) {
   const [loginForm, setLoginForm] = useState<LoginFormState>(EMPTY_LOGIN);
   const [registerForm, setRegisterForm] = useState<RegisterFormState>(EMPTY_REGISTER);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const onLoginInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +75,6 @@ export function AuthPage({ initialMode }: AuthPageProps) {
   const onSubmitLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage(null);
-    setSuccessMessage(null);
     setSubmitting(true);
 
     try {
@@ -86,8 +84,7 @@ export function AuthPage({ initialMode }: AuthPageProps) {
       });
       navigate("/");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "No se pudo iniciar sesion";
-      setErrorMessage(message);
+      console.error(error);
     } finally {
       setSubmitting(false);
     }
@@ -96,7 +93,6 @@ export function AuthPage({ initialMode }: AuthPageProps) {
   const onSubmitRegister = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage(null);
-    setSuccessMessage(null);
 
     const validationError = validateRegister();
     if (validationError) {
@@ -124,8 +120,7 @@ export function AuthPage({ initialMode }: AuthPageProps) {
       setRegisterForm(EMPTY_REGISTER);
       navigate("/");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "No se pudo completar el registro";
-      setErrorMessage(message);
+      console.error(error);
     } finally {
       setSubmitting(false);
     }
@@ -152,7 +147,6 @@ export function AuthPage({ initialMode }: AuthPageProps) {
           </div>
 
           {errorMessage && <div className="alert alert-error">{errorMessage}</div>}
-          {successMessage && <div className="alert alert-success">{successMessage}</div>}
 
           <div className="forms-wrapper">
             <div className="forms-slider">

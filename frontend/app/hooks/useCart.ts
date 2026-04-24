@@ -27,7 +27,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       const data = await cartService.getCart();
       set({ cart: data, hasLoaded: true });
     } catch (err: any) {
-      set({ error: err.message });
+      set({ error: err.message, hasLoaded: true });
       throw err;
     } finally {
       set({ loading: false });

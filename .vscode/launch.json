@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-Daw04Application<daw04>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "es.urjc.daw04.Daw04Application",
+            "projectName": "daw04",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

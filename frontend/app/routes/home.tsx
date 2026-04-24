@@ -72,8 +72,6 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     } catch (err: any) {
       if (err.message.includes("UNAUTHORIZED")) {
         navigate("/login");
-      } else {
-        alert("Error al añadir producto");
       }
     }
   };

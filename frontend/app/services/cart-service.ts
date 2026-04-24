@@ -7,9 +7,12 @@ export const cartService = {
     const response = await fetch(`${API_URL}/`, {
       method: "GET",
       credentials: "include",
+      headers: {
+        "x-skip-global-error": "true"
+      }
     });
 
-    if (response.status === 401) {
+    if (response.status === 401 || response.status === 403) {
       return null;
     }
 

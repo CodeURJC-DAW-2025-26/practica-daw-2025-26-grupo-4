@@ -7,6 +7,7 @@ import { orderService } from "~/services/order-service";
 import { Header } from "~/components/header";
 import { Footer } from "~/components/footer";
 import type { ProductDTO } from "~/api/dtos";
+import { notifyError } from "~/stores/global-notification-store";
 
 import "~/styles/tokens.css";
 import "~/styles/components.css";
@@ -74,8 +75,6 @@ export default function Product({ loaderData }: Route.ComponentProps) {
     } catch (err: any) {
       if (err.message.includes("UNAUTHORIZED")) {
         navigate("/login");
-      } else {
-        alert("Error al añadir producto");
       }
     }
   };
@@ -96,8 +95,6 @@ export default function Product({ loaderData }: Route.ComponentProps) {
     } catch (err: any) {
       if (err.message.includes("UNAUTHORIZED")) {
         navigate("/login");
-      } else {
-        alert("Error al tramitar pedido");
       }
     }
   };
@@ -330,9 +327,7 @@ export default function Product({ loaderData }: Route.ComponentProps) {
                 onSubmit={(e) => {
                   if (addRating === 0) {
                     e.preventDefault();
-                    alert(
-                      "Por favor, selecciona una puntuación para tu reseña.",
-                    );
+                    notifyError("Por favor, selecciona una puntuación para tu reseña.");
                   }
                 }}
               >
