@@ -62,12 +62,17 @@ export const cartService = {
   },
 
   async checkout() {
-    const response = await fetch(`${API_URL}/checkout`, {
+    const response = await fetch(`/api/v1/orders`, {
       method: "POST",
       credentials: "include",
     });
+
     if (response.status === 401) {
       throw new Error("UNAUTHORIZED");
+    }
+
+    if (response.status === 400) {
+      throw new Error("El carrito está vacío");
     }
 
     if (!response.ok) throw new Error("Error al procesar el carrito");

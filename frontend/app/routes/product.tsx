@@ -3,6 +3,7 @@ import { Link, Form, useActionData, useNavigate } from "react-router";
 import { useCart } from "~/hooks/useCart";
 import type { Route } from "./+types/product";
 import { getProduct, getProducts } from "~/services/products-service";
+import { orderService } from "~/services/order-service";
 import { Header } from "~/components/header";
 import { Footer } from "~/components/footer";
 import type { ProductDTO } from "~/api/dtos";
@@ -81,9 +82,17 @@ export default function Product({ loaderData }: Route.ComponentProps) {
 
   const completeOrder = async () => {
     try {
-      await addItem(product.id, qty);
-      navigate("/order");
-      alert("¡Pedido realizado con éxito!");
+      const order = await orderService.createDirectOrder({
+        productId: product.id,
+        quantity: qty,
+      });
+
+      if (order === null) {
+        navigate("/login");
+        return;
+      }
+
+      navigate("/orders");
     } catch (err: any) {
       if (err.message.includes("UNAUTHORIZED")) {
         navigate("/login");

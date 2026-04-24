@@ -4,6 +4,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
+import es.urjc.daw04.model.Image;
 import es.urjc.daw04.model.Order;
 import es.urjc.daw04.model.dto.OrderDTO;
 import es.urjc.daw04.model.CartItem;
@@ -25,23 +28,37 @@ public abstract class OrderMapper {
     @Mapping(source = "product.id", target = "productId")
     @Mapping(source = "product.name", target = "name")
     @Mapping(source = "product.price", target = "price")
-    @Mapping(source = "product.mainImage", target = "imageUrl")
+    @Mapping(target = "imageUrl", expression = "java(resolveMainImageUrl(item))")
     @Mapping(target = "canReview", expression = "java(isDelivered(item))")
     @Mapping(target = "hasReview", expression = "java(checkIfHasReview(item))")
     public abstract OrderItemDTO toItemDTO(CartItem item);
 
+    protected String resolveMainImageUrl(CartItem item) {
+        if (item == null || item.getProduct() == null)
+            return null;
+        List<Image> images = item.getProduct().getImages();
+        if (images == null || images.isEmpty())
+            return null;
+        Long id = images.get(0).getId();
+        return id == null ? null : "/api/v1/images/" + id + "/media";
+    }
+
     protected boolean isDelivered(CartItem item) {
-        if (item.getOrder() == null) { return false; }
+        if (item.getOrder() == null) {
+            return false;
+        }
         return EnumStatus.DELIVERED.equals(item.getOrder().getStatus());
     }
 
     protected boolean checkIfHasReview(CartItem item) {
         if (item == null ||
-            item.getProduct() == null ||
-            item.getOrder() == null ||
-            item.getOrder().getUser() == null) {
-                return false; }
+                item.getProduct() == null ||
+                item.getOrder() == null ||
+                item.getOrder().getUser() == null) {
+            return false;
+        }
 
-        return reviewService.findByProductIdAndUserId( item.getProduct().getId(), item.getOrder().getUser().getId()) != null;
+        return reviewService.findByProductIdAndUserId(item.getProduct().getId(),
+                item.getOrder().getUser().getId()) != null;
     }
 }

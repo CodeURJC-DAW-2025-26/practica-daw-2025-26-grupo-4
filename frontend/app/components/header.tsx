@@ -95,7 +95,7 @@ export function Header() {
                       <Link to="/user" className="dropdown-item">
                         <i className="fa-solid fa-user"></i> Ver perfil
                       </Link>
-                      <Link to="/order" className="dropdown-item">
+                      <Link to="/orders" className="dropdown-item">
                         <i className="fa-solid fa-bag-shopping"></i> Ver mis
                         pedidos
                       </Link>

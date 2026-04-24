@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.server.ResponseStatusException;
+
+import org.springframework.http.HttpStatus;
 import java.net.URI;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
@@ -22,7 +26,9 @@ import es.urjc.daw04.service.UserService;
 import es.urjc.daw04.service.OrderService;
 import es.urjc.daw04.model.mapper.OrderMapper;
 import es.urjc.daw04.model.Cart;
+import es.urjc.daw04.model.Product;
 import es.urjc.daw04.service.CartService;
+import es.urjc.daw04.service.ProductService;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -39,6 +45,12 @@ public class OrderRestController {
 
     @Autowired
     CartService cartService;
+
+    @Autowired
+    ProductService productService;
+
+    public record DirectOrderRequest(Long productId, Integer quantity) {
+    }
 
     @GetMapping
     public ResponseEntity<Page<OrderDTO>> getOrders(Principal principal, Pageable pageable) {
@@ -97,6 +109,31 @@ public class OrderRestController {
         OrderDTO orderDTO = orderMapper.toDTO(order);
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(orderDTO.id()).toUri();
 
+        return ResponseEntity.created(location).body(orderDTO);
+    }
+
+    @PostMapping("/direct")
+    public ResponseEntity<OrderDTO> createDirectOrder(@RequestBody DirectOrderRequest request, Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        if (request == null || request.productId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Producto obligatorio");
+        }
+
+        int quantity = request.quantity() == null ? 1 : request.quantity();
+        if (quantity < 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La cantidad debe ser mayor que cero");
+        }
+
+        User user = userService.findByName(principal.getName()).orElseThrow();
+        Product product = productService.findById(request.productId());
+
+        Order order = orderService.saveDirectOrder(user, product, quantity);
+
+        OrderDTO orderDTO = orderMapper.toDTO(order);
+        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(orderDTO.id()).toUri();
         return ResponseEntity.created(location).body(orderDTO);
     }
 }

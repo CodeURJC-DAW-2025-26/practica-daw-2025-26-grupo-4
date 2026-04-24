@@ -3,7 +3,6 @@ import { Header } from "~/components/header";
 import { Footer } from "~/components/footer";
 import { Link, useNavigate } from "react-router";
 import type { Route } from "./+types/cart";
-import { useEffect } from "react";
 
 import "~/styles/tokens.css";
 import "~/styles/components.css";
@@ -23,15 +22,13 @@ export function links(): Route.LinkDescriptors {
 }
 
 export default function Cart() {
-  const { cart, loading, error, addItem, removeItem, clearCart, checkout } =
-    useCart();
+  const { cart, addItem, removeItem, clearCart, checkout } = useCart();
   const navigate = useNavigate();
 
   const handleCheckout = async () => {
     try {
       await checkout();
-      navigate("/order");
-      alert("¡Pedido realizado con éxito!");
+      navigate("/orders");
     } catch (err: any) {
       if (err.message.includes("UNAUTHORIZED")) {
         navigate("/login");
