@@ -20,6 +20,7 @@ import {
   addProduct,
   deleteProduct,
   deleteProductImage,
+  getProduct,
   getProducts,
   updateProduct,
   uploadProductImage,
@@ -163,12 +164,12 @@ export default function AdminProducts({ loaderData }: Route.ComponentProps) {
 
   const fetchMoreProducts = useCallback(async (page: number) => getProducts(page, 10), []);
 
-  const {
-    items: products,
-    loading: productsLoading,
-    hasMore,
-    observerTarget,
-  } = useInfiniteScroll(fetchMoreProducts, productsPage, [productsPage]);
+const {
+  items: products,
+  setItems: setProducts,
+  loading: productsLoading,
+  hasMore,
+} = useInfiniteScroll(fetchMoreProducts, productsPage, [productsPage]);
 
   const descriptionLength = productForm.description.length;
   const fileLabel = useMemo(() => {
@@ -265,12 +266,13 @@ export default function AdminProducts({ loaderData }: Route.ComponentProps) {
     setIsProductSubmitting(true);
     try {
       if (editingProductId === null) {
-        const created = await addProduct(payloadBase);
+        let created = await addProduct(payloadBase);
 
         for (const file of selectedFiles) {
           await uploadProductImage(created.id, file);
         }
-
+        created = await getProduct(created.id);
+        setProducts((currentProducts) => [created, ...currentProducts]);
         notifySuccess("Producto creado correctamente.");
       } else {
         const updatePayload: ProductUpdateRequestDTO = payloadBase;
@@ -279,12 +281,17 @@ export default function AdminProducts({ loaderData }: Route.ComponentProps) {
         for (const file of selectedFiles) {
           await uploadProductImage(editingProductId, file);
         }
-
+        const updatedProduct = await getProduct(editingProductId);
+        setProducts((currentProducts) =>
+          currentProducts.map((product) =>
+            product.id === editingProductId ? updatedProduct : product,
+          ),
+        );
         notifySuccess("Producto actualizado correctamente.");
       }
 
       resetProductForm();
-      globalThis.location.reload();
+
     } catch (error) {
       notifyError(error instanceof Error ? error.message : "No se pudo guardar el producto.");
     } finally {
@@ -299,8 +306,13 @@ export default function AdminProducts({ loaderData }: Route.ComponentProps) {
 
     try {
       await deleteProduct(product.id);
+
+      setProducts((currentProducts) =>
+        currentProducts.filter((currentProduct) => currentProduct.id !== product.id),
+      );
+
       notifySuccess("Producto eliminado correctamente.");
-      globalThis.location.reload();
+      
     } catch (error) {
       notifyError(error instanceof Error ? error.message : "No se pudo eliminar el producto.");
     }
@@ -803,7 +815,6 @@ export default function AdminProducts({ loaderData }: Route.ComponentProps) {
                 )}
               </tbody>
             </table>
-            <div id="products-sentinel" className="scroll-sentinel" ref={observerTarget}></div>
             {productsLoading && (
               <div id="products-spinner" className="scroll-spinner" style={{ display: "flex" }}>
                 <i className="fa-solid fa-spinner"></i> Cargando más productos...

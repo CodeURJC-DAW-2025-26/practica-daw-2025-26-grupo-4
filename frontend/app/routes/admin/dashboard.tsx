@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Chart from "chart.js/auto";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Chart } from "chart.js/auto";
 import type { Route } from "./+types/dashboard";
 import { Header } from "~/components/header";
 import { useAuth } from "~/hooks/useAuth";
@@ -126,30 +126,6 @@ function composeAddress(address: UserAddressFields): string {
   return lines.join("\n");
 }
 
-function toChartData(series: { labels: string[]; values: number[] }) {
-  return {
-    labels: series.labels,
-    data: series.values,
-  };
-}
-
-function renderEmptyChartPlaceholder(canvas: HTMLCanvasElement | null) {
-  if (!canvas?.parentElement) {
-    return;
-  }
-
-  canvas.parentElement.innerHTML =
-    '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#666;">No hay datos disponibles</div>';
-}
-
-function shouldShowEmpty(series: { labels: string[]; values: number[] }) {
-  if (!series.values.length) {
-    return true;
-  }
-
-  return series.values.every((value) => value === 0);
-}
-
 export function links(): Route.LinkDescriptors {
   return [
     {
@@ -202,12 +178,12 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
     };
   }, []);
 
-  const {
-    items: users,
-    loading: usersLoading,
-    hasMore,
-    observerTarget,
-  } = useInfiniteScroll(fetchMoreUsers, initialUsersPageRef.current, []);
+const {
+  items: users,
+  setItems: setUsers,
+  loading: usersLoading,
+  hasMore,
+} = useInfiniteScroll(fetchMoreUsers, initialUsersPageRef.current, []);
 
   useEffect(() => {
     const nextForms: Record<number, AdminUserUpdateRequestDTO & UserAddressFields> = {};
@@ -227,170 +203,77 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
     setForms(nextForms);
   }, [users]);
 
-  useEffect(() => {
-    const chartInstances: Chart[] = [];
+useLayoutEffect(() => {
+  const chartInstances: Chart[] = [];
 
-    const categorySeries = toChartData(stats.salesByCategory);
-    const tagSeries = toChartData(stats.salesByTag);
-    const monthlySeries = toChartData(stats.monthlySales);
-    const visitorsSeries = toChartData(stats.ordersByMonth);
-    const reviewsSeries = toChartData(stats.reviewsByMonth);
+  const timeoutId = window.setTimeout(() => {
+    function createChart(
+      canvas: HTMLCanvasElement | null,
+      type: "doughnut" | "bar" | "line",
+      title: string,
+      series?: { labels: string[]; values: number[] },
+    ) {
+      if (!canvas || !series?.labels?.length || !series?.values?.length) {
+        return;
+      }
 
-    if (shouldShowEmpty(stats.salesByCategory)) {
-      renderEmptyChartPlaceholder(categoryCanvasRef.current);
-    } else if (categoryCanvasRef.current) {
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        return;
+      }
+
       chartInstances.push(
-        new Chart(categoryCanvasRef.current, {
-          type: "doughnut",
+        new Chart(ctx, {
+          type,
           data: {
-            labels: categorySeries.labels,
+            labels: series.labels,
             datasets: [
               {
-                label: "Unidades por Categoria",
-                data: categorySeries.data,
+                label: title,
+                data: series.values,
                 backgroundColor: [
                   "rgba(255, 99, 132, 0.6)",
                   "rgba(54, 162, 235, 0.6)",
                   "rgba(255, 206, 86, 0.6)",
                   "rgba(75, 192, 192, 0.6)",
-                ],
-                borderWidth: 1,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-          },
-        }),
-      );
-    }
-
-    if (shouldShowEmpty(stats.salesByTag)) {
-      renderEmptyChartPlaceholder(tagsCanvasRef.current);
-    } else if (tagsCanvasRef.current) {
-      chartInstances.push(
-        new Chart(tagsCanvasRef.current, {
-          type: "doughnut",
-          data: {
-            labels: tagSeries.labels,
-            datasets: [
-              {
-                label: "Unidades por Etiqueta",
-                data: tagSeries.data,
-                backgroundColor: [
                   "rgba(153, 102, 255, 0.6)",
                   "rgba(255, 159, 64, 0.6)",
                   "rgba(199, 199, 199, 0.6)",
                   "rgba(83, 102, 255, 0.6)",
                 ],
                 borderWidth: 1,
+                fill: type === "line",
               },
             ],
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            scales:
+              type === "doughnut"
+                ? undefined
+                : {
+                    y: {
+                      beginAtZero: true,
+                    },
+                  },
           },
         }),
       );
     }
 
-    if (shouldShowEmpty(stats.monthlySales)) {
-      renderEmptyChartPlaceholder(monthlyCanvasRef.current);
-    } else if (monthlyCanvasRef.current) {
-      chartInstances.push(
-        new Chart(monthlyCanvasRef.current, {
-          type: "bar",
-          data: {
-            labels: monthlySeries.labels,
-            datasets: [
-              {
-                label: "Ventas Mensuales (€)",
-                data: monthlySeries.data,
-                backgroundColor: "rgba(75, 192, 192, 0.6)",
-                borderColor: "rgba(75, 192, 192, 1)",
-                borderWidth: 1,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: { beginAtZero: true },
-            },
-          },
-        }),
-      );
-    }
+    createChart(categoryCanvasRef.current, "doughnut", "Unidades por Categoría", stats.salesByCategory);
+    createChart(tagsCanvasRef.current, "doughnut", "Unidades por Etiqueta", stats.salesByTag);
+    createChart(monthlyCanvasRef.current, "bar", "Ventas Mensuales (€)", stats.monthlySales);
+    createChart(visitorsCanvasRef.current, "line", "Total Pedidos", stats.ordersByMonth);
+    createChart(reviewsCanvasRef.current, "line", "Nuevas Reseñas", stats.reviewsByMonth);
+  }, 100);
 
-    if (shouldShowEmpty(stats.ordersByMonth)) {
-      renderEmptyChartPlaceholder(visitorsCanvasRef.current);
-    } else if (visitorsCanvasRef.current) {
-      chartInstances.push(
-        new Chart(visitorsCanvasRef.current, {
-          type: "line",
-          data: {
-            labels: visitorsSeries.labels,
-            datasets: [
-              {
-                label: "Total Pedidos",
-                data: visitorsSeries.data,
-                backgroundColor: "rgba(54, 162, 235, 0.5)",
-                borderColor: "rgba(54, 162, 235, 1)",
-                borderWidth: 1,
-                fill: true,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: { beginAtZero: true },
-            },
-          },
-        }),
-      );
-    }
-
-    if (shouldShowEmpty(stats.reviewsByMonth)) {
-      renderEmptyChartPlaceholder(reviewsCanvasRef.current);
-    } else if (reviewsCanvasRef.current) {
-      chartInstances.push(
-        new Chart(reviewsCanvasRef.current, {
-          type: "line",
-          data: {
-            labels: reviewsSeries.labels,
-            datasets: [
-              {
-                label: "Nuevas Reseñas",
-                data: reviewsSeries.data,
-                backgroundColor: "rgba(54, 162, 235, 0.5)",
-                borderColor: "rgba(54, 162, 235, 1)",
-                borderWidth: 1,
-                fill: true,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: { beginAtZero: true },
-            },
-          },
-        }),
-      );
-    }
-
-    return () => {
-      chartInstances.forEach((chart) => chart.destroy());
-    };
-  }, [stats]);
-
-  const disabledUsers = useMemo(() => busyUserIds, [busyUserIds]);
+  return () => {
+    window.clearTimeout(timeoutId);
+    chartInstances.forEach((chart) => chart.destroy());
+  };
+}, [stats]);  const disabledUsers = useMemo(() => busyUserIds, [busyUserIds]);
 
   const toggleUserEdit = (userId: number) => {
     setExpandedUserIds((current) => {
@@ -446,7 +329,13 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 
     setUserBusy(user.id, true);
     try {
-      await updateAdminUser(user.id, payload);
+      const updatedUser = await updateAdminUser(user.id, payload);
+
+setUsers((currentUsers) =>
+  currentUsers.map((currentUser) =>
+    currentUser.id === user.id ? updatedUser : currentUser,
+  ),
+);
       notifySuccess("Usuario actualizado correctamente.");
       setExpandedUserIds((current) => {
         const next = new Set(current);
@@ -460,38 +349,53 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
     }
   };
 
-  const handleBanToggle = async (user: AdminUserDTO) => {
-    setUserBusy(user.id, true);
-    try {
-      if (user.banned) {
-        await unbanAdminUser(user.id);
-        notifySuccess("Usuario desbaneado correctamente.");
-      } else {
-        await banAdminUser(user.id);
-        notifySuccess("Usuario baneado correctamente.");
-      }
-      globalThis.location.reload();
-    } catch (error) {
-      notifyError(error instanceof Error ? error.message : "No se pudo actualizar el estado del usuario.");
-      setUserBusy(user.id, false);
-    }
-  };
+const handleBanToggle = async (user: AdminUserDTO) => {
+  setUserBusy(user.id, true);
+
+  try {
+    const updatedUser = user.banned
+      ? await unbanAdminUser(user.id)
+      : await banAdminUser(user.id);
+
+    setUsers((currentUsers) =>
+      currentUsers.map((currentUser) =>
+        currentUser.id === user.id ? updatedUser : currentUser,
+      ),
+    );
+
+    notifySuccess(
+      updatedUser.banned
+        ? "Usuario baneado correctamente."
+        : "Usuario desbaneado correctamente.",
+    );
+  } catch (error) {
+    notifyError(error instanceof Error ? error.message : "No se pudo actualizar el estado del usuario.");
+  } finally {
+    setUserBusy(user.id, false);
+  }
+};
 
   const handleDeleteUser = async (user: AdminUserDTO) => {
-    if (!globalThis.confirm(`¿Eliminar al usuario ${user.username}?`)) {
-      return;
-    }
+  if (!globalThis.confirm(`¿Eliminar al usuario ${user.username}?`)) {
+    return;
+  }
 
-    setUserBusy(user.id, true);
-    try {
-      await deleteAdminUser(user.id);
-      notifySuccess("Usuario eliminado correctamente.");
-      globalThis.location.reload();
-    } catch (error) {
-      notifyError(error instanceof Error ? error.message : "No se pudo eliminar el usuario.");
-      setUserBusy(user.id, false);
-    }
-  };
+  setUserBusy(user.id, true);
+
+  try {
+    await deleteAdminUser(user.id);
+
+    setUsers((currentUsers) =>
+      currentUsers.filter((currentUser) => currentUser.id !== user.id),
+    );
+
+    notifySuccess("Usuario eliminado correctamente.");
+  } catch (error) {
+    notifyError(error instanceof Error ? error.message : "No se pudo eliminar el usuario.");
+  } finally {
+    setUserBusy(user.id, false);
+  }
+};
 
   if (loading) {
     return null;
@@ -888,7 +792,6 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
             </div>
           </section>
 
-          <div id="users-sentinel" className="scroll-sentinel" ref={observerTarget}></div>
           {usersLoading && (
             <div id="users-spinner" className="scroll-spinner" style={{ display: "flex" }}>
               <i className="fa-solid fa-spinner"></i> Cargando más usuarios...
