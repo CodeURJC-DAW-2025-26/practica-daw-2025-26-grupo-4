@@ -5,6 +5,7 @@ import { Header } from "~/components/header";
 import { Footer } from "~/components/footer";
 import { useAuth } from "~/hooks/useAuth";
 import { notifyError, notifySuccess } from "~/stores/global-notification-store";
+import { useAuthStore } from "~/stores/auth-store";
 
 import "~/styles/tokens.css";
 import "~/styles/components.css";
@@ -173,6 +174,7 @@ export default function UserPage() {
     setShippingAddress(updatedUser.shippingAddress ?? "");
     setAddressForm(parseShippingAddress(updatedUser.shippingAddress ?? ""));
     setProfilePreview(updatedUser.profileImageUrl ?? null);
+    useAuthStore.getState().setUser(updatedUser);
   };
 
   useEffect(() => {
