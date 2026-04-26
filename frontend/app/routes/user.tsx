@@ -33,10 +33,13 @@ interface AddressFormState {
 }
 
 interface UserProfileResponseDTO {
+  id: number;
   username: string;
   fullName: string;
+  email: string;
   birthDate: string;
   shippingAddress: string;
+  roles: string[];
   profileImageUrl: string | null;
 }
 
@@ -49,6 +52,26 @@ const EMPTY_ADDRESS: AddressFormState = {
   country: "",
   phone: ""
 };
+
+async function submitUserUpdate(formData: FormData): Promise<UserProfileResponseDTO> {
+  const response = await fetch("/api/users", {
+    method: "PUT",
+    credentials: "include",
+    body: formData
+  });
+
+  const responseText = await response.text();
+
+  if (!response.ok) {
+    throw new Error(responseText || "No se pudo actualizar el usuario");
+  }
+
+  if (!responseText) {
+    throw new Error("La respuesta del servidor está vacía");
+  }
+
+  return JSON.parse(responseText) as UserProfileResponseDTO;
+}
 
 function parseShippingAddress(address: string): AddressFormState {
   if (!address || !address.trim()) {
@@ -141,6 +164,17 @@ export default function UserPage() {
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [addressForm, setAddressForm] = useState<AddressFormState>(EMPTY_ADDRESS);
 
+  const syncUserProfile = (updatedUser: UserProfileResponseDTO) => {
+    setAccountForm({
+      username: updatedUser.username ?? "",
+      fullName: updatedUser.fullName ?? "",
+      birthDate: updatedUser.birthDate ?? ""
+    });
+    setShippingAddress(updatedUser.shippingAddress ?? "");
+    setAddressForm(parseShippingAddress(updatedUser.shippingAddress ?? ""));
+    setProfilePreview(updatedUser.profileImageUrl ?? null);
+  };
+
   useEffect(() => {
     if (!user) {
       return;
@@ -195,23 +229,13 @@ export default function UserPage() {
     try {
       const formData = new FormData();
       formData.append("profileImage", selectedPhoto);
-
-      const response = await fetch("/api/v1/user/profile-image", {
-        method: "POST",
-        credentials: "include",
-        body: formData
-      });
-
-      if (!response.ok) {
-        const message = await response.text();
-        throw new Error(message || "No se pudo guardar la foto de perfil");
-      }
-
-      const updatedUser = (await response.json()) as UserProfileResponseDTO;
-      setProfilePreview(updatedUser.profileImageUrl ?? profilePreview);
+      const updatedUser = await submitUserUpdate(formData);
+      syncUserProfile(updatedUser);
       setSelectedPhoto(null);
+      notifySuccess("Foto de perfil actualizada correctamente");
     } catch (error) {
       console.error(error);
+      notifyError(error instanceof Error ? error.message : "No se pudo guardar la foto de perfil");
     }
   };
 
@@ -219,31 +243,17 @@ export default function UserPage() {
     event.preventDefault();
 
     try {
-      const response = await fetch("/api/v1/user/account", {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(accountForm)
-      });
+      const formData = new FormData();
+      formData.append("username", accountForm.username);
+      formData.append("fullName", accountForm.fullName);
+      formData.append("birthDate", accountForm.birthDate);
 
-      if (!response.ok) {
-        const message = await response.text();
-        throw new Error(message || "No se pudieron guardar los datos de cuenta");
-      }
-
-      const updatedUser = (await response.json()) as UserProfileResponseDTO;
-      setAccountForm({
-        username: updatedUser.username ?? "",
-        fullName: updatedUser.fullName ?? "",
-        birthDate: updatedUser.birthDate ?? ""
-      });
-      setShippingAddress(updatedUser.shippingAddress ?? "");
-      setAddressForm(parseShippingAddress(updatedUser.shippingAddress ?? ""));
-      setProfilePreview(updatedUser.profileImageUrl ?? null);
+      const updatedUser = await submitUserUpdate(formData);
+      syncUserProfile(updatedUser);
+      notifySuccess("Datos de cuenta actualizados correctamente");
     } catch (error) {
       console.error(error);
+      notifyError(error instanceof Error ? error.message : "No se pudieron guardar los datos de cuenta");
     }
   };
 
@@ -256,19 +266,13 @@ export default function UserPage() {
     }
 
     try {
-      const response = await fetch("/api/v1/user/password", {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(passwordForm)
-      });
+      const formData = new FormData();
+      formData.append("oldPassword", passwordForm.oldPassword);
+      formData.append("newPassword", passwordForm.newPassword);
+      formData.append("confirmPassword", passwordForm.confirmPassword);
 
-      if (!response.ok) {
-        const message = await response.text();
-        throw new Error(message || "No se pudo actualizar la contraseña");
-      }
+      const updatedUser = await submitUserUpdate(formData);
+      syncUserProfile(updatedUser);
 
       setPasswordForm({
         oldPassword: "",
@@ -278,6 +282,7 @@ export default function UserPage() {
       notifySuccess("Contraseña actualizada correctamente");
     } catch (error) {
       console.error(error);
+      notifyError(error instanceof Error ? error.message : "No se pudo actualizar la contraseña");
     }
   };
 
@@ -294,28 +299,22 @@ export default function UserPage() {
     event.preventDefault();
 
     try {
-      const response = await fetch("/api/v1/user/address", {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(addressForm)
-      });
+      const formData = new FormData();
+      formData.append("street", addressForm.street);
+      formData.append("additional", addressForm.additional);
+      formData.append("city", addressForm.city);
+      formData.append("province", addressForm.province);
+      formData.append("postalCode", addressForm.postalCode);
+      formData.append("country", addressForm.country);
+      formData.append("phone", addressForm.phone);
 
-      if (!response.ok) {
-        const message = await response.text();
-        throw new Error(message || "No se pudo guardar la dirección");
-      }
-
-      const updatedUser = (await response.json()) as UserProfileResponseDTO;
-      const updatedAddress = updatedUser.shippingAddress ?? "";
-
-      setShippingAddress(updatedAddress);
-      setAddressForm(parseShippingAddress(updatedAddress));
+      const updatedUser = await submitUserUpdate(formData);
+      syncUserProfile(updatedUser);
       setIsAddressModalOpen(false);
+      notifySuccess("Dirección actualizada correctamente");
     } catch (error) {
       console.error(error);
+      notifyError(error instanceof Error ? error.message : "No se pudo guardar la dirección");
     }
   };
 
@@ -326,20 +325,15 @@ export default function UserPage() {
     }
 
     try {
-      const response = await fetch("/api/v1/user/address", {
-        method: "DELETE",
-        credentials: "include"
-      });
+      const formData = new FormData();
+      formData.append("clearAddress", "true");
 
-      if (!response.ok) {
-        const message = await response.text();
-        throw new Error(message || "No se pudo eliminar la dirección");
-      }
-
-      setShippingAddress("");
-      setAddressForm(EMPTY_ADDRESS);
+      const updatedUser = await submitUserUpdate(formData);
+      syncUserProfile(updatedUser);
+      notifySuccess("Dirección eliminada correctamente");
     } catch (error) {
       console.error(error);
+      notifyError(error instanceof Error ? error.message : "No se pudo eliminar la dirección");
     }
   };
 

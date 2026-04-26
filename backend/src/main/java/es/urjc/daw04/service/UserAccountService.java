@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import es.urjc.daw04.model.Image;
 import es.urjc.daw04.model.User;
+import es.urjc.daw04.model.dto.UserUpdateRequestDTO;
 import es.urjc.daw04.repositories.UserRepository;
 
 @Service
@@ -43,8 +44,7 @@ public class UserAccountService {
         }
 
         try {
-            Long userId = Long.parseLong(principalName);
-            return userRepository.findById(userId).orElse(null);
+            return userRepository.findById(Long.valueOf(principalName)).orElse(null);
         } catch (NumberFormatException ex) {
             return null;
         }
@@ -74,6 +74,89 @@ public class UserAccountService {
                     throw new IllegalArgumentException("Fecha de nacimiento inválida");
                 }
             }
+        }
+
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User updateUser(Principal principal, UserUpdateRequestDTO request) throws IOException {
+        User user = requireCurrentUser(principal);
+
+        if (request.getUsername() != null && !request.getUsername().isBlank()
+                && !request.getUsername().equals(user.getName())) {
+            if (userRepository.findByName(request.getUsername()).isPresent()) {
+                throw new IllegalArgumentException("El nombre de usuario ya está en uso");
+            }
+            user.setName(request.getUsername());
+        }
+
+        if (request.getFullName() != null && !request.getFullName().isBlank()
+                && !request.getFullName().startsWith("Establecer")) {
+            user.setFullName(request.getFullName());
+        }
+
+        if (request.getBirthDate() != null && !request.getBirthDate().isBlank()) {
+            try {
+                user.setBirthDate(LocalDate.parse(request.getBirthDate()));
+            } catch (Exception ex) {
+                throw new IllegalArgumentException("Fecha de nacimiento inválida");
+            }
+        }
+
+        boolean passwordRequested = hasText(request.getOldPassword()) || hasText(request.getNewPassword())
+                || hasText(request.getConfirmPassword());
+        if (passwordRequested) {
+            if (!hasText(request.getOldPassword()) || !hasText(request.getNewPassword())
+                    || !hasText(request.getConfirmPassword())) {
+                throw new IllegalArgumentException("Todos los campos de contraseña son obligatorios");
+            }
+
+            if (!passwordEncoder.matches(request.getOldPassword(), user.getEncodedPassword())) {
+                throw new IllegalArgumentException("La contraseña antigua es incorrecta");
+            }
+
+            if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+                throw new IllegalArgumentException("Las nuevas contraseñas no coinciden");
+            }
+
+            if (request.getOldPassword().equals(request.getNewPassword())) {
+                throw new IllegalArgumentException("La nueva contraseña debe ser diferente a la antigua");
+            }
+
+            user.setEncodedPassword(passwordEncoder.encode(request.getNewPassword()));
+        }
+
+        if (request.isClearAddress()) {
+            user.setShippingAddress(null);
+        } else if (hasAddressData(request)) {
+            if (!hasText(request.getStreet())) {
+                throw new IllegalArgumentException("La calle es obligatoria");
+            }
+
+            user.setShippingAddress(buildShippingAddress(
+                    request.getStreet(),
+                    request.getAdditional(),
+                    request.getCity(),
+                    request.getProvince(),
+                    request.getPostalCode(),
+                    request.getCountry(),
+                    request.getPhone()));
+        }
+
+        MultipartFile imageFile = request.getProfileImage();
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String contentType = imageFile.getContentType();
+            if (contentType == null || !ALLOWED_IMAGE_TYPES.contains(contentType)) {
+                throw new IllegalArgumentException("Formato de imagen no permitido. Usa JPEG, PNG o WebP");
+            }
+
+            if (imageFile.getSize() > MAX_PROFILE_IMAGE_SIZE) {
+                throw new IllegalArgumentException("La imagen no puede superar los 5 MB");
+            }
+
+            Image newImage = imageService.createImage(imageFile);
+            user.setProfileImage(newImage);
         }
 
         return userRepository.save(user);
@@ -176,5 +259,41 @@ public class UserAccountService {
         Image newImage = imageService.createImage(imageFile);
         user.setProfileImage(newImage);
         return userRepository.save(user);
+    }
+
+    private boolean hasAddressData(UserUpdateRequestDTO request) {
+        return hasText(request.getStreet()) || hasText(request.getAdditional()) || hasText(request.getCity())
+                || hasText(request.getProvince()) || hasText(request.getPostalCode()) || hasText(request.getCountry())
+                || hasText(request.getPhone());
+    }
+
+    private String buildShippingAddress(String street, String additional, String city, String province,
+            String postalCode, String country, String phone) {
+        StringBuilder addressBuilder = new StringBuilder();
+        addressBuilder.append(street);
+
+        if (hasText(additional)) {
+            addressBuilder.append("\n").append(additional);
+        }
+        if (hasText(city) && hasText(province) && hasText(postalCode)) {
+            addressBuilder.append("\n")
+                    .append(city)
+                    .append(", ")
+                    .append(province)
+                    .append(" ")
+                    .append(postalCode);
+        }
+        if (hasText(country)) {
+            addressBuilder.append("\n").append(country);
+        }
+        if (hasText(phone)) {
+            addressBuilder.append("\nTeléfono: ").append(phone);
+        }
+
+        return addressBuilder.toString();
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 }
