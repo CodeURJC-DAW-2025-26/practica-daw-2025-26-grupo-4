@@ -86,14 +86,14 @@ export function Header() {
                 <>
                   {isAdmin && (
                     <>
-                      <a href="/admin" className="dropdown-item">
+                      <Link to="/admin" className="dropdown-item">
                         <i className="fa-solid fa-gauge"></i> Panel de
                         administración
-                      </a>
-                      <a href="/admin/products" className="dropdown-item">
+                      </Link>
+                      <Link to="/admin/products" className="dropdown-item">
                         <i className="fa-solid fa-boxes-stacked"></i> Gestor de
                         productos
-                      </a>
+                      </Link>
                     </>
                   )}
                   {isLogged && !isAdmin && (

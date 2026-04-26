@@ -19,7 +19,7 @@ echo "================================"
 echo "Construyendo imagen Docker: $FULL_IMAGE"
 echo "================================"
 
-docker build --platform linux/amd64 -t "$FULL_IMAGE" -f "$SCRIPT_DIR/Dockerfile" "$SCRIPT_DIR/.."
+docker build --platform linux/amd64 -t "$FULL_IMAGE" -f "$SCRIPT_DIR/Dockerfile" "$SCRIPT_DIR/../.."
 
 if [ $? -eq 0 ]; then
     echo ""

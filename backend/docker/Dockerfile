@@ -1,35 +1,34 @@
-# Imagen base para el contenedor de compilación
-FROM maven:3.9-eclipse-temurin-21 AS builder
+# Frontend build stage
+FROM node:22-alpine AS frontend-builder
 
-# Directorio de trabajo dentro del contenedor
-WORKDIR /usr/src/app
+WORKDIR /workspace/frontend
 
-# Copiamos primero el pom.xml para cachear dependencias
-COPY pom.xml .
+COPY frontend/package*.json ./
+RUN npm ci
 
-# Descargamos dependencias
-RUN mvn dependency:go-offline
+COPY frontend/ ./
+ENV REACT_ROUTER_BASENAME=/new
+RUN npm run build
 
-# Copiamos el código fuente
-COPY src ./src
+# Backend build stage
+FROM maven:3.9-eclipse-temurin-21 AS backend-builder
 
-# Compilamos el proyecto
+WORKDIR /workspace
+
+COPY backend/pom.xml backend/pom.xml
+COPY backend/src backend/src
+COPY --from=frontend-builder /workspace/frontend/build/client/ backend/src/main/resources/static/new/
+
+WORKDIR /workspace/backend
 RUN mvn -B package -DskipTests
 
-# Usa Eclipse Temurin 21 JRE
+# Runtime stage
 FROM eclipse-temurin:21-jre
 
-# Directorio de trabajo dentro del contenedor
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copiamos el keystore para SSL
-COPY src/main/resources/keystore.jks /usr/src/app/keystore.jks
+COPY --from=backend-builder /workspace/backend/target/*.jar /app/app.jar
 
-# Copiamos el JAR compilado desde la fase builder
-COPY --from=builder /usr/src/app/target/*.jar /usr/src/app/app.jar
-
-# Exponemos el puerto de la aplicación
 EXPOSE 8443
 
-# Comando por defecto al iniciar el contenedor
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "/app/app.jar"]
