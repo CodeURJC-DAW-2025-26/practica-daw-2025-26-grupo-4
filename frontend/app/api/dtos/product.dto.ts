@@ -30,7 +30,7 @@ export interface ProductCreateRequestDTO {
   price: number;
   description: string;
   tags: string[];
-  categoryId: number;
+  categoryId: number | null;
 }
 
 export interface ProductUpdateRequestDTO {
@@ -38,5 +38,5 @@ export interface ProductUpdateRequestDTO {
   price: number;
   description: string;
   tags: string[];
-  categoryId: number;
+  categoryId: number | null;
 }

@@ -1,4 +1,10 @@
-import type { ProductDTO } from "~/api/dtos";
+import type {
+  ImageDTO,
+  ProductCreateRequestDTO,
+  ProductDTO,
+  ProductUpdateRequestDTO,
+} from "~/api/dtos";
+import { getApiErrorMessage } from "~/utils/api-error";
 
 const API_URL = "/api/v1/products/";
 
@@ -51,7 +57,7 @@ export async function getProducts(
   // Fallback if it brings "last" directly or another scenario
   return {
     content: data.content || [],
-    last: data.last !== undefined ? data.last : true,
+    last: data.last ?? true,
   };
 }
 
@@ -63,33 +69,38 @@ export async function getProduct(id: number): Promise<ProductDTO> {
   return await res.json();
 }
 
-export async function addProduct(product: ProductDTO): Promise<ProductDTO> {
+export async function addProduct(payload: ProductCreateRequestDTO): Promise<ProductDTO> {
+
   const res = await fetch(API_URL, {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(product),
+    body: JSON.stringify(payload),
   });
   if (!res.ok) {
-    throw new Error("Failed to add product");
+    throw new Error(await getApiErrorMessage(res, "No se pudo crear el producto"));
   }
   return await res.json();
 }
 
 export async function updateProduct(
   id: number,
-  product: ProductDTO,
+  product: ProductUpdateRequestDTO,
 ): Promise<ProductDTO> {
   const res = await fetch(`${API_URL}${id}`, {
     method: "PUT",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(product),
   });
   if (!res.ok) {
-    throw new Error(`Failed to update product with id ${id}`);
+    throw new Error(
+      await getApiErrorMessage(res, `No se pudo actualizar el producto con id ${id}`),
+    );
   }
   return await res.json();
 }
@@ -97,8 +108,45 @@ export async function updateProduct(
 export async function deleteProduct(id: number): Promise<void> {
   const res = await fetch(`${API_URL}${id}`, {
     method: "DELETE",
+    credentials: "include",
   });
   if (!res.ok) {
-    throw new Error(`Failed to delete product with id ${id}`);
+    throw new Error(
+      await getApiErrorMessage(res, `No se pudo eliminar el producto con id ${id}`),
+    );
+  }
+}
+
+export async function uploadProductImage(
+  productId: number,
+  imageFile: File,
+): Promise<ImageDTO> {
+  const formData = new FormData();
+  formData.append("imageFile", imageFile);
+
+  const res = await fetch(`${API_URL}${productId}/images/`, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  });
+
+  if (!res.ok) {
+    throw new Error(await getApiErrorMessage(res, "No se pudo subir la imagen"));
+  }
+
+  return await res.json();
+}
+
+export async function deleteProductImage(
+  productId: number,
+  imageId: number,
+): Promise<void> {
+  const res = await fetch(`${API_URL}${productId}/images/${imageId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    throw new Error(await getApiErrorMessage(res, "No se pudo eliminar la imagen"));
   }
 }

@@ -47,11 +47,15 @@ export function useInfiniteScroll<T>(
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
+        if (entries.some((entry) => entry.isIntersecting)) {
           loadMore();
         }
       },
-      { threshold: 0.1 }
+      {
+        threshold: 0,
+        // Prefetch before the sentinel reaches the viewport bottom.
+        rootMargin: "240px 0px",
+      }
     );
 
     if (observerTarget.current) {
