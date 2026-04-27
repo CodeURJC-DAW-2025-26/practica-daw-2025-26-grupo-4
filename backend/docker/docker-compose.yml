@@ -4,10 +4,10 @@ services:
       context: ../..
       dockerfile: backend/docker/Dockerfile
     # image: eduamongus/spring-webapp:1.0
-    # image: dariogarciagomez/spring-webapp:1.0
+    image: dariogarciagomez/spring-webapp:1.0
     # image: arturoovinuesa/spring-webapp:1.0
     # image alvarosource/spring-webapp:1.0
-    image: eduamongus/spring-webapp:1.0
+    # image: eduamongus/spring-webapp:1.0
     ports:
       - 8443:8443
     environment:
@@ -28,7 +28,11 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD"]
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD",
+        ]
       interval: 5s
       timeout: 5s
       start_period: 10s
