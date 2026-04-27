@@ -546,15 +546,15 @@ Responsable de la implementación de los DTOs en el frontend, el servicio y pág
 
 #### **Alumno 3 - Eduardo Fernández Sanz**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+Responsable de la parte de la SPA: despliegue integrado, rutas, Docker y correcciones del frontend.
 
-| Nº    | Commits      | Files      |
-|:------------: |:------------:| :------------:|
-|1| [Descripción commit 1](URL_commit_1)  | [Archivo1](URL_archivo_1)   |
-|2| [Descripción commit 2](URL_commit_2)  | [Archivo2](URL_archivo_2)   |
-|3| [Descripción commit 3](URL_commit_3)  | [Archivo3](URL_archivo_3)   |
-|4| [Descripción commit 4](URL_commit_4)  | [Archivo4](URL_archivo_4)   |
-|5| [Descripción commit 5](URL_commit_5)  | [Archivo5](URL_archivo_5)   |
+| Nº | Commits | Files |
+|:--:|:-------:|:-----|
+|1| [Practice 3 v2.8 - Added profile page, global spinner, DTO fixes](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/fa4881c4ae41100814881189ff9c9bffd87525c5) | frontend/app/api/dtos/user.dto.ts, frontend/app/app.css, frontend/app/components/global-spinner.tsx, frontend/app/components/header.tsx, frontend/app/root.tsx, frontend/app/routes.ts, frontend/app/routes/user.tsx, frontend/app/stores/global-loading-store.ts, frontend/app/styles/header.css, frontend/app/styles/user.css, frontend/package-lock.json, frontend/package.json |
+|2| [Practice 3 v2.15 - Fixes for user management and DTOs](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/e4b9bdc231ef14cdfa1e7ecf77a8a190300ba74f) | .vscode/launch.json, backend/src/main/java/es/urjc/daw04/controllers/rest/UserRestController.java, backend/src/main/java/es/urjc/daw04/controllers/rest/UsersRestController.java, backend/src/main/java/es/urjc/daw04/model/dto/UserUpdateRequestDTO.java, backend/src/main/java/es/urjc/daw04/security/WebSecurityConfig.java, backend/src/main/java/es/urjc/daw04/service/UserAccountService.java, backend/src/main/resources/application.properties, frontend/app/routes/user.tsx, frontend/vite.config.ts |
+|3| [Practice 3 v2.17 - Added Dockerfile rough changes](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/f31c49a9498c4d46370ed3eb882ef498acc83914) | .dockerignore, backend/docker/Dockerfile, backend/docker/create_image.sh, backend/docker/docker-compose.yml, frontend/app/components/header.tsx, frontend/app/root.tsx, frontend/react-router.config.ts, frontend/vite.config.ts |
+|4| [Practice 3 v2.7 - Login and Register pages added](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/7878ac2865a3575b6e21e629b9e45de41681a913) | frontend/app/components/auth-page.tsx, frontend/app/components/header.tsx, frontend/app/routes.ts, frontend/app/routes/login.tsx, frontend/app/routes/register.tsx, frontend/app/styles/auth.css, frontend/app/styles/header.css |
+|5| [Practice 3 v2.16 - Added Zustand auth store and updated auth flows](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/2e3e6806fd4f968960c6c55c7dfe61146cff71c6) | frontend/app/components/auth-page.tsx, frontend/app/components/header.tsx, frontend/app/hooks/useAuth.ts, frontend/app/routes/user.tsx, frontend/app/stores/auth-store.ts |
 
 ---
 
