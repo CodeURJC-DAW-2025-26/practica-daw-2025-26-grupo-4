@@ -560,13 +560,12 @@ Responsable de la implementación de los DTOs en el frontend, el servicio y pág
 
 #### **Alumno 4 - Arturo Vinuesa Domínguez**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+Responsable del panel de administración y de la gestión global de errores en la SPA, incluyendo el dashboard de admin, el CRUD de productos, la vista de usuarios y el uso de componentes React-Bootstrap para formularios complejos. También se encargó de la coordinación y grabación de la demo del proyecto.
 
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
-|1| [Descripción commit 1](URL_commit_1)  | [Archivo1](URL_archivo_1)   |
-|2| [Descripción commit 2](URL_commit_2)  | [Archivo2](URL_archivo_2)   |
-|3| [Descripción commit 3](URL_commit_3)  | [Archivo3](URL_archivo_3)   |
-|4| [Descripción commit 4](URL_commit_4)  | [Archivo4](URL_archivo_4)   |
-|5| [Descripción commit 5](URL_commit_5)  | [Archivo5](URL_archivo_5)   |
+|1| [Practice 3 v2.13 - Add global notifications system and improve error handling](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/ef05d12791deeac28f9191e1b0cc1682b4f6a320)  | `backend/src/main/resources/application.properties`, `frontend/app/root.tsx`, `frontend/app/components/global-notifications.tsx`, `frontend/app/stores/global-notification-store.ts`, `frontend/app/utils/api-error.ts` |
+|2| [Practice 3 v2.14 - Creates SPA product administration and management panel](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/09a66d28093c332302d72c7862c55b48b91f7d77)  | `frontend/app/routes/admin/dashboard.tsx`, `frontend/app/routes/admin/products.tsx`, `frontend/app/services/admin-service.ts`, `frontend/app/styles/admin.css` |
+|3| [Practice 3 v2.19 - Error correction in administrator panels](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/44655fcfa9f9a27396f52c3843bc15dc4e988bed)  | `backend/src/main/java/es/urjc/daw04/service/UserService.java`, `backend/src/main/resources/application.properties`, `frontend/app/app.css`, `frontend/app/routes/admin/dashboard.tsx`, `frontend/app/utils/api-error.ts` |
+|4| [Bug fixes - load more users/products in admin panels, and correct statistics display](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/343c5347b02b32a59ecf21746d14b10a18274ebe)  | `frontend/app/hooks/useInfiniteScroll.ts`, `frontend/app/routes/admin/dashboard.tsx`, `frontend/app/routes/admin/products.tsx` |
 
