@@ -6,6 +6,7 @@ import { Footer } from "~/components/footer";
 import { useAuth } from "~/hooks/useAuth";
 import { notifyError, notifySuccess } from "~/stores/global-notification-store";
 import { useAuthStore } from "~/stores/auth-store";
+import { getApiErrorMessage } from "~/utils/api-error";
 
 import "~/styles/tokens.css";
 import "~/styles/components.css";
@@ -61,11 +62,12 @@ async function submitUserUpdate(formData: FormData): Promise<UserProfileResponse
     body: formData
   });
 
-  const responseText = await response.text();
-
   if (!response.ok) {
-    throw new Error(responseText || "No se pudo actualizar el usuario");
+    const errorMsg = await getApiErrorMessage(response, "No se pudo actualizar el usuario");
+    throw new Error(errorMsg);
   }
+
+  const responseText = await response.text();
 
   if (!responseText) {
     throw new Error("La respuesta del servidor está vacía");

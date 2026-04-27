@@ -143,7 +143,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                 <input type="text" name="q" placeholder="Buscar productos" />
               </Form>
             </div>
-            <p className="page-subtitle">Nuestra colección de plantas</p>
+            <p className="page-subtitle">Explora nuestra colección</p>
 
             <div className="product-grid" id="product-grid">
               {products && products.length > 0 ? (

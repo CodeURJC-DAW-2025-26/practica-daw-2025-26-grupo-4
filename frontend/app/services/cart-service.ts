@@ -52,7 +52,7 @@ export const cartService = {
   },
 
   async clearCart() {
-    const response = await fetch(API_URL, {
+    const response = await fetch(`${API_URL}/`, {
       method: "DELETE",
       credentials: "include",
     });
