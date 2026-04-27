@@ -518,15 +518,15 @@ Diagrama que muestra los componentes React, hooks personalizados, servicios y su
 
 #### **Alumno 1 - Álvaro Fuente González**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+Responsable de la página principal (Home), filtrado de categorías, detalle de producto (Product Detail), la página de recomendaciones y configuración para el despliegue integrado de la SPA.
 
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
-|1| [Descripción commit 1](URL_commit_1)  | [Archivo1](URL_archivo_1)   |
-|2| [Descripción commit 2](URL_commit_2)  | [Archivo2](URL_archivo_2)   |
-|3| [Descripción commit 3](URL_commit_3)  | [Archivo3](URL_archivo_3)   |
-|4| [Descripción commit 4](URL_commit_4)  | [Archivo4](URL_archivo_4)   |
-|5| [Descripción commit 5](URL_commit_5)  | [Archivo5](URL_archivo_5)   |
+|1| [First iteration Skeleton of home withdrawing products from API](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/62d571a)  | root.tsx, routes.ts, home.tsx, products-service.tsx, components.css, home.css, tokens.css   |
+|2| [Practice 3 v2.3 Added categories filtering](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/56a9b0e)  | CategoryRestController.java, JwtRequestFilter.java, home.tsx, category-service.tsx, products-service.tsx   |
+|3| [Practice 3 v2.4 Added product-detail page](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/b0b56fe)  | routes.ts, product.tsx, product.css   |
+|4| [Practice 3 v2.5 Implemented recommendations and fixed some visual bugs](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/a772994)  | WebSecurityConfig.java, recommendations.tsx, recommendation-service.ts, category-service.ts, products-service.ts, home.tsx, product.tsx   |
+|5| [Practice 3 v2.24 Fixed manual packaging / Deployment](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/b2369d4)  | SpaController.java, SpaRoutingConfig.java, build.sh, application.properties, frontend/package.json, vite.config.ts   |
 
 ---
 
