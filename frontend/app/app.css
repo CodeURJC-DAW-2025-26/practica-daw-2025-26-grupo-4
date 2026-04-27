@@ -1,8 +1,21 @@
 @import "tailwindcss";
 
 .global-notifications-container {
+	position: fixed !important;
+	top: 12px;
+	right: 12px;
+	left: auto;
 	z-index: 4000;
 	width: min(100vw - 2rem, 380px);
+}
+
+@media (max-width: 640px) {
+	.global-notifications-container {
+		top: 8px;
+		right: 8px;
+		left: 8px;
+		width: auto;
+	}
 }
 
 .global-notification-toast {
