@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public record ProductReviewDTO(
         long id,
+        Long userId,
         String content,
         double rating,
         LocalDate date,

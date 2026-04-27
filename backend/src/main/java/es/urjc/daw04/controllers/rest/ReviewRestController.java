@@ -66,8 +66,7 @@ public class ReviewRestController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "productId is required");
         }
 
-        Long userId = Long.parseLong(principal.getName());
-        User user = userService.findById(userId).orElseThrow();
+        User user = resolveCurrentUser(principal);
         Product product = productService.findById(reviewRequest.productId());
         
         Review review = reviewMapper.toDomain(reviewRequest);
@@ -86,9 +85,9 @@ public class ReviewRestController {
         if (principal == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        Long userId = Long.parseLong(principal.getName());
+        User user = resolveCurrentUser(principal);
         Review existingReview = reviewService.findById(id);
-        if (existingReview.getUser() == null || !existingReview.getUser().getId().equals(userId)) {
+        if (existingReview.getUser() == null || !existingReview.getUser().getId().equals(user.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
@@ -105,13 +104,32 @@ public class ReviewRestController {
         if (principal == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        Long userId = Long.parseLong(principal.getName());
+        User user = resolveCurrentUser(principal);
         Review existingReview = reviewService.findById(id);
-        if (existingReview.getUser() == null || !existingReview.getUser().getId().equals(userId)) {
+        if (existingReview.getUser() == null || !existingReview.getUser().getId().equals(user.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
         reviewService.delete(id);
         return reviewMapper.toDTO(existingReview);
+    }
+
+    private User resolveCurrentUser(Principal principal) {
+        if (principal == null || principal.getName() == null || principal.getName().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        String principalName = principal.getName();
+        User user = userService.findByName(principalName).orElse(null);
+        if (user != null) {
+            return user;
+        }
+
+        try {
+            Long userId = Long.parseLong(principalName);
+            return userService.findById(userId).orElseThrow();
+        } catch (NumberFormatException ex) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
     }
 }

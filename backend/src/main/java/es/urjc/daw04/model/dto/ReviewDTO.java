@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public record ReviewDTO(
         long id,
         Long productId,
+        Long userId,
         String content,
         double rating,
         LocalDate date,

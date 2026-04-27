@@ -183,12 +183,12 @@ function parsePositionalAddress(lines: string[]): UserAddressFields {
   const phoneIdx = remaining.findIndex((line) => /^Tel[eé]fono:\s*/i.test(line));
   const phone = phoneIdx >= 0 ? remaining.splice(phoneIdx, 1)[0].replace(/^Tel[eé]fono:\s*/i, "").trim() : "";
 
-  const locIdx = remaining.findIndex((line) => /^.+,\s*.+\s+\d{5}$/.test(line));
+  const locIdx = remaining.findIndex((line) => /^.+,\s*.+\s+[^,\s]+$/.test(line));
   let city = "";
   let province = "";
   let postalCode = "";
   if (locIdx >= 0) {
-    const match = /^(.+),\s*(.+)\s+(\d{5})$/.exec(remaining.splice(locIdx, 1)[0]);
+    const match = /^(.+),\s*(.+)\s+([^,\s]+)$/.exec(remaining.splice(locIdx, 1)[0]);
     if (match) {
       city = match[1].trim();
       province = match[2].trim();
