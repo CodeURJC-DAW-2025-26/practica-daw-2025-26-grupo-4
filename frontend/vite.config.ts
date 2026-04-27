@@ -2,11 +2,8 @@ import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 
-const routerBasename = process.env.REACT_ROUTER_BASENAME ?? "/new";
-const viteBase = routerBasename;
-
-export default defineConfig({
-  base: viteBase,
+export default defineConfig(({mode}) => ({
+  base: mode === "production" ? "/new/" : "/",
   plugins: [tailwindcss(), reactRouter()],
   resolve: {
     tsconfigPaths: true,
@@ -20,4 +17,4 @@ export default defineConfig({
       }
     },
   },
-});
+}));
