@@ -6,6 +6,7 @@ import {
   Scripts,
   ScrollRestoration,
   Link,
+  useHref,
   useNavigation,
 } from "react-router";
 import { useEffect } from "react";
@@ -101,6 +102,7 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  const brandLogoSrc = useHref("/images/logoDAW.png");
   let code = "Error";
   let message = "Ha ocurrido un error inesperado";
   let details = "Intenta volver al inicio o recarga la pagina.";
@@ -132,7 +134,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     <main className="spa-error-page">
       <div className="spa-error-card">
         <div className="spa-error-logo-wrap">
-          <img className="spa-error-logo" src="/images/logoDAW.png" alt="Logo PlantaZon" />
+          <img className="spa-error-logo" src={brandLogoSrc} alt="Logo PlantaZon" />
         </div>
         <div className="spa-error-icon" aria-hidden="true">
           <i className={iconClass}></i>

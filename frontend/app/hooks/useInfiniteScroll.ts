@@ -17,6 +17,7 @@ export function useInfiniteScroll<T>(
 
   const loadingRef = useRef(false);
   const hasMoreRef = useRef(false);
+  const observerTarget = useRef<HTMLDivElement | null>(null);
 
   const getHasMore = (data?: PageData<T>) => {
     if (!data) return false;
@@ -87,5 +88,6 @@ export function useInfiniteScroll<T>(
     loading,
     hasMore,
     loadMore,
+    observerTarget,
   };
 }

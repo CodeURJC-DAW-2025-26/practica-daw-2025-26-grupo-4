@@ -1,6 +1,5 @@
-import { Link } from "react-router";
+import { Link, useHref, useNavigate } from "react-router";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
 import { useAuth } from "~/hooks/useAuth";
 import { useCart } from "~/hooks/useCart";
 import { useAuthStore } from "~/stores/auth-store";
@@ -9,6 +8,7 @@ import "~/styles/header.css";
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const brandLogoSrc = useHref("/images/logoDAW.png");
   const { isLogged, isAdmin, user, loading } = useAuth();
   const clearSession = useAuthStore((state) => state.clearSession);
   const { cart } = useCart();
@@ -46,7 +46,7 @@ export function Header() {
           <div className="logo logo--header">
             <img
               className="brand-logo"
-              src="/images/logoDAW.png"
+              src={brandLogoSrc}
               alt="Logo PlantaZon"
             />
           </div>

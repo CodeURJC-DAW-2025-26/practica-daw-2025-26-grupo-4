@@ -3,7 +3,7 @@ import { Footer } from "~/components/footer";
 import { orderService } from "~/services/order-service";
 import type { OrderDTO, OrderItemDTO } from "~/api/dtos";
 import type { Route } from "./+types/orders";
-import { Link } from "react-router";
+import { Link, useHref } from "react-router";
 import { useState } from "react";
 
 import "~/styles/tokens.css";
@@ -66,6 +66,7 @@ export async function clientLoader() {
 
 export default function OrderPage({ loaderData }: Route.ComponentProps) {
   const { orders } = loaderData as unknown as OrdersPageData;
+  const brandLogoSrc = useHref("/images/logoDAW.png");
   const [expandedOrders, setExpandedOrders] = useState<number[]>([]);
 
   const toggleOrderDetails = (orderId: number) => {
@@ -140,7 +141,7 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
                         className="item-image"
                       >
                         <img
-                          src={item.imageUrl || "/images/logoDAW.png"}
+                          src={item.imageUrl || brandLogoSrc}
                           alt={item.name}
                         />
                       </Link>

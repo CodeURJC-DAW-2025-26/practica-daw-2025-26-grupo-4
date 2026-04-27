@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useHref, useNavigate } from "react-router";
 import { loginUser, registerUser } from "~/services/auth-service";
 import { useAuthStore } from "~/stores/auth-store";
 
@@ -41,6 +41,7 @@ const EMPTY_REGISTER: RegisterFormState = {
 
 export function AuthPage({ initialMode }: AuthPageProps) {
   const navigate = useNavigate();
+  const brandLogoSrc = useHref("/images/logoDAW.png");
   const loadSession = useAuthStore((state) => state.loadSession);
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [loginForm, setLoginForm] = useState<LoginFormState>(EMPTY_LOGIN);
@@ -140,7 +141,7 @@ export function AuthPage({ initialMode }: AuthPageProps) {
         <div className={`login-card ${mode === "register" ? "mode-register" : "mode-login"}`}>
           <div className="header">
             <div className="logo-wrap brand-logo-wrap">
-              <img className="logo brand-logo" src="/images/logoDAW.png" alt="Logo PlantaZon" />
+              <img className="logo brand-logo" src={brandLogoSrc} alt="Logo PlantaZon" />
             </div>
           </div>
 
