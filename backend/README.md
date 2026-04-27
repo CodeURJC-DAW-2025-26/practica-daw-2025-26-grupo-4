@@ -532,15 +532,15 @@ Responsable de la página principal (Home), filtrado de categorías, detalle de 
 
 #### **Alumno 2 - Darío García Gómez**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+Responsable de la implementación de los DTOs en el frontend, el servicio y página del carrito, la página de pedidos y la configuración de Docker para la SPA.
 
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
-|1| [Descripción commit 1](URL_commit_1)  | [Archivo1](URL_archivo_1)   |
-|2| [Descripción commit 2](URL_commit_2)  | [Archivo2](URL_archivo_2)   |
-|3| [Descripción commit 3](URL_commit_3)  | [Archivo3](URL_archivo_3)   |
-|4| [Descripción commit 4](URL_commit_4)  | [Archivo4](URL_archivo_4)   |
-|5| [Descripción commit 5](URL_commit_5)  | [Archivo5](URL_archivo_5)   |
+|1| [Practice 3 v.27 New image docker](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/092dee5)  | docker-compose.yml, application.properties   |
+|2| [Practice 3 v2.12 Order page implemented](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/4d6e310)  | OrderRestController.java, OrderMapper.java, OrderService.java, header.tsx, routes.ts, cart.tsx, orders.tsx, product.tsx, cart-service.ts, order-service.ts, products-service.ts, orders.css   |
+|3| [Practice 3 v2.11 Cart finished](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/ceb18ac)  | header.tsx, useCart.ts, routes.ts, cart.tsx, home.tsx, product.tsx, recommendations.tsx, cart-service.ts, cart.css, header.css, package-lock.json   |
+|4| [Practice 3 v2.10 cart service implemented](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/f69cf5a)  | cart-service.tsx   |
+|5| [Practice 3 v2.1 All DTOs implemented in frontend](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4/commit/b709684)  | admin.dto.ts, cart.dto.ts, category.dto.ts, home.dto.ts, image.dto.ts, index.ts, order.dto.ts, product.dto.ts, recommendation.dto.ts, responses.dto.ts, review.dto.ts, status.dto.ts, user.dto.ts, package-lock.json   |
 
 ---
 
