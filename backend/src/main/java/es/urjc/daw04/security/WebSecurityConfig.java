@@ -122,6 +122,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/styles/**").permitAll()
                         .requestMatchers("/js/**").permitAll()
                         .requestMatchers("/images/**").permitAll()
+                        .requestMatchers("/new/**").permitAll()
                         // PUBLIC PAGES
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/register").permitAll()
