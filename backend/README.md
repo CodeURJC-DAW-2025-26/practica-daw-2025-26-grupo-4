@@ -466,8 +466,8 @@ Responsable de la API REST para el control de cuentas de usuario, perfil, direcc
 
 2. **Clonar el repositorio** (si no lo has hecho ya)
    ```bash
-   git clone https://github.com/[usuario]/[nombre-repositorio].git
-   cd [nombre-repositorio]
+   git clone https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-4.git
+   cd practica-daw-2025-26-grupo-4
    ```
 
 3. **Navegar a la carpeta del proyecto React**
@@ -475,17 +475,48 @@ Responsable de la API REST para el control de cuentas de usuario, perfil, direcc
    cd frontend
    ```
 
-4. **AQUÍ LOS SIGUIENTES PASOS**
+4. **Instalar dependencias**
+
+   ```bash
+   npm install
+   ```
+
+5. **Arrancar el frontend en desarrollo**
+
+   ```bash
+   npm run dev
+   ```
+
+   La aplicación estará disponible en la URL que indique el servidor de desarrollo, normalmente `http://localhost:5173/`.
+
+6. **Generar la versión de producción**
+
+   ```bash
+   npm run build
+   ```
+
+7. **Publicar el build en el backend local**
+
+   ```bash
+   npm run deploy:local
+   ```
+
+   Este comando copia el contenido compilado en `backend/src/main/resources/static/new/` para que el backend sirva la SPA integrada.
+
+#### **Ejecución recomendada**
+
+Para probar la aplicación completa, arranca primero el backend y después el frontend. El frontend consume la API REST existente y necesita que el backend esté disponible para cargar catálogo, sesión, carrito, pedidos y administración.
+
 
 ### **Diagrama de Clases y Templates de la SPA**
 
-Diagrama mostrando los componentes React, hooks personalizados, servicios y sus relaciones:
+Diagrama que muestra los componentes React, hooks personalizados, servicios y su relación con las pantallas principales:
 
 ![Diagrama de Componentes React](images/spa-classes-diagram.png)
 
 ### **Participación de Miembros en la Práctica 3**
 
-#### **Alumno 1 - [Nombre Completo]**
+#### **Alumno 1 - Álvaro Fuente González**
 
 [Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
 
@@ -499,7 +530,7 @@ Diagrama mostrando los componentes React, hooks personalizados, servicios y sus 
 
 ---
 
-#### **Alumno 2 - [Nombre Completo]**
+#### **Alumno 2 - Darío García Gómez**
 
 [Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
 
@@ -513,7 +544,7 @@ Diagrama mostrando los componentes React, hooks personalizados, servicios y sus 
 
 ---
 
-#### **Alumno 3 - [Nombre Completo]**
+#### **Alumno 3 - Eduardo Fernández Sanz**
 
 [Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
 
@@ -527,7 +558,7 @@ Diagrama mostrando los componentes React, hooks personalizados, servicios y sus 
 
 ---
 
-#### **Alumno 4 - [Nombre Completo]**
+#### **Alumno 4 - Arturo Vinuesa Domínguez**
 
 [Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
 
