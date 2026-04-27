@@ -60,7 +60,7 @@ public class WebSecurityConfig {
 		http.authenticationProvider(authenticationProvider());
 
 		http
-                .securityMatcher("/api/v1/**")
+                .securityMatcher("/api/v1/**", "/api/users")
 				.exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandlerJwt));
 
 		http
@@ -68,6 +68,7 @@ public class WebSecurityConfig {
 						// PRIVATE ENDPOINTS
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/user/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/users").hasAnyRole("USER", "ADMIN")
 						// Products
                         .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasRole("ADMIN")
@@ -121,6 +122,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/styles/**").permitAll()
                         .requestMatchers("/js/**").permitAll()
                         .requestMatchers("/images/**").permitAll()
+                        .requestMatchers("/new/**").permitAll()
                         // PUBLIC PAGES
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/register").permitAll()

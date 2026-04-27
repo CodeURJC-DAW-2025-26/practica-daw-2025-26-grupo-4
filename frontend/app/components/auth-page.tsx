@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { loginUser, registerUser } from "~/services/auth-service";
+import { useAuthStore } from "~/stores/auth-store";
 
 import "~/styles/tokens.css";
 import "~/styles/components.css";
@@ -40,6 +41,7 @@ const EMPTY_REGISTER: RegisterFormState = {
 
 export function AuthPage({ initialMode }: AuthPageProps) {
   const navigate = useNavigate();
+  const loadSession = useAuthStore((state) => state.loadSession);
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [loginForm, setLoginForm] = useState<LoginFormState>(EMPTY_LOGIN);
   const [registerForm, setRegisterForm] = useState<RegisterFormState>(EMPTY_REGISTER);
@@ -82,6 +84,7 @@ export function AuthPage({ initialMode }: AuthPageProps) {
         username: loginForm.username,
         password: loginForm.password
       });
+      await loadSession(true);
       navigate("/");
     } catch (error) {
       console.error(error);
@@ -116,6 +119,7 @@ export function AuthPage({ initialMode }: AuthPageProps) {
         username: registerForm.username,
         password: registerForm.password
       });
+      await loadSession(true);
 
       setRegisterForm(EMPTY_REGISTER);
       navigate("/");

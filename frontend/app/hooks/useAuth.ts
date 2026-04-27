@@ -1,30 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-export interface UserProfileResponseDTO {
-  id: number;
-  username: string;
-  fullName: string;
-  email: string;
-  birthDate: string;
-  shippingAddress: string;
-  roles: string[];
-  profileImageUrl: string | null;
-}
+import { useAuthStore, type AuthUserDTO } from "../stores/auth-store";
+
+export type UserProfileResponseDTO = AuthUserDTO;
 
 export interface AuthStatus {
   isLogged: boolean;
   isAdmin: boolean;
-  user: UserProfileResponseDTO | null;
+  user: AuthUserDTO | null;
   loading: boolean;
 }
 
 export function useAuth(): AuthStatus {
-  const [status, setStatus] = useState<AuthStatus>({
-    isLogged: false,
-    isAdmin: false,
-    user: null,
-    loading: true
-  });
+  const isLogged = useAuthStore((state) => state.isLogged);
+  const isAdmin = useAuthStore((state) => state.isAdmin);
+  const user = useAuthStore((state) => state.user);
+  const loading = useAuthStore((state) => state.loading);
+  const hasLoaded = useAuthStore((state) => state.hasLoaded);
+  const loadSession = useAuthStore((state) => state.loadSession);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -63,4 +56,10 @@ export function useAuth(): AuthStatus {
   }, []);
 
   return status;
+    if (!hasLoaded) {
+      loadSession().catch(() => {});
+    }
+  }, [hasLoaded, loadSession]);
+
+  return { isLogged, isAdmin, user, loading };
 }

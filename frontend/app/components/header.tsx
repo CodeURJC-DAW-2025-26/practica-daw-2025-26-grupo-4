@@ -1,12 +1,16 @@
 import { Link } from "react-router";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import { useAuth } from "~/hooks/useAuth";
 import { useCart } from "~/hooks/useCart";
+import { useAuthStore } from "~/stores/auth-store";
 import "~/styles/header.css";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
   const { isLogged, isAdmin, user, loading } = useAuth();
+  const clearSession = useAuthStore((state) => state.clearSession);
   const { cart } = useCart();
 
   const [animateCart, setAnimateCart] = useState(false);
@@ -27,7 +31,9 @@ export function Header() {
         method: "POST",
         credentials: "include",
       });
-      window.location.href = "/";
+      clearSession();
+      setIsMenuOpen(false);
+      navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -80,14 +86,14 @@ export function Header() {
                 <>
                   {isAdmin && (
                     <>
-                      <a href="/admin" className="dropdown-item">
+                      <Link to="/admin" className="dropdown-item">
                         <i className="fa-solid fa-gauge"></i> Panel de
                         administración
-                      </a>
-                      <a href="/admin/products" className="dropdown-item">
+                      </Link>
+                      <Link to="/admin/products" className="dropdown-item">
                         <i className="fa-solid fa-boxes-stacked"></i> Gestor de
                         productos
-                      </a>
+                      </Link>
                     </>
                   )}
                   {isLogged && !isAdmin && (

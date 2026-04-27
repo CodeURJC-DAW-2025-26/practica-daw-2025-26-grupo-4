@@ -1,0 +1,14 @@
+# Dependencies
+**/node_modules
+
+# Java build output
+**/target
+
+# React Router / Vite generated output
+frontend/.react-router
+frontend/build
+
+# Git / editor noise
+.git
+.vscode
+.DS_Store

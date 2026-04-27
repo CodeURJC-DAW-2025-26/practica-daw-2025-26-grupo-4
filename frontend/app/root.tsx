@@ -5,6 +5,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  Link,
   useNavigation,
 } from "react-router";
 import { useEffect } from "react";
@@ -139,9 +140,9 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
         <p className="spa-error-code">{code}</p>
         <h1 className="spa-error-title">{message}</h1>
         <p className="spa-error-details">{details}</p>
-        <a href="/" className="spa-error-cta">
+        <Link to="/" className="spa-error-cta">
           <i className="fa-solid fa-house"></i> Volver al inicio
-        </a>
+        </Link>
 
         {stack && (
           <pre className="spa-error-stack">
