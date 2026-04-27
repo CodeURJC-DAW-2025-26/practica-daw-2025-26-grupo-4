@@ -1,0 +1,1 @@
+var e=`/api/v1/categories`;async function t(){return await(await fetch(e)).json()}var n=`/api/v1/recommendations`;async function r(){let e=await fetch(n);if(!e.ok)throw Error(`Failed to fetch recommendations: `+e.statusText);return await e.json()}export{t as n,r as t};

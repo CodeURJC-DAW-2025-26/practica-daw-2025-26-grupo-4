@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "react-router build",
+    "deploy:local": "npm run build && rm -rf ../backend/src/main/resources/static/new/* && cp -r build/client/* ../backend/src/main/resources/static/new/",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc"
