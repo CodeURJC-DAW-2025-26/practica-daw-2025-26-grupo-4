@@ -10,6 +10,8 @@ function getHttpStatusMessage(status: number) {
       return "Recurso no encontrado";
     case 409:
       return "Conflicto en la solicitud";
+    case 413:
+      return "El archivo supera el tamaño máximo permitido";
     case 422:
       return "Datos invalidos";
     case 500:

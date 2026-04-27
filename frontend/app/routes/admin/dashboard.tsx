@@ -43,6 +43,181 @@ const EMPTY_ADDRESS: UserAddressFields = {
   phone: "",
 };
 
+const KNOWN_ADDRESS_LABELS = new Set([
+  "Calle",
+  "Información adicional",
+  "Ciudad",
+  "Provincia",
+  "Código Postal",
+  "País",
+  "Teléfono",
+]);
+
+function createAdminChart(
+  canvas: HTMLCanvasElement | null,
+  type: "doughnut" | "bar" | "line",
+  title: string,
+  series: { labels: string[]; values: number[] } | undefined,
+  chartInstances: Chart[],
+) {
+  if (!canvas || !series?.labels?.length || !series?.values?.length) {
+    return;
+  }
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return;
+  }
+
+  chartInstances.push(
+    new Chart(ctx, {
+      type,
+      data: {
+        labels: series.labels,
+        datasets: [
+          {
+            label: title,
+            data: series.values,
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.6)",
+              "rgba(54, 162, 235, 0.6)",
+              "rgba(255, 206, 86, 0.6)",
+              "rgba(75, 192, 192, 0.6)",
+              "rgba(153, 102, 255, 0.6)",
+              "rgba(255, 159, 64, 0.6)",
+              "rgba(199, 199, 199, 0.6)",
+              "rgba(83, 102, 255, 0.6)",
+            ],
+            borderWidth: 1,
+            fill: type === "line",
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales:
+          type === "doughnut"
+            ? undefined
+            : {
+                y: {
+                  beginAtZero: true,
+                },
+              },
+      },
+    }),
+  );
+}
+
+function parseLabeledAddress(lines: string[]): UserAddressFields | null {
+  const parsed: UserAddressFields = { ...EMPTY_ADDRESS };
+  let hasLabels = false;
+  const positionalLines: string[] = [];
+
+  for (const line of lines) {
+    const separatorIndex = line.indexOf(":");
+    if (separatorIndex > 0) {
+      const label = line.slice(0, separatorIndex).trim();
+      const value = line.slice(separatorIndex + 1).trim();
+
+      if (KNOWN_ADDRESS_LABELS.has(label)) {
+        hasLabels = true;
+        assignAddressField(parsed, label, value);
+        continue;
+      }
+    }
+
+    positionalLines.push(line);
+  }
+
+  if (!hasLabels) {
+    return null;
+  }
+
+  if (!parsed.street && positionalLines.length > 0) {
+    parsed.street = positionalLines.shift() ?? "";
+  }
+
+  if (!parsed.additional && positionalLines.length > 0) {
+    parsed.additional = positionalLines.join("\n");
+  }
+
+  return parsed;
+}
+
+function assignAddressField(
+  parsed: UserAddressFields,
+  label: string,
+  value: string,
+) {
+  switch (label) {
+    case "Calle":
+      parsed.street = value;
+      break;
+    case "Información adicional":
+      parsed.additional = value;
+      break;
+    case "Ciudad":
+      parsed.city = value;
+      break;
+    case "Provincia":
+      parsed.province = value;
+      break;
+    case "Código Postal":
+      parsed.postalCode = value;
+      break;
+    case "País":
+      parsed.country = value;
+      break;
+    case "Teléfono":
+      parsed.phone = value;
+      break;
+    default:
+      break;
+  }
+}
+
+function parsePositionalAddress(lines: string[]): UserAddressFields {
+  const [street = "", ...rest] = lines;
+  const remaining = [...rest];
+
+  const phoneIdx = remaining.findIndex((line) => /^Tel[eé]fono:\s*/i.test(line));
+  const phone = phoneIdx >= 0 ? remaining.splice(phoneIdx, 1)[0].replace(/^Tel[eé]fono:\s*/i, "").trim() : "";
+
+  const locIdx = remaining.findIndex((line) => /^.+,\s*.+\s+\d{5}$/.test(line));
+  let city = "";
+  let province = "";
+  let postalCode = "";
+  if (locIdx >= 0) {
+    const match = /^(.+),\s*(.+)\s+(\d{5})$/.exec(remaining.splice(locIdx, 1)[0]);
+    if (match) {
+      city = match[1].trim();
+      province = match[2].trim();
+      postalCode = match[3].trim();
+    }
+  }
+
+  let country = "";
+  let additional = "";
+
+  if (remaining.length === 1) {
+    additional = remaining[0];
+  } else if (remaining.length > 1) {
+    additional = remaining.slice(0, -1).join("\n");
+    country = remaining.at(-1) ?? "";
+  }
+
+  return {
+    street,
+    additional,
+    city,
+    province,
+    postalCode,
+    country,
+    phone,
+  };
+}
+
 function parseAddress(address: string): UserAddressFields {
   if (!address?.trim()) {
     return EMPTY_ADDRESS;
@@ -53,74 +228,43 @@ function parseAddress(address: string): UserAddressFields {
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
 
-  const [street = "", ...rest] = lines;
-  const remaining = [...rest];
-
-  let phone = "";
-  const phoneIdx = remaining.findIndex((line) => /^Telefono:\s*/i.test(line));
-  if (phoneIdx >= 0) {
-    phone = remaining[phoneIdx].replace(/^Telefono:\s*/i, "").trim();
-    remaining.splice(phoneIdx, 1);
+  const labeledAddress = parseLabeledAddress(lines);
+  if (labeledAddress) {
+    return labeledAddress;
   }
 
-  let city = "";
-  let province = "";
-  let postalCode = "";
-  const locIdx = remaining.findIndex((line) => /^.+,\s*.+\s+\d{5}$/.test(line));
-  if (locIdx >= 0) {
-    const match = /^(.+),\s*(.+)\s+(\d{5})$/.exec(remaining[locIdx]);
-    if (match) {
-      city = match[1].trim();
-      province = match[2].trim();
-      postalCode = match[3].trim();
-    }
-    remaining.splice(locIdx, 1);
-  }
-
-  let country = "";
-  if (remaining.length > 0) {
-    country = remaining.at(-1) ?? "";
-    remaining.pop();
-  }
-
-  return {
-    street,
-    additional: remaining.join("\n"),
-    city,
-    province,
-    postalCode,
-    country,
-    phone,
-  };
+  return parsePositionalAddress(lines);
 }
 
 function composeAddress(address: UserAddressFields): string {
   const lines: string[] = [];
 
   if (address.street.trim()) {
-    lines.push(address.street.trim());
+    lines.push(`Calle: ${address.street.trim()}`);
   }
 
   if (address.additional.trim()) {
-    lines.push(address.additional.trim());
+    lines.push(`Información adicional: ${address.additional.trim()}`);
   }
 
-  const locationParts = [address.city.trim(), address.province.trim()].filter(Boolean);
-  const location = locationParts.join(", ");
-  if (location && address.postalCode.trim()) {
-    lines.push(`${location} ${address.postalCode.trim()}`);
-  } else if (location) {
-    lines.push(location);
-  } else if (address.postalCode.trim()) {
-    lines.push(address.postalCode.trim());
+  if (address.city.trim()) {
+    lines.push(`Ciudad: ${address.city.trim()}`);
+  }
+
+  if (address.province.trim()) {
+    lines.push(`Provincia: ${address.province.trim()}`);
+  }
+
+  if (address.postalCode.trim()) {
+    lines.push(`Código Postal: ${address.postalCode.trim()}`);
   }
 
   if (address.country.trim()) {
-    lines.push(address.country.trim());
+    lines.push(`País: ${address.country.trim()}`);
   }
 
   if (address.phone.trim()) {
-    lines.push(`Telefono: ${address.phone.trim()}`);
+    lines.push(`Teléfono: ${address.phone.trim()}`);
   }
 
   return lines.join("\n");
@@ -206,74 +350,21 @@ const {
 useLayoutEffect(() => {
   const chartInstances: Chart[] = [];
 
-  const timeoutId = window.setTimeout(() => {
-    function createChart(
-      canvas: HTMLCanvasElement | null,
-      type: "doughnut" | "bar" | "line",
-      title: string,
-      series?: { labels: string[]; values: number[] },
-    ) {
-      if (!canvas || !series?.labels?.length || !series?.values?.length) {
-        return;
-      }
-
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        return;
-      }
-
-      chartInstances.push(
-        new Chart(ctx, {
-          type,
-          data: {
-            labels: series.labels,
-            datasets: [
-              {
-                label: title,
-                data: series.values,
-                backgroundColor: [
-                  "rgba(255, 99, 132, 0.6)",
-                  "rgba(54, 162, 235, 0.6)",
-                  "rgba(255, 206, 86, 0.6)",
-                  "rgba(75, 192, 192, 0.6)",
-                  "rgba(153, 102, 255, 0.6)",
-                  "rgba(255, 159, 64, 0.6)",
-                  "rgba(199, 199, 199, 0.6)",
-                  "rgba(83, 102, 255, 0.6)",
-                ],
-                borderWidth: 1,
-                fill: type === "line",
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales:
-              type === "doughnut"
-                ? undefined
-                : {
-                    y: {
-                      beginAtZero: true,
-                    },
-                  },
-          },
-        }),
-      );
-    }
-
-    createChart(categoryCanvasRef.current, "doughnut", "Unidades por Categoría", stats.salesByCategory);
-    createChart(tagsCanvasRef.current, "doughnut", "Unidades por Etiqueta", stats.salesByTag);
-    createChart(monthlyCanvasRef.current, "bar", "Ventas Mensuales (€)", stats.monthlySales);
-    createChart(visitorsCanvasRef.current, "line", "Total Pedidos", stats.ordersByMonth);
-    createChart(reviewsCanvasRef.current, "line", "Nuevas Reseñas", stats.reviewsByMonth);
+  const timeoutId = globalThis.setTimeout(() => {
+    createAdminChart(categoryCanvasRef.current, "doughnut", "Unidades por Categoría", stats.salesByCategory, chartInstances);
+    createAdminChart(tagsCanvasRef.current, "doughnut", "Unidades por Etiqueta", stats.salesByTag, chartInstances);
+    createAdminChart(monthlyCanvasRef.current, "bar", "Ventas Mensuales (€)", stats.monthlySales, chartInstances);
+    createAdminChart(visitorsCanvasRef.current, "line", "Total Pedidos", stats.ordersByMonth, chartInstances);
+    createAdminChart(reviewsCanvasRef.current, "line", "Nuevas Reseñas", stats.reviewsByMonth, chartInstances);
   }, 100);
 
   return () => {
-    window.clearTimeout(timeoutId);
+    globalThis.clearTimeout(timeoutId);
     chartInstances.forEach((chart) => chart.destroy());
   };
-}, [stats]);  const disabledUsers = useMemo(() => busyUserIds, [busyUserIds]);
+}, [stats]);
+
+  const disabledUsers = useMemo(() => busyUserIds, [busyUserIds]);
 
   const toggleUserEdit = (userId: number) => {
     setExpandedUserIds((current) => {
