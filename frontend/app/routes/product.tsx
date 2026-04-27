@@ -181,6 +181,12 @@ export default function Product({ loaderData }: Route.ComponentProps) {
   const handleReviewSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (!user) {
+      notifyError("Debes iniciar sesión para publicar una reseña.");
+      navigate("/login");
+      return;
+    }
+
     if (reviewRating === 0) {
       notifyError("Por favor, selecciona una puntuación para tu reseña.");
       return;
