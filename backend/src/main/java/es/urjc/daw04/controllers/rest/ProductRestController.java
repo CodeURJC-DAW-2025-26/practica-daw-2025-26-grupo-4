@@ -106,10 +106,9 @@ public class ProductRestController {
     }
 
     @DeleteMapping("/{id}")
-    public ProductDTO deleteProduct(@PathVariable long id) {
-        Product product = productService.findById(id);
+    public ResponseEntity<Void> deleteProduct(@PathVariable long id) {
         productService.deleteById(id);
-        return productMapper.toDTO(product);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/images/")
