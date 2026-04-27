@@ -331,6 +331,7 @@ const {
       categoryId: product.category?.id ? String(product.category.id) : "",
     });
     resetImageSelection();
+    globalThis.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDeleteImage = async (productId: number, imageId: number) => {
