@@ -20,42 +20,6 @@ export function useAuth(): AuthStatus {
   const loadSession = useAuthStore((state) => state.loadSession);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await fetch("/api/v1/user/me", {
-          credentials: "include"
-        });
-
-        if (response.ok) {
-          const user = (await response.json()) as UserProfileResponseDTO;
-          setStatus({
-            isLogged: true,
-            isAdmin: user.roles.includes("ADMIN"),
-            user,
-            loading: false
-          });
-        } else {
-          setStatus({
-            isLogged: false,
-            isAdmin: false,
-            user: null,
-            loading: false
-          });
-        }
-      } catch {
-        setStatus({
-          isLogged: false,
-          isAdmin: false,
-          user: null,
-          loading: false
-        });
-      }
-    };
-
-    checkAuth();
-  }, []);
-
-  return status;
     if (!hasLoaded) {
       loadSession().catch(() => {});
     }
