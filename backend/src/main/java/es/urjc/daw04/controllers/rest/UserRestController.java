@@ -43,6 +43,11 @@ public class UserRestController {
         return ResponseEntity.ok(toProfileResponse(user));
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUserMe(Principal principal) {
+        return getCurrentUser(principal);
+    }
+
     @PutMapping("/account")
     @Transactional
     public ResponseEntity<?> updateAccount(@RequestBody UserAccountUpdateRequestDTO request, Principal principal) {

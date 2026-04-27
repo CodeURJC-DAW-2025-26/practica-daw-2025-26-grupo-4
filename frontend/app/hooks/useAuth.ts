@@ -29,7 +29,7 @@ export function useAuth(): AuthStatus {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch("/api/v1/user", {
+        const response = await fetch("/api/v1/user/me", {
           credentials: "include"
         });
 
