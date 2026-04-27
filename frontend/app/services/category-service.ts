@@ -4,6 +4,9 @@ const API_URL = "/api/v1/categories";
 
 export async function getCategories(): Promise<CategoryDTO[]> {
   const res = await fetch(API_URL);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch categories: ${res.statusText}`);
+  }
   return await res.json();
 }
 
