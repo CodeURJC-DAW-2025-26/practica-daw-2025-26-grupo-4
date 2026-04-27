@@ -67,27 +67,23 @@ export async function updateAdminUser(
   return await response.json();
 }
 
-export async function banAdminUser(id: number): Promise<AdminUserDTO> {
+export async function updateAdminUserBanStatus(
+  id: number,
+  status: "ban" | "unban",
+): Promise<AdminUserDTO> {
   const response = await fetch(`${ADMIN_API_URL}/users/${id}/ban`, {
     method: "PUT",
     credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status }),
   });
 
   if (!response.ok) {
-    throw new Error(await getApiErrorMessage(response, "No se pudo banear el usuario"));
-  }
-
-  return await response.json();
-}
-
-export async function unbanAdminUser(id: number): Promise<AdminUserDTO> {
-  const response = await fetch(`${ADMIN_API_URL}/users/${id}/unban`, {
-    method: "PUT",
-    credentials: "include",
-  });
-
-  if (!response.ok) {
-    throw new Error(await getApiErrorMessage(response, "No se pudo desbanear el usuario"));
+    throw new Error(
+      await getApiErrorMessage(response, "No se pudo actualizar el estado de baneo del usuario"),
+    );
   }
 
   return await response.json();

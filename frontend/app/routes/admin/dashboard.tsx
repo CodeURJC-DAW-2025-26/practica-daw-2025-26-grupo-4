@@ -5,11 +5,10 @@ import { Header } from "~/components/header";
 import { useAuth } from "~/hooks/useAuth";
 import { useInfiniteScroll } from "~/hooks/useInfiniteScroll";
 import {
-  banAdminUser,
   deleteAdminUser,
   getAdminStats,
   getAdminUsers,
-  unbanAdminUser,
+  updateAdminUserBanStatus,
   updateAdminUser,
 } from "~/services/admin-service";
 import type {
@@ -444,9 +443,10 @@ const handleBanToggle = async (user: AdminUserDTO) => {
   setUserBusy(user.id, true);
 
   try {
-    const updatedUser = user.banned
-      ? await unbanAdminUser(user.id)
-      : await banAdminUser(user.id);
+    const updatedUser = await updateAdminUserBanStatus(
+      user.id,
+      user.banned ? "unban" : "ban",
+    );
 
     setUsers((currentUsers) =>
       currentUsers.map((currentUser) =>

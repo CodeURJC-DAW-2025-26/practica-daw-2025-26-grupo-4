@@ -21,6 +21,7 @@ import es.urjc.daw04.model.Category;
 import es.urjc.daw04.model.User;
 import es.urjc.daw04.model.dto.AdminCategoryRequestDTO;
 import es.urjc.daw04.model.dto.AdminStatsResponseDTO;
+import es.urjc.daw04.model.dto.AdminUserBanRequestDTO;
 import es.urjc.daw04.model.dto.AdminUserDTO;
 import es.urjc.daw04.model.dto.AdminUserUpdateRequestDTO;
 import es.urjc.daw04.model.dto.ChartSeriesDTO;
@@ -107,23 +108,7 @@ public class AdminRestController {
     }
 
     @PutMapping("/users/{id}/ban")
-    public ResponseEntity<?> banUser(@PathVariable Long id) {
-        User user = userService.findById(id).orElse(null);
-        if (user == null) {
-            return ResponseEntity.status(404).body(new ErrorResponseDTO("Usuario no encontrado"));
-        }
-
-        if (user.isAdmin()) {
-            return ResponseEntity.badRequest().body(new ErrorResponseDTO("No se permite banear administradores"));
-        }
-
-        user.setBanned(true);
-        userService.save(user);
-        return ResponseEntity.ok(toAdminUserDTO(user));
-    }
-
-    @PutMapping("/users/{id}/unban")
-    public ResponseEntity<?> unbanUser(@PathVariable Long id) {
+    public ResponseEntity<?> updateBanStatus(@PathVariable Long id, @RequestBody AdminUserBanRequestDTO request) {
         User user = userService.findById(id).orElse(null);
         if (user == null) {
             return ResponseEntity.status(404).body(new ErrorResponseDTO("Usuario no encontrado"));
@@ -133,7 +118,16 @@ public class AdminRestController {
             return ResponseEntity.badRequest().body(new ErrorResponseDTO("No se permite modificar administradores"));
         }
 
-        user.setBanned(false);
+        if (request == null || request.status() == null) {
+            return ResponseEntity.badRequest().body(new ErrorResponseDTO("El campo status es obligatorio"));
+        }
+
+        String status = request.status().trim().toLowerCase();
+        if (!"ban".equals(status) && !"unban".equals(status)) {
+            return ResponseEntity.badRequest().body(new ErrorResponseDTO("Status inválido. Usa 'ban' o 'unban'"));
+        }
+
+        user.setBanned("ban".equals(status));
         userService.save(user);
         return ResponseEntity.ok(toAdminUserDTO(user));
     }
