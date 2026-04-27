@@ -7,4 +7,10 @@ if [ $# -lt 3 ]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-docker compose -f "$SCRIPT_DIR/docker-compose.yml" publish "$1/$2:$3" --with-env
+IMAGE_NAME="$2"
+TAG="$3"
+LOCAL_IMAGE="$IMAGE_NAME:$TAG"
+DOCKERHUB_IMAGE="$1/$IMAGE_NAME:$TAG"
+
+docker tag "$LOCAL_IMAGE" "$DOCKERHUB_IMAGE"
+docker push "$DOCKERHUB_IMAGE"
