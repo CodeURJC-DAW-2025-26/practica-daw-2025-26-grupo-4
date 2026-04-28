@@ -1,19 +1,17 @@
 services:
   web:
-    build:
-      context: ../..
-      dockerfile: backend/docker/Dockerfile
+    
     # image: eduamongus/spring-webapp:1.0
-    image: dariogarciagomez/spring-webapp:1.0
+    # image: dariogarciagomez/spring-webapp:1.0
     # image: arturoovinuesa/spring-webapp:1.0
     # image alvarosource/spring-webapp:1.0
-    # image: eduamongus/spring-webapp:1.0
+    image: arturoovinuesaa/spring-webapp:latest
     ports:
       - 8443:8443
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db/plantazon_db?createDatabaseIfNotExist=true
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Admin1234
+      - SPRING_DATASOURCE_PASSWORD=password
     depends_on:
       db:
         condition: service_healthy
@@ -23,16 +21,12 @@ services:
     ports:
       - 3307:3306
     environment:
-      - MYSQL_ROOT_PASSWORD=Admin1234
+      - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=plantazon_db
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD",
-        ]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD"]
       interval: 5s
       timeout: 5s
       start_period: 10s
