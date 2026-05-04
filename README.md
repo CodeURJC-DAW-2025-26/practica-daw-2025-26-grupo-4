@@ -91,44 +91,44 @@ Indicar cuál será el algoritmo o consulta avanzada que se implementará:
 ### **Diagrama de Navegación**
 Diagrama que muestra cómo se navega entre las diferentes páginas de la aplicación:
 
-![Diagrama de Navegación](images/navigation-diagram.png)
+![Diagrama de Navegación](/backend/images/navigation-diagram.png)
 
 > [Descripción opcional del flujo de navegación: Ej: "El usuario puede acceder desde la página principal a todas las secciones mediante el menú de navegación. Los usuarios anónimos solo tienen acceso a las páginas públicas, mientras que los registrados pueden acceder a su perfil y panel de usuario."]
 
 ### **Capturas de Pantalla y Descripción de Páginas**
 
 #### **1. Página Principal / Home**
-![Página Principal](images/home-page.png)
+![Página Principal](/backend/images/home-page.png)
 
 > Página de inicio que muestra el catálogo de productos con filtrado por categorías (Cuidado, Plantas, Suelo, Herramientas, Inspiración, Guardados). Incluye barra lateral de navegación, barra de búsqueda superior y acceso al carrito y perfil de usuario. Los productos se muestran en tarjetas con imagen, nombre, precio y opción de añadir al carrito.
 
 #### **2. Página de Inicio de Sesión / Login**
-![Página de Login](images/login-page.png)
+![Página de Login](/backend/images/login-page.png)
 
 > Página de autenticación que permite a los usuarios iniciar sesión o registrarse en la aplicación. Incluye formularios con validación para email y contraseña, opción de suscripción a novedades, y una interfaz con pestañas deslizantes para alternar entre inicio de sesión y registro.
 
 #### **3. Página de Detalle de Producto**
-![Página de Producto](images/product-page.png)
+![Página de Producto](/backend/images/product-page.png)
 
 > Página que muestra información detallada de un producto específico: galería de imágenes con navegación por puntos, información del producto (nombre, descripción, etiquetas, precio con descuento), selector de cantidad, botones de compra y añadir al carrito. Incluye sección de productos recomendados y valoraciones de usuarios con gráficos de barras y comentarios.
 
 #### **4. Página del Carrito**
-![Página de Carrito](images/cart-page.png)
+![Página de Carrito](/backend/images/cart-page.png)
 
 > Página que muestra el carrito de compra con los productos seleccionados. Cada producto incluye imagen, nombre, tamaño, precio, controles de cantidad y opción de eliminar. Panel lateral con resumen del pedido (subtotal, envío, total) y botón para tramitar el pedido.
 
 #### **5. Página de Pedidos**
-![Página de Pedidos](images/order-page.png)
+![Página de Pedidos](/backend/images/order-page.png)
 
 > Página que muestra el historial de pedidos del usuario. Cada pedido incluye número de orden, fecha, estado (entregado, en proceso, etc.), precio total, cantidad de productos y botón expandible para ver detalles. Los detalles incluyen imágenes de productos, cantidades, precios individuales, resumen con subtotal y envío, y opciones para volver a comprar o dejar opinión.
 
 #### **6. Página de Perfil de Usuario**
-![Página de Usuario](images/user-page.png)
+![Página de Usuario](/backend/images/user-page.png)
 
 > Página de gestión del perfil del usuario que permite editar datos personales (nombre de usuario, correo, contraseña, dirección de envío) y configurar preferencias de cuenta (notificaciones por email, modo oscuro, recibir ofertas). Incluye botones para guardar cambios o eliminar cuenta.
 
 #### **7. Página de Administrador**
-![Página de Administrador](images/admin-page.png)
+![Página de Administrador](/backend/images/admin-page.png)
 
 > Panel de administración que permite gestionar productos (añadir, modificar, eliminar), visualizar estadísticas de ventas mediante gráficos, gestionar usuarios y moderar contenido. Incluye barra de búsqueda para productos y acceso rápido a todas las funcionalidades administrativas.
 
@@ -144,7 +144,7 @@ Diagrama que muestra cómo se navega entre las diferentes páginas de la aplicac
 
 #### **Diagrama de Navegación**
 
-![Diagrama de navegación](images/navigation-diagram-P1.png)
+![Diagrama de navegación](/backend/images/navigation-diagram-P1.png)
 
 #### **Capturas de Pantalla Actualizadas**
 
@@ -152,11 +152,11 @@ Diagrama que muestra cómo se navega entre las diferentes páginas de la aplicac
 > La página de administrador fue dividida en dos para poder diferenciar gestión de usuarios y gestión de productos.
 
 **1.1 Sección de administrador**  
-![Página de administrador](images/admin-page-P1.png)  
+![Página de administrador](/backend/images/admin-page-P1.png)  
 > Página de administración que permite visualizar estadísticas mediante gráficos y gestionar usuarios y moderar contenido.
 
 **1.2 Gestor de productos**  
-![Página de gestor de productos](images/admin-products-page.png)  
+![Página de gestor de productos](/backend/images/admin-products-page.png)  
 > Página de administración en la que se pueden añadir nuevos productos, gestionar categorías (añadirlas, quitarlas y editarlas) y gestionar productos. 
 
 
@@ -198,11 +198,11 @@ https://localhost:8443
 
 Diagrama mostrando las entidades, sus campos y relaciones:
 
-![Diagrama Entidad-Relación](images/database-diagram.jpeg)
+![Diagrama Entidad-Relación](/backend/images/database-diagram.jpeg)
 
 Diagrama de clases de la aplicación con diferenciación por colores o secciones:
 
-![Diagrama de Clases](images/class-diagram-P1.png)  
+![Diagrama de Clases](/backend/images/class-diagram-P1.png)  
 
 > Este diagrama detalla las clases principales del backend y frontend, incluyendo controladores, servicios y templates HTML asociados a cada funcionalidad.
 
@@ -272,10 +272,10 @@ Responsable de seguridad, autenticación, usuarios y control de acceso.
 ### **Documentación de la API REST**
 
 #### **Especificación OpenAPI**
-📄 **[Especificación OpenAPI (YAML)](/api-docs/api-docs.yaml)**
+📄 **[Especificación OpenAPI (YAML)](/backend/api-docs/api-docs.yaml)**
 
 #### **Documentación HTML**
-📖 **[Documentación API REST (HTML)](api-docs/api-docs.html)**
+📖 **[Documentación API REST (HTML)](/backend/api-docs/api-docs.html)**
 
 > La documentación de la API REST se encuentra en la carpeta `/api-docs` del repositorio. Se ha generado automáticamente con SpringDoc a partir de las anotaciones en el código Java.
 
@@ -283,7 +283,7 @@ Responsable de seguridad, autenticación, usuarios y control de acceso.
 
 Diagrama actualizado incluyendo los @RestController y su relación con los @Service compartidos:
 
-![Diagrama de Clases Actualizado](images/p2/diagrama-clases.drawio.svg)
+![Diagrama de Clases Actualizado](/backend/images/p2/diagrama-clases.drawio.svg)
 
 ### **Instrucciones de Ejecución con Docker**
 
@@ -512,7 +512,7 @@ Para probar la aplicación completa, arranca primero el backend y después el fr
 
 Diagrama que muestra los componentes React, hooks personalizados, servicios y su relación con las pantallas principales:
 
-![Diagrama de Componentes React](images/spa-classes-diagram.png)
+![Diagrama de Componentes React](/backend/images/spa-classes-diagram.png)
 
 ### **Participación de Miembros en la Práctica 3**
 
